@@ -1,0 +1,45 @@
+ProcessingDB was just started and is not yet usable.
+
+To deploy in a remote server:
+
+Server Setup:
+Assuming a fresh install of Ubuntu Server, here's how to set it up to run datacubesinfo:
+
+# log in
+ssh root@your-server-ip
+
+# to change the root password:
+passwd
+
+# make port 8080 appear as port 80
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+# to add a user for running the server:
+useradd -d /home/processingdb -m processingdb
+passwd processingdb
+
+# install java, mysql, unzip
+sudo apt-get install openjdk-6-jre mysql-server unzip -y
+
+# install Grails
+wget http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-1.3.7.zip
+unzip grails-1.3.7.zip
+rm grails-1.3.7.zip
+mv grails-1.3.7/ grails
+
+# set necessary environment variables
+echo export JAVA_HOME=/usr/lib/jvm/java-6-openjdk  >> ~/.profile
+echo export GRAILS_HOME=\$HOME/grails >> ~/.profile
+echo export PATH=\$PATH:\$HOME/grails/bin >> ~/.profile
+
+# create the database used by the application
+mysql -u root -p
+mysql> create database processingdb;
+mysql> grant all on processingdb.* to pdb identified by 'pdb';
+
+# download the ProcessingDB source code to the server
+git clone https://github.com/curran/ProcessingDB.git
+
+# run the server
+cd ProcessingDB
+grails prod run app
