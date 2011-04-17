@@ -7,6 +7,8 @@ class Script {
   String doc
   static constraints = {
     name(blank: false, unique: true)
+    code(size:0..2147483646)
+    doc(size:0..2147483646)
   }
   String toString(){ return name }
 }
