@@ -41,6 +41,23 @@ class ScriptController {
         }
     }
 
+    def get = {
+        def scriptInstance = Script.get(params.id)
+        if (!scriptInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
+            redirect(action: "list")
+        }
+        else
+            render getFullCode(scriptInstance);
+    }
+
+    String getFullCode(Script s){
+        String fullCode = "";
+        s.dependencies.each{fullCode+=getFullCode(it)+"\n"};
+        fullCode += s.code;
+        return fullCode;
+    }
+
     def edit = {
         def scriptInstance = Script.get(params.id)
         if (!scriptInstance) {
@@ -97,4 +114,6 @@ class ScriptController {
             redirect(action: "list")
         }
     }
+
+
 }
