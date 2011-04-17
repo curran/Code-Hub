@@ -66,7 +66,14 @@
                                     <g:textField name="doc" value="${scriptInstance?.doc}" />
                                 </td>
                             </tr>
-                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                  <label for="isApp"><g:message code="script.isApp.label" default="Is App" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'isApp', 'errors')}">
+                                    <g:checkBox name="isApp" value="${scriptInstance?.isApp}" />
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
