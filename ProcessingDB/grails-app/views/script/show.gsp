@@ -14,28 +14,13 @@
             <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
-            <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+            <h1>${scriptInstance.name}</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
             <div class="dialog">
                 <table>
                     <tbody>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.id.label" default="Id" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "id")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.name.label" default="Name" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "name")}</td>
-                            
-                        </tr>
-                    
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.code.label" default="Code" /></td>
                             
