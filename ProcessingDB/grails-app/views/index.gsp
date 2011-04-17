@@ -10,9 +10,10 @@
             <g:link controller="script">Scripts</g:link>
             <ul>
             <g:each var="s" in="${org.curransoft.processingdb.Script.list()}">
-                <li>${s.name}
+                <li><g:link action="show" controller="script" id="${s.id}" >${s.name}</g:link>
             </g:each>
             </ul>
         </div>
+        <g:link controller="script" action="archive">Download entire database</g:link>
     </body>
 </html>

@@ -1,5 +1,5 @@
 package org.curransoft.processingdb
-
+import grails.converters.*
 class ScriptController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -48,14 +48,30 @@ class ScriptController {
             redirect(action: "list")
         }
         else
-            render getFullCode(scriptInstance);
+            render getFullCode(scriptInstance,[]);
     }
 
-    String getFullCode(Script s){
+    String getFullCode(Script s,includedScripts){
         String fullCode = "";
-        s.dependencies.each{fullCode+=getFullCode(it)+"\n"};
+        s.dependencies.each{
+          if(!includedScripts.contains(it.id)){
+            includedScripts.add(it.id)
+            fullCode+=getFullCode(it,includedScripts)+"\n"
+          }
+        };
         fullCode += s.code;
         return fullCode;
+    }
+
+    def test = {
+        def includedScripts = []
+        includedScripts.add(2)
+        def b = includedScripts.contains(1)
+        render b as XML
+    }
+
+    def archive = {
+        render Script.list() as XML
     }
 
     def edit = {
