@@ -59,7 +59,8 @@
 
                 </g:form>
             </div>
-            <g:link action="get" id="${scriptInstance.id}">Full source (including dependencies)</g:link>
+            <g:link action="get" id="${scriptInstance.id}">Get Full source (including dependencies)</g:link>
+            
         </div>
     </body>
 </html>
