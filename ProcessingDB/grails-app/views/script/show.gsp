@@ -24,7 +24,7 @@
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.code.label" default="Code" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "code")}</td>
+                            <td valign="top" class="value">${scriptInstance.code.replace("\n","<br>")}</td>
                             
                         </tr>
                     

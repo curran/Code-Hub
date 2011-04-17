@@ -42,4 +42,22 @@ git clone https://github.com/curran/ProcessingDB.git
 
 # run the server
 cd ProcessingDB
-grails prod run app
+grails prod run-app
+
+# running with Grails production mode is easy, but uses lots of memory (~1Gig!)
+# Here's how to deploy in Tomcat:
+
+# download and unzip Tomcat
+mkdir opt
+cd opt
+wget http://mirror.olnevhost.net/pub/apache/tomcat/tomcat-7/v7.0.6/bin/apache-tomcat-7.0.6.zip
+unzip apache-tomcat-7.0.6.zip
+mv apache-tomcat-7.0.6 tomcat
+rm apache-tomcat-7.0.6.zip 
+
+# set necessary environment variables
+echo 'export CATALINA_HOME=/tomcat' >> ~/.bashrc
+
+# set executable permissions on Tomcat startup/shutdown scripts
+cd tomcat/bin/
+chmod +x startup.sh shutdown.sh
