@@ -41,6 +41,17 @@ class ScriptController {
         }
     }
 
+    def run = {
+        def scriptInstance = Script.get(params.id)
+        if (!scriptInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
+            redirect(action: "list")
+        }
+        else {
+            [scriptInstance: scriptInstance]
+        }
+    }
+
     def get = {
         def scriptInstance = Script.get(params.id)
         if (!scriptInstance) {
