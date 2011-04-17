@@ -45,7 +45,7 @@
                                   <label for="code"><g:message code="script.code.label" default="Code" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'code', 'errors')}">
-                                    <g:textField name="code" value="${scriptInstance?.code}" />
+                                    <g:textArea name="code" value="${scriptInstance?.code}" />
                                 </td>
                             </tr>
                         
