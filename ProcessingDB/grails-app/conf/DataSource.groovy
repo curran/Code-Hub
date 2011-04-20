@@ -14,10 +14,7 @@ environments {
     development {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:mysql://localhost/processingdb"
-            driverClassName = "com.mysql.jdbc.Driver"
-            username = "pdb"
-            password = "pdb"
+            url = "jdbc:hsqldb:mem:testDb"
         }
     }
     test {

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><list><script id="1"><code>class Point{
+  double x; double y;
+  public Point(){
+    x = y = 0;
+  }
+  public Point(double x, double y){
+    this.x = x; this.y = y;
+  }
+  public Point(Point point){
+    this.x = point.x; this.y = point.y;
+  }
+  public void zero(){ x = y = 0; }
+  public void set(double x, double y){
+    this.x = x; this.y = y;
+  }
+}</code><dependencies /><description></description><doc>A 2D point class.</doc><isApp>false</isApp><name>Point</name></script><script id="2"><code>class Color{
+  int r; int g; int b;
+  public Color(int r,int g,int b){
+    this.r = r; this.g = g; this.b = b;
+  }
+}</code><dependencies /><description></description><doc>An RGB color class.</doc><isApp>false</isApp><name>Color</name></script><script id="3"><code>class Circle{
+  Point point;
+  double radius;
+  Color color;
+  public Circle(double x, double y, double radius, int r, int g, int b){
+    point = new Point(x,y);
+    this.radius = radius;
+    this.color = new Color(r,g,b);
+  }
+  public Circle(double x, double y, double radius, Color color){
+    point = new Point(x,y);
+    this.radius = radius;
+    this.color = color;
+  }
+  public Circle(Point point, double radius, int r, int g, int b){
+    this.point = point;
+    this.radius = radius;
+    this.color = new Color(r,g,b);
+  }
+  public Circle(Point point, double radius, Color color){
+    this.point = point;
+    this.radius = radius;
+    this.color = color;
+  }
+}</code><dependencies><script id="1" /><script id="2" /></dependencies><description></description><doc>A circle class.</doc><isApp>false</isApp><name>Circle</name></script><script id="4"><code>class DragGesture{
+  Circle circle; //the circle being dragged
+  Point circleStart; //the initial location of the circle
+  Point dragStart; //the initial location of the touch
+  Point previousPoint; //the previous frame's location of the touch
+  public DragGesture(Circle circle, Point circleStart, Point dragStart){
+    this.circle = circle;
+    this.circleStart = circleStart;
+    this.dragStart = dragStart;
+    this.previousPoint = new Point(dragStart);
+  }
+}</code><dependencies><script id="1" /><script id="3" /></dependencies><description></description><doc></doc><isApp>false</isApp><name>DragGesture</name></script><script id="5"><code>HashMap circles = new HashMap();
+double t = 0;
+void setup(){
+  background(0);
+}
+void draw(){
+  fill(0,5);
+  rect(0,0,width,height);
+  Iterator it = circles.entrySet().iterator();
+  while(it.hasNext()){
+    Circle circle = it.next().getValue();
+    int size = circle.radius * 2;
+    int r = circle.color.r;
+    int g = circle.color.g;
+    int b = circle.color.b;
+    fill(r,g,b);
+    ellipseMode(CENTER);
+    ellipse(circle.point.x,circle.point.y,size,size);
+  }
+}
+void touchStart(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    double touchX = touch.pageX;
+    double touchY = touch.pageY;
+    var r = (sin(t++)/2.0+0.5)*255;
+    var g = (sin(t*1.3)/2.0+0.5)*255;
+    var b = (sin(t*1.4)/2.0+0.5)*255;
+    Color color = new Color(r,g,b);
+    Circle circle = new Circle(touchX,touchY,60,color);
+    circles.put(touchId, circle);
+  }
+} 
+void touchMove(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    Circle circle = circles.get(touchId);
+    circle.point.x = touch.pageX;
+    circle.point.y = touch.pageY;
+  }
+} 
+void touchEnd(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    circles.remove(touchId);
+  }
+} </code><dependencies><script id="2" /><script id="3" /></dependencies><description></description><doc>An app for tracking distinct touches on the iPad.</doc><isApp>true</isApp><name>Tracking Distinct Touches</name></script></list>
