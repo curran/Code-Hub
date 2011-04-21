@@ -8,6 +8,7 @@
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
         <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
+        <script src="${resource(dir:'js/ckeditor/',file:'ckeditor.js')}"></script>
 
         <script language="Javascript" type="text/javascript"> 
 		    // initialization of the code editor using the edit_area library
@@ -22,6 +23,23 @@
                 ,min_width: "600"
                 ,min_height: "600"
 		    });
+
+            // initialization of the HTML editor for documentation
+            window.onload = function(){CKEDITOR.replace( 'doc',
+            {
+		        toolbar : [ 
+                ['Maximize','Source','Scayt','Undo','Redo','-','Find','Replace'],
+                ['Image','Table','HorizontalRule','SpecialChar','Iframe','-','Subscript','Superscript'],
+                ['Link','Unlink','Anchor'],
+                '/',
+                ['Bold','Italic','Underline','Strike'],
+                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Font','FontSize'],
+                ['TextColor','BGColor']
+                ]
+	        } );}
+
         </script> 
     </head>
     <body>
@@ -79,7 +97,7 @@
                                   <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
-                                    <g:textField name="doc" value="${scriptInstance?.doc}" />
+                                    <g:textArea name="doc" value="${scriptInstance?.doc}" />
                                 </td>
                             </tr>
                             <tr class="prop">
