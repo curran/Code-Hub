@@ -7,6 +7,22 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
+        <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
+
+        <script language="Javascript" type="text/javascript"> 
+		    // initialization of the code editor using the edit_area library
+		    editAreaLoader.init({
+			    id: "code"	// id of the textarea to transform		
+			    ,start_highlight: true	// if start with highlight
+			    ,allow_resize: "both"
+			    ,allow_toggle: true
+			    ,word_wrap: true
+			    ,language: "en"
+			    ,syntax: "java"
+                ,min_width: "600"
+                ,min_height: "600"
+		    });
+        </script> 
     </head>
     <body>
         <div class="nav">
