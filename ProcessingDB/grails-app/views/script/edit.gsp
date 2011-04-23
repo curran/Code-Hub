@@ -7,40 +7,6 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
-        <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
-        <script src="${resource(dir:'js/ckeditor/',file:'ckeditor.js')}"></script>
-
-        <script language="Javascript" type="text/javascript"> 
-		    // initialization of the code editor using the edit_area library
-		    editAreaLoader.init({
-			    id: "code"	// id of the textarea to transform		
-			    ,start_highlight: true	// if start with highlight
-			    ,allow_resize: "both"
-			    ,allow_toggle: true
-			    ,word_wrap: true
-			    ,language: "en"
-			    ,syntax: "java"
-                ,min_width: "600"
-                ,min_height: "600"
-		    });
-
-            // initialization of the HTML editor for documentation
-            window.onload = function(){CKEDITOR.replace( 'doc',
-            {
-		        toolbar : [ 
-                ['Maximize','Source','Scayt','Undo','Redo','-','Find','Replace'],
-                ['Image','Table','HorizontalRule','SpecialChar','Iframe','-','Subscript','Superscript'],
-                ['Link','Unlink','Anchor'],
-                '/',
-                ['Bold','Italic','Underline','Strike'],
-                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
-                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-                ['Font','FontSize'],
-                ['TextColor','BGColor']
-                ]
-	        } );}
-
-        </script> 
     </head>
     <body>
         <div class="nav">
@@ -79,7 +45,16 @@
                                   <label for="code"><g:message code="script.code.label" default="Code" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'code', 'errors')}">
-                                    <g:textArea name="code" value="${scriptInstance?.code}" />
+                                    <g:textArea name="code" cols="40" rows="5" value="${scriptInstance?.code}" />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                  <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
+                                    <g:textArea name="doc" cols="40" rows="5" value="${scriptInstance?.doc}" />
                                 </td>
                             </tr>
                         
@@ -94,12 +69,13 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                  <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
+                                  <label for="description"><g:message code="script.description.label" default="Description" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
-                                    <g:textArea name="doc" value="${scriptInstance?.doc}" />
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
+                                    <g:textField name="description" value="${scriptInstance?.description}" />
                                 </td>
                             </tr>
+                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                   <label for="isApp"><g:message code="script.isApp.label" default="Is App" /></label>
@@ -108,6 +84,7 @@
                                     <g:checkBox name="isApp" value="${scriptInstance?.isApp}" />
                                 </td>
                             </tr>
+                        
                         </tbody>
                     </table>
                 </div>

@@ -19,17 +19,26 @@ body {
 #grailsLogo {
 	padding:20px;
 }
+#loginBox {
+    padding:5px;
+}
 
-a:link, a:visited, a:hover {
-    color: #666;
+a:link, a:visited{
+    color: #012257;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #046EE0;
     font-weight: bold;
     text-decoration: none;
 }
 
 h1 {
-    color: #48802c;
+    color: #5C0017;
     font-weight: normal;
-    font-size: 16px;
+    font-size: 24px;
     margin: .8em 0 .3em 0;
 }
 
@@ -270,4 +279,10 @@ th.desc a {
 .buttons input.save {
     background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
     padding-left: 28px;
+}
+#loginBox {
+ position:absolute;
+ top:0;
+ right:0;
+ width:200px;
 }

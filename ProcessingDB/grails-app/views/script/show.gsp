@@ -6,6 +6,9 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.show.label" args="[entityName]" /></title>
+        <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
+        <script src="${resource(dir:'js/ckeditor/',file:'ckeditor.js')}"></script>
+
     </head>
     <body>
         <div class="nav">
@@ -21,10 +24,19 @@
             <div class="dialog">
                 <table>
                     <tbody>
+                    
+                        
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.code.label" default="Code" /></td>
                             
-                            <td valign="top" class="value">${scriptInstance.code.replace("\n","<br>")}</td>
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "code")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.doc.label" default="Doc" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "doc")}</td>
                             
                         </tr>
                     
@@ -42,9 +54,16 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.doc.label" default="Doc" /></td>
+                            <td valign="top" class="name"><g:message code="script.description.label" default="Description" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "doc")}</td>
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "description")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.isApp.label" default="Is App" /></td>
+                            
+                            <td valign="top" class="value"><g:formatBoolean boolean="${scriptInstance?.isApp}" /></td>
                             
                         </tr>
                     
@@ -56,14 +75,8 @@
                     <g:hiddenField name="id" value="${scriptInstance?.id}" />
                     <span class="button"><g:actionSubmit class="edit" action="edit" value="${message(code: 'default.button.edit.label', default: 'Edit')}" /></span>
                     <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
-
                 </g:form>
             </div>
-            <g:link action="get" id="${scriptInstance.id}">Get Full source (including dependencies)</g:link>
-            <br>
-            <g:if test="${scriptInstance.isApp}">
-                 <g:link action="run" id="${scriptInstance.id}">Run</g:link>
-            </g:if>
         </div>
     </body>
 </html>

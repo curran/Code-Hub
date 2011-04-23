@@ -1,5 +1,5 @@
 package org.curransoft.processingdb
-import grails.converters.*
+
 class ScriptController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -39,50 +39,6 @@ class ScriptController {
         else {
             [scriptInstance: scriptInstance]
         }
-    }
-
-    def run = {
-        def scriptInstance = Script.get(params.id)
-        if (!scriptInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            [scriptInstance: scriptInstance]
-        }
-    }
-
-    def get = {
-        def scriptInstance = Script.get(params.id)
-        if (!scriptInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
-            redirect(action: "list")
-        }
-        else
-            render getFullCode(scriptInstance,[]);
-    }
-
-    String getFullCode(Script s,includedScripts){
-        String fullCode = "";
-        s.dependencies.each{
-          if(!includedScripts.contains(it.id)){
-            includedScripts.add(it.id)
-            fullCode+=getFullCode(it,includedScripts)+"\n"
-          }
-        };
-        fullCode += s.code;
-        return fullCode;
-    }
-
-    def test = {
-        def includedScripts = []
-        includedScripts.add(2)
-        def b = includedScripts.contains(1)
-        render b as XML
-    }
-
-    def archive = {
-        render Script.list() as XML
     }
 
     def edit = {
@@ -141,6 +97,4 @@ class ScriptController {
             redirect(action: "list")
         }
     }
-
-
 }

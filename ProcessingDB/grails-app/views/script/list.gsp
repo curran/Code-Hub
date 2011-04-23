@@ -30,6 +30,10 @@
                         
                             <g:sortableColumn property="doc" title="${message(code: 'script.doc.label', default: 'Doc')}" />
                         
+                            <g:sortableColumn property="description" title="${message(code: 'script.description.label', default: 'Description')}" />
+                        
+                            <g:sortableColumn property="isApp" title="${message(code: 'script.isApp.label', default: 'Is App')}" />
+                        
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +47,10 @@
                             <td>${fieldValue(bean: scriptInstance, field: "code")}</td>
                         
                             <td>${fieldValue(bean: scriptInstance, field: "doc")}</td>
+                        
+                            <td>${fieldValue(bean: scriptInstance, field: "description")}</td>
+                        
+                            <td><g:formatBoolean boolean="${scriptInstance.isApp}" /></td>
                         
                         </tr>
                     </g:each>

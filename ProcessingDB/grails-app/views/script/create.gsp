@@ -42,7 +42,7 @@
                                     <label for="code"><g:message code="script.code.label" default="Code" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'code', 'errors')}">
-                                    <g:textField name="code" value="${scriptInstance?.code}" />
+                                    <g:textArea name="code" cols="40" rows="5" value="${scriptInstance?.code}" />
                                 </td>
                             </tr>
                         
@@ -51,7 +51,25 @@
                                     <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
-                                    <g:textField name="doc" value="${scriptInstance?.doc}" />
+                                    <g:textArea name="doc" cols="40" rows="5" value="${scriptInstance?.doc}" />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="description"><g:message code="script.description.label" default="Description" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
+                                    <g:textField name="description" value="${scriptInstance?.description}" />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="isApp"><g:message code="script.isApp.label" default="Is App" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'isApp', 'errors')}">
+                                    <g:checkBox name="isApp" value="${scriptInstance?.isApp}" />
                                 </td>
                             </tr>
                         

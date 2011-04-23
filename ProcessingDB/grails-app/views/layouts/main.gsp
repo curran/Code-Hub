@@ -11,6 +11,30 @@
         <div id="spinner" class="spinner" style="display:none;">
             <img src="${resource(dir:'images',file:'spinner.gif')}" alt="${message(code:'spinner.alt',default:'Loading...')}" />
         </div>
+        <div id="grailsLogo"><a href="${createLink(uri: '/')}"><img src="${resource(dir:'images',file:'grails_logo.png')}" alt="Grails" border="0" /></a></div>
+        <div id="loginBox" class="loginBox">
+            <g:if test="${session?.user}">
+                <div style="margin-top:20px">
+                    <div style="float:right;">
+                        <a href="#">Profile</a> |
+                        <g:link controller="user" action="logout">Logout</g:link><br>
+                    </div>
+                    Welcome back
+                    <span id="userName">${session.user.login}!</span>
+                </div>
+            </g:if>
+            <g:else>
+                <g:form name="loginForm" url="[controller:'user',action:'login']">
+                    <div>Username:</div>
+                    <g:textField name="login"></g:textField>
+                    <div>Password:</div>
+                    <g:textField name="password"/>
+                    <input type="submit" value="Login" />
+                </g:form>
+                <g:renderErrors bean="${loginCmd}"></g:renderErrors>
+                or <g:link controller="user" action="register">register</g:link>
+            </g:else>
+        </div>
         <g:layoutBody />
     </body>
-</html
+</html>
