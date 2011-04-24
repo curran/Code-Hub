@@ -47,8 +47,11 @@
                         
                             <td>${fieldValue(bean: scriptInstance, field: "description")}</td>
                         
-                            <td>${fieldValue(bean: scriptInstance, field: "creator")}</td>
-                        
+                            <td>
+                                <g:link controller="user" action="show" id="${scriptInstance.creator.id}">
+                                    ${fieldValue(bean: scriptInstance, field: "creator")}
+                                </g:link>
+                            </td>
                         </tr>
                     </g:each>
                     </tbody>

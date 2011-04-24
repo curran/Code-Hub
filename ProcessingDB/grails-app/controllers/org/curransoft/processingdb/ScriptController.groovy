@@ -70,8 +70,8 @@ class ScriptController {
 
             user.addToScripts(scriptInstance).save()
             if (scriptInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.created.message', args: [message(code: 'script.label', default: 'Script'), scriptInstance.id])}"
-                redirect(action: "show", id: scriptInstance.id)
+                flash.message = "${message(code: 'script.created.message', args: [scriptInstance.name])}"
+                redirect(action: "edit", id: scriptInstance.id)
             }
             else {
                 render(view: "create", model: [scriptInstance: scriptInstance])

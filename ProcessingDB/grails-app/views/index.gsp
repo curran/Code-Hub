@@ -9,7 +9,6 @@
             margin-left:30px;
             width:228px;
             float:left;
-
         }
         .homePagePanel * {
             margin:0px;

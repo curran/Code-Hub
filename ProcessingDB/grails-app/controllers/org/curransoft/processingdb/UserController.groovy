@@ -90,7 +90,7 @@ class UserController {
         }
     }*/
 
-    /*def show = {
+    def show = {
         def userInstance = User.get(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
@@ -100,7 +100,7 @@ class UserController {
             [userInstance: userInstance]
         }
     }
-
+/*
     def edit = {
         def userInstance = User.get(params.id)
         if (!userInstance) {
