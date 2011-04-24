@@ -29,7 +29,7 @@
                         <div>Username:</div>
                         <g:textField name="login"></g:textField>
                         <div>Password:</div>
-                        <g:textField name="password"/>
+                        <g:passwordField name="password"/>
                         <input type="submit" value="Login" />
                     </g:form>
                     <g:renderErrors bean="${loginCmd}"></g:renderErrors>

@@ -22,11 +22,11 @@
                 </div>
                 <div class="formField">
                     <label for="password">Password</label>
-                    <g:textField name="password" value="${user?.password}" />
+                    <g:passwordField name="password" value="${user?.password}" />
                 </div>
                 <div class="formField">
                     <label for="confirm">Confirm Password</label>
-                    <g:textField name="confirm" value="" />
+                    <g:passwordField name="confirm" value="" />
                 </div>
                 <g:submitButton class="formButton" name="register" value="register" />
             </g:form>
