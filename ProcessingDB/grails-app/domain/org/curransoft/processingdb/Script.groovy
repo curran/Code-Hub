@@ -10,7 +10,7 @@ class Script {
   boolean isApp = false//true when app, false when library
   static constraints = {
     name(blank: false, unique: true)
-    code(size:0..2147483646)
+    code(size:0..2147483646, nullable:true)
     description(size:0..1000, nullable:true)
     doc(size:0..2147483646, nullable:true)
   }

@@ -58,7 +58,7 @@
                     <h1><g:link controller="script">Scripts</g:link></h1>
                     <ul>
                     <g:each var="s" in="${org.curransoft.processingdb.Script.list()}">
-                        <li><g:link action="edit" controller="script" id="${s.id}" >${s.name}</g:link>
+                        <li><g:link action="show" controller="script" id="${s.id}" >${s.name}</g:link>
                     </g:each>
                     </ul>
                     <h1><g:link controller="user">Users</g:link></h1>

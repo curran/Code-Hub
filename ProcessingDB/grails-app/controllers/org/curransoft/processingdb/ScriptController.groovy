@@ -67,14 +67,9 @@ class ScriptController {
 
             def user = User.get(session.user.id)
             scriptInstance.creator = user
-                
-            
-           // scriptInstance.creator = user
-            //scriptInstance.save()
-            //render "scriptInstance.creator = "+scriptInstance.creator
 
-//            if (scriptInstance.save(flush: true)) {
-            if (user.addToScripts(scriptInstance).save(flush: true)) {
+            user.addToScripts(scriptInstance).save()
+            if (scriptInstance.save(flush: true)) {
                 flash.message = "${message(code: 'default.created.message', args: [message(code: 'script.label', default: 'Script'), scriptInstance.id])}"
                 redirect(action: "show", id: scriptInstance.id)
             }

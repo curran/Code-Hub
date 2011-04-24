@@ -36,9 +36,13 @@
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
                             <td>
-                                <g:link action="edit" id="${scriptInstance.id}">
+                                <g:link action="show" id="${scriptInstance.id}">
                                     ${fieldValue(bean: scriptInstance, field: "name")}
                                 </g:link>
+                                [<g:link action="edit" id="${scriptInstance.id}">
+                                    edit
+                                </g:link>]
+
                             </td>
                         
                             <td>${fieldValue(bean: scriptInstance, field: "description")}</td>

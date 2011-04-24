@@ -14,55 +14,24 @@
             <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
-            <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+            <h1>${scriptInstance.name}</h1>
+            <h2>${scriptInstance.description}</h2> <br>
+            Created by <g:link controller="user" action="show" id="${scriptInstance?.creator?.id}">${scriptInstance?.creator?.encodeAsHTML()}</g:link>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
             <div class="dialog">
                 <table>
                     <tbody>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.id.label" default="Id" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "id")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.name.label" default="Name" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "name")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.code.label" default="Code" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "code")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.description.label" default="Description" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "description")}</td>
-                            
-                        </tr>
+                        
                     
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.doc.label" default="Doc" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "doc")}</td>
+                            <td valign="top" class="value">${scriptInstance.doc}</td>
                             
                         </tr>
                     
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.creator.label" default="Creator" /></td>
-                            
-                            <td valign="top" class="value"><g:link controller="user" action="show" id="${scriptInstance?.creator?.id}">${scriptInstance?.creator?.encodeAsHTML()}</g:link></td>
-                            
-                        </tr>
                     
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.dependencies.label" default="Dependencies" /></td>
