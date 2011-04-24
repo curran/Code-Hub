@@ -49,6 +49,22 @@
                                 </td>
                             </tr>
                         
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                  <label for="scripts"><g:message code="user.scripts.label" default="Scripts" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: userInstance, field: 'scripts', 'errors')}">
+                                    
+<ul>
+<g:each in="${userInstance?.scripts?}" var="s">
+    <li><g:link controller="script" action="show" id="${s.id}">${s?.encodeAsHTML()}</g:link></li>
+</g:each>
+</ul>
+<g:link controller="script" action="create" params="['user.id': userInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'script.label', default: 'Script')])}</g:link>
+
+                                </td>
+                            </tr>
+                        
                         </tbody>
                     </table>
                 </div>

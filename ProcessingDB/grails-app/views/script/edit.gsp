@@ -7,12 +7,47 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
+        <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
+        <script src="${resource(dir:'js/ckeditor/',file:'ckeditor.js')}"></script>
+        <script language="Javascript" type="text/javascript"> 
+		    // initialization of the code editor using the edit_area library
+		    editAreaLoader.init({
+			    id: "code"	// id of the textarea to transform		
+			    ,start_highlight: true	// if start with highlight
+			    ,allow_resize: "both"
+			    ,allow_toggle: true
+			    ,word_wrap: true
+			    ,language: "en"
+			    ,syntax: "java"
+                ,min_width: "600"
+                ,min_height: "600"
+		    });
+
+            // initialization of the HTML editor for documentation
+            window.onload = function(){CKEDITOR.replace( 'doc',
+            {
+		        toolbar : [ 
+                ['Maximize','Source','Scayt','Undo','Redo','-','Find','Replace'],
+                ['Image','Table','HorizontalRule','SpecialChar','Iframe','-','Subscript','Superscript'],
+                ['Link','Unlink','Anchor'],
+                '/',
+                ['Bold','Italic','Underline','Strike'],
+                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Font','FontSize'],
+                ['TextColor','BGColor']
+                ]
+	        } );}
+
+        </script> 
     </head>
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
             <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span>
-            <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            <g:if test="${session?.user}">
+                <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            </g:if>
         </div>
         <div class="body">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
@@ -51,28 +86,28 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
+                                  <label for="description"><g:message code="script.description.label" default="Description" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
+                                    <g:textArea name="description" cols="40" rows="5" value="${scriptInstance?.description}" />
+                                </td>
+                            </tr>
+                        
+                            <tr class="prop">
+                                <td valign="top" class="name">
                                   <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
                                     <g:textArea name="doc" cols="40" rows="5" value="${scriptInstance?.doc}" />
                                 </td>
                             </tr>
-                        
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                   <label for="dependencies"><g:message code="script.dependencies.label" default="Dependencies" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'dependencies', 'errors')}">
                                     <g:select name="dependencies" from="${org.curransoft.processingdb.Script.list()}" multiple="yes" optionKey="id" size="5" value="${scriptInstance?.dependencies*.id}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="description"><g:message code="script.description.label" default="Description" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
-                                    <g:textField name="description" value="${scriptInstance?.description}" />
                                 </td>
                             </tr>
                         

@@ -61,6 +61,12 @@
                         <li><g:link action="edit" controller="script" id="${s.id}" >${s.name}</g:link>
                     </g:each>
                     </ul>
+                    <h1><g:link controller="user">Users</g:link></h1>
+                    <ul>
+                    <g:each var="u" in="${org.curransoft.processingdb.User.list()}">
+                        <li><g:link action="show" controller="user" id="${u.id}" >${u.login}</g:link>
+                    </g:each>
+                    </ul>
                 </div>
                 <div class="panelBtm"></div>
             </div>

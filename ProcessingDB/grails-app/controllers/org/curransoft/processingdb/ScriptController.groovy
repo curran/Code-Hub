@@ -1,8 +1,45 @@
 package org.curransoft.processingdb
-
+import grails.converters.*
 class ScriptController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
+     def run = {
+        def scriptInstance = Script.get(params.id)
+        if (!scriptInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
+            redirect(action: "list")
+        }
+        else {
+            [scriptInstance: scriptInstance]
+        }
+    }
+
+    def get = {
+        def scriptInstance = Script.get(params.id)
+        if (!scriptInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
+            redirect(action: "list")
+        }
+        else
+            render getFullCode(scriptInstance,[]);
+    }
+
+    String getFullCode(Script s,includedScripts){
+        String fullCode = "";
+        s.dependencies.each{
+          if(!includedScripts.contains(it.id)){
+            includedScripts.add(it.id)
+            fullCode+=getFullCode(it,includedScripts)+"\n"
+          }
+        };
+        fullCode += s.code;
+        return fullCode;
+    }
+
+    def archive = {
+        render Script.list() as XML
+    }
 
     def index = {
         redirect(action: "list", params: params)
@@ -14,20 +51,39 @@ class ScriptController {
     }
 
     def create = {
-        def scriptInstance = new Script()
-        scriptInstance.properties = params
-        return [scriptInstance: scriptInstance]
+        if(session.user){
+            def scriptInstance = new Script()
+            scriptInstance.properties = params
+            return [scriptInstance: scriptInstance]
+        }
+        else
+            render "Please log in to create new scripts."//TODO redirect to login screen and remember intent to create a script
     }
 
     def save = {
-        def scriptInstance = new Script(params)
-        if (scriptInstance.save(flush: true)) {
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'script.label', default: 'Script'), scriptInstance.id])}"
-            redirect(action: "show", id: scriptInstance.id)
+
+        if(session.user){
+            def scriptInstance = new Script(params)
+
+            def user = User.get(session.user.id)
+            scriptInstance.creator = user
+                
+            
+           // scriptInstance.creator = user
+            //scriptInstance.save()
+            //render "scriptInstance.creator = "+scriptInstance.creator
+
+//            if (scriptInstance.save(flush: true)) {
+            if (user.addToScripts(scriptInstance).save(flush: true)) {
+                flash.message = "${message(code: 'default.created.message', args: [message(code: 'script.label', default: 'Script'), scriptInstance.id])}"
+                redirect(action: "show", id: scriptInstance.id)
+            }
+            else {
+                render(view: "create", model: [scriptInstance: scriptInstance])
+            }
         }
-        else {
-            render(view: "create", model: [scriptInstance: scriptInstance])
-        }
+        else
+            render "Please log in to create new scripts."//TODO redirect to login screen and remember intent to create a script
     }
 
     def show = {

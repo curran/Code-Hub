@@ -8,4 +8,7 @@ class User {
         login(blank:false, unique:true)
         password(blank:false)
     }
+    public String toString (){
+        return login
+    }
 }

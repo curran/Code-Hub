@@ -6,9 +6,6 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'script.label', default: 'Script')}" />
         <title><g:message code="default.show.label" args="[entityName]" /></title>
-        <script src="${resource(dir:'js/edit_area/',file:'edit_area_full.js')}"></script>
-        <script src="${resource(dir:'js/ckeditor/',file:'ckeditor.js')}"></script>
-
     </head>
     <body>
         <div class="nav">
@@ -17,7 +14,7 @@
             <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
-            <h1>${scriptInstance.name}</h1>
+            <h1><g:message code="default.show.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -25,7 +22,20 @@
                 <table>
                     <tbody>
                     
-                        
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.id.label" default="Id" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "id")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.name.label" default="Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "name")}</td>
+                            
+                        </tr>
+                    
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.code.label" default="Code" /></td>
                             
@@ -34,9 +44,23 @@
                         </tr>
                     
                         <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.description.label" default="Description" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "description")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.doc.label" default="Doc" /></td>
                             
                             <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "doc")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="script.creator.label" default="Creator" /></td>
+                            
+                            <td valign="top" class="value"><g:link controller="user" action="show" id="${scriptInstance?.creator?.id}">${scriptInstance?.creator?.encodeAsHTML()}</g:link></td>
                             
                         </tr>
                     
@@ -50,13 +74,6 @@
                                 </g:each>
                                 </ul>
                             </td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="script.description.label" default="Description" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: scriptInstance, field: "description")}</td>
                             
                         </tr>
                     

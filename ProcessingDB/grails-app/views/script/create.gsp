@@ -48,19 +48,19 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
+                                    <label for="description"><g:message code="script.description.label" default="Description" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
-                                    <g:textArea name="doc" cols="40" rows="5" value="${scriptInstance?.doc}" />
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
+                                    <g:textArea name="description" cols="40" rows="5" value="${scriptInstance?.description}" />
                                 </td>
                             </tr>
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="description"><g:message code="script.description.label" default="Description" /></label>
+                                    <label for="doc"><g:message code="script.doc.label" default="Doc" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
-                                    <g:textField name="description" value="${scriptInstance?.description}" />
+                                <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'doc', 'errors')}">
+                                    <g:textArea name="doc" cols="40" rows="5" value="${scriptInstance?.doc}" />
                                 </td>
                             </tr>
                         

@@ -2,7 +2,7 @@ package org.curransoft.processingdb
 
 class Script {
   static hasMany = [ dependencies : Script ]
-  //static belongsTo = [creator:User]
+  static belongsTo = [creator:User]
   String name
   String description
   String code

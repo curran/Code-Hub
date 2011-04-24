@@ -10,7 +10,9 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-            <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            <g:if test="${session?.user}">
+                <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            </g:if>
         </div>
         <div class="body">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
@@ -21,18 +23,11 @@
                 <table>
                     <thead>
                         <tr>
-                        
-                            <g:sortableColumn property="id" title="${message(code: 'script.id.label', default: 'Id')}" />
-                        
                             <g:sortableColumn property="name" title="${message(code: 'script.name.label', default: 'Name')}" />
-                        
-                            <g:sortableColumn property="code" title="${message(code: 'script.code.label', default: 'Code')}" />
-                        
-                            <g:sortableColumn property="doc" title="${message(code: 'script.doc.label', default: 'Doc')}" />
                         
                             <g:sortableColumn property="description" title="${message(code: 'script.description.label', default: 'Description')}" />
                         
-                            <g:sortableColumn property="isApp" title="${message(code: 'script.isApp.label', default: 'Is App')}" />
+                            <th><g:message code="script.creator.label" default="Creator" /></th>
                         
                         </tr>
                     </thead>
@@ -40,17 +35,15 @@
                     <g:each in="${scriptInstanceList}" status="i" var="scriptInstance">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${scriptInstance.id}">${fieldValue(bean: scriptInstance, field: "id")}</g:link></td>
-                        
-                            <td>${fieldValue(bean: scriptInstance, field: "name")}</td>
-                        
-                            <td>${fieldValue(bean: scriptInstance, field: "code")}</td>
-                        
-                            <td>${fieldValue(bean: scriptInstance, field: "doc")}</td>
+                            <td>
+                                <g:link action="edit" id="${scriptInstance.id}">
+                                    ${fieldValue(bean: scriptInstance, field: "name")}
+                                </g:link>
+                            </td>
                         
                             <td>${fieldValue(bean: scriptInstance, field: "description")}</td>
                         
-                            <td><g:formatBoolean boolean="${scriptInstance.isApp}" /></td>
+                            <td>${fieldValue(bean: scriptInstance, field: "creator")}</td>
                         
                         </tr>
                     </g:each>

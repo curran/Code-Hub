@@ -10,7 +10,7 @@
     <body>
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-            <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
+            <span class="menuButton"><g:link class="create" action="register"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
         </div>
         <div class="body">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
@@ -25,9 +25,6 @@
                             <g:sortableColumn property="id" title="${message(code: 'user.id.label', default: 'Id')}" />
                         
                             <g:sortableColumn property="login" title="${message(code: 'user.login.label', default: 'Login')}" />
-                        
-                            <g:sortableColumn property="password" title="${message(code: 'user.password.label', default: 'Password')}" />
-                        
                         </tr>
                     </thead>
                     <tbody>
@@ -37,8 +34,6 @@
                             <td><g:link action="show" id="${userInstance.id}">${fieldValue(bean: userInstance, field: "id")}</g:link></td>
                         
                             <td>${fieldValue(bean: userInstance, field: "login")}</td>
-                        
-                            <td>${fieldValue(bean: userInstance, field: "password")}</td>
                         
                         </tr>
                     </g:each>

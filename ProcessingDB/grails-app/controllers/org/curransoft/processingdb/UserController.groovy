@@ -26,7 +26,7 @@ class UserController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def login = { LoginCommand cmd ->
-        if(request.method == 'POST')
+        if(request.method == 'POST'){
             if(!cmd.hasErrors()){
                 session.user = cmd.getUser()
                 redirect(controller:'script')
@@ -34,11 +34,18 @@ class UserController {
             else {
                 render(view:'/script/list')
             }
+        }
     }
 
     def logout = {
-        session.invalidate()
-        render(view:'/script/list')
+        //session.invalidate()
+        session.removeAttribute("user")
+		//redirect(controller:'script')
+        //render(view:'/script/list')
+        //render(view:'/')
+        //redirect(controller:"script", action:"list")
+        //render "logged out"
+        redirect(uri:'/')
     }
 
     def register = {
@@ -53,6 +60,8 @@ class UserController {
                 redirect(controller:"script")
             }
         }
+        else
+            return [onRegistrationPage:true]
     }
 
     def index = {
@@ -64,13 +73,13 @@ class UserController {
         [userInstanceList: User.list(params), userInstanceTotal: User.count()]
     }
 
-    def create = {
+    /*def create = {
         def userInstance = new User()
         userInstance.properties = params
         return [userInstance: userInstance]
-    }
+    }*/
 
-    def save = {
+    /*def save = {
         def userInstance = new User(params)
         if (userInstance.save(flush: true)) {
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])}"
@@ -79,9 +88,9 @@ class UserController {
         else {
             render(view: "create", model: [userInstance: userInstance])
         }
-    }
+    }*/
 
-    def show = {
+    /*def show = {
         def userInstance = User.get(params.id)
         if (!userInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
@@ -101,9 +110,9 @@ class UserController {
         else {
             return [userInstance: userInstance]
         }
-    }
+    }*/
 
-    def update = {
+    /*def update = {
         def userInstance = User.get(params.id)
         if (userInstance) {
             if (params.version) {
@@ -147,5 +156,5 @@ class UserController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])}"
             redirect(action: "list")
         }
-    }
+    }*/
 }

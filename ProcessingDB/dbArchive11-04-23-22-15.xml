@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?><list><script id="1"><code>class Point{
+  double x; double y;
+  public Point(){
+    x = y = 0;
+  }
+  public Point(double x, double y){
+    this.x = x; this.y = y;
+  }
+  public Point(Point point){
+    this.x = point.x; this.y = point.y;
+  }
+  public void zero(){
+    x = y = 0;
+  }
+  public void set(double x, double y){
+    this.x = x; this.y = y;
+  }
+}</code><dependencies /><description></description><doc>A 2D point class.</doc><isApp>false</isApp><name>Point</name></script><script id="2"><code>class Color{
+  int r; int g; int b;
+  public Color(int r,int g,int b){
+    this.r = r; this.g = g; this.b = b;
+  }
+}</code><dependencies /><description></description><doc>An RGB color class.</doc><isApp>false</isApp><name>Color</name></script><script id="3"><code>class Circle{
+  Point point;
+  double radius;
+  Color color;
+  public Circle(double x, double y, double radius, int r, int g, int b){
+    point = new Point(x,y);
+    this.radius = radius;
+    this.color = new Color(r,g,b);
+  }
+  public Circle(double x, double y, double radius, Color color){
+    point = new Point(x,y);
+    this.radius = radius;
+    this.color = color;
+  }
+  public Circle(Point point, double radius, int r, int g, int b){
+    this.point = point;
+    this.radius = radius;
+    this.color = new Color(r,g,b);
+  }
+  public Circle(Point point, double radius, Color color){
+    this.point = point;
+    this.radius = radius;
+    this.color = color;
+  }
+}</code><dependencies><script id="1" /><script id="2" /></dependencies><description></description><doc>A circle class.</doc><isApp>false</isApp><name>Circle</name></script><script id="4"><code>class DragGesture{
+  Circle circle; //the circle being dragged
+  Point circleStart; //the initial location of the circle
+  Point dragStart; //the initial location of the touch
+  Point previousPoint; //the previous frame's location of the touch
+  public DragGesture(Circle circle, Point circleStart, Point dragStart){
+    this.circle = circle;
+    this.circleStart = circleStart;
+    this.dragStart = dragStart;
+    this.previousPoint = new Point(dragStart);
+  }
+}</code><dependencies><script id="3" /><script id="1" /></dependencies><description></description><doc></doc><isApp>false</isApp><name>DragGesture</name></script><script id="5"><code>HashMap circles = new HashMap();
+double t = 0;
+void setup(){
+  background(0);
+}
+void draw(){
+  fill(0,5);
+  rect(0,0,width,height);
+  Iterator it = circles.entrySet().iterator();
+  while(it.hasNext()){
+    Circle circle = it.next().getValue();
+    int size = circle.radius * 2;
+    int r = circle.color.r;
+    int g = circle.color.g;
+    int b = circle.color.b;
+    fill(r,g,b);
+    ellipseMode(CENTER);
+    ellipse(circle.point.x,circle.point.y,size,size);
+  }
+}
+void touchStart(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    double touchX = touch.pageX;
+    double touchY = touch.pageY;
+    int r = (sin(t++)/2.0+0.5)*255;
+    int g = (sin(t*1.3)/2.0+0.5)*255;
+    int b = (sin(t*1.4)/2.0+0.5)*255;
+    Color color = new Color(r,g,b);
+    Circle circle = new Circle(touchX,touchY,60,color);
+    circles.put(touchId, circle);
+  }
+} 
+void touchMove(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    Circle circle = circles.get(touchId);
+    circle.point.x = touch.pageX;
+    circle.point.y = touch.pageY;
+  }
+} 
+void touchEnd(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    circles.remove(touchId);
+  }
+} </code><dependencies><script id="3" /><script id="2" /></dependencies><description></description><doc>An app for tracking distinct touches on the iPad.</doc><isApp>true</isApp><name>Tracking Distinct Touches</name></script><script id="6"><code>int numCircles = 15;
+double minRadius = 5;
+double maxRadius = 70;
+double fudgeFactor = 0;
+double dampeningFactor = 0.95;
+double pullTowardCenterForce = 0.001;
+double dragPullForce = 0.2;
+double dragExtraDampening = 0.7;
+ 
+Circle outerCircle;
+ArrayList circles = new ArrayList();/*&lt;Circle&gt;*/
+HashMap pendingDragGestures = new HashMap();/*&lt;int touchId,DragGesture&gt;*/
+PFont labelFont;
+void setup(){
+  background(0);
+  frameRate(30);
+  labelFont = loadFont("Times New Roman");
+  textFont(labelFont, 32); 
+}
+void addCircle(String label,double size){
+    int max = 200;
+    int r = random(max); int g = random(max); int b = random(max);
+    Color color = new Color(r,g,b);
+    double x = random(width); double y = random(height);
+    double area = size / 100000;
+    double radius = sqrt(area);
+    Circle circle = new Circle(x,y,radius,color);
+    circles.add(circle);
+    circle.labelText = label;
+    circle.velocity = new Point();
+}
+void initCircles(){
+  double centerX = width/2; double centerY = height/2;
+  double outerRadius = min(width/2,height/2);
+  Color outerColor = new Color(100,100,100);
+  outerCircle = new Circle(centerX, centerY, outerRadius, outerColor);
+  outerCircle.dRadius = 0;//this field is the rate of change of the radius
+}
+boolean firstDraw = true;
+void draw(){
+  if(firstDraw){
+    firstDraw = false;
+    initCircles();
+  }
+  fill(0);
+  rect(0,0,width,height);
+ 
+  //draw the outer circle
+  drawCircle(outerCircle);
+ 
+  //draw the inner circles
+  for(int i = 0;i&lt;circles.size();i++){
+    Circle circle = circles.get(i);
+    drawCircle(circle);
+    drawCircleLabel(circle);
+  }
+ 
+  incrementLayout();
+}
+void drawCircle(Circle circle){
+  Color color = circle.color;
+  Point point = circle.point;
+  int size = circle.radius * 2;
+  fill(color.r,color.g,color.b);
+  ellipseMode(CENTER);
+  ellipse(point.x,point.y,size,size);
+}
+void drawCircleLabel(Circle circle){
+  Color color = circle.color;
+  Point point = circle.point;
+  fill(255);
+  textSize(32);
+  double labelWidth = textWidth(circle.labelText);
+  textAlign(CENTER,CENTER);
+  textSize(62*circle.radius/labelWidth);
+  text(circle.labelText, point.x, point.y);
+}
+void incrementLayout(){
+  int n = circles.size();
+  applyForces();
+  incrementVelocities();
+  dragCircles();
+  bounceOffWalls();
+  //pullTowardCenter();
+  incrementOuterCircleForces();
+  //repelFromLabelLine();
+}
+void incrementOuterCircleForces(){
+  outerCircle.dRadius -= 2;
+  outerCircle.radius += (outerCircle.dRadius *= 0.8);
+  //Repel circles from outer circle 
+  int n = circles.size();
+  for(int i = 0; i &lt; n; i++)
+  {
+    Circle circle = circles.get(i);
+    double dx = circle.point.x - outerCircle.point.x;
+    double dy = circle.point.y - outerCircle.point.y;
+    double d = sqrt(dx*dx + dy*dy) + circle.radius;
+    double unitX = dx/d;
+    double unitY = dy/d;
+    double force = -1/(1+pow(2,(outerCircle.radius - d)*2));
+    circle.velocity.x += unitX * force;
+    circle.velocity.y += unitY * force;
+    outerCircle.dRadius -= force;
+  }
+}
+void applyForces(){
+  //Repel adjacent circles using the sigmoid function
+  int n = circles.size();
+  for(int i = 0; i &lt; n; i++){
+    for(int j = i + 1; j &lt; n; j++){
+      Circle a = circles.get(i);
+      Circle b = circles.get(j);
+      double dx = b.point.x - a.point.x;
+      double dy = b.point.y - a.point.y;
+      double d2 = dx*dx + dy*dy;
+      double cutoffD = (a.radius + b.radius)+10;
+      if(d2 &lt; cutoffD * cutoffD){
+        double d = sqrt(d2);
+        double unitX = dx/d;
+        double unitY = dy/d;
+        double optimalD = a.radius + b.radius + n * fudgeFactor;
+        double x = d/optimalD;
+        //using sigmoid is the key to stopping incessant jitter!
+        double force = -1/(1+pow(2,((d - optimalD)*2)));
+  
+        a.velocity.x += unitX * force;
+        a.velocity.y += unitY * force;
+        b.velocity.x -= unitX * force;
+        b.velocity.y -= unitY * force;
+      }
+    }
+  }
+}
+void incrementVelocities(){
+  int n = circles.size();
+  for(int i = 0; i &lt; n; i++){
+    Circle circle = circles.get(i);
+    circle.point.x += (circle.velocity.x *= dampeningFactor);
+    circle.point.y += (circle.velocity.y *= dampeningFactor);
+  }
+}
+void bounceOffWalls(){
+  for(int i = 0; i &lt; circles.size(); i++){
+    Circle circle = circles.get(i);
+    if(circle.point.x - circle.radius &lt; 0){
+      circle.point.x = circle.radius;
+      circle.velocity.x = abs(circle.velocity.x);
+    }
+    else if(circle.point.x + circle.radius &gt; width){
+      circle.point.x = width - circle.radius;
+      circle.velocity.x = -abs(circle.velocity.x);
+    }
+    if(circle.point.y - circle.radius &lt; 0){
+      circle.point.y = circle.radius;
+      circle.velocity.y = abs(circle.velocity.y);
+    } 
+    else if(circle.point.y + circle.radius &gt; height){
+      circle.point.y = height - circle.radius;
+      circle.velocity.y = -abs(circle.velocity.y);
+    }
+  }
+}
+void dragCircles(){
+  Iterator it = pendingDragGestures.entrySet().iterator();
+  while(it.hasNext()){
+    DragGesture drag = it.next().getValue();
+    double dx = drag.previousPoint.x - drag.dragStart.x;
+    double dy = drag.previousPoint.y - drag.dragStart.y;
+    double nextCircleX = drag.circleStart.x + dx;
+    double nextCircleY = drag.circleStart.y + dy;
+    drag.circle.velocity.x += (nextCircleX - drag.circle.point.x)*dragPullForce;
+    drag.circle.velocity.y += (nextCircleY - drag.circle.point.y)*dragPullForce;
+    drag.circle.velocity.x *= dragExtraDampening;
+    drag.circle.velocity.y *= dragExtraDampening;
+  }
+}
+void pullTowardCenter(){
+  int n = circles.size();
+  double centerX = width/2;
+  double centerY = height/2;
+  for(int i = 0; i &lt; n; i++){
+    Circle circle = circles.get(i);
+    double dx = centerX - circle.point.x;
+    double dy = centerY - circle.point.y;
+    double d = sqrt(dx*dx + dy*dy);
+    d = d &gt; 1 ? 1 : d;
+    double unitX = dx/d;
+    double unitY = dy/d;
+    circle.velocity.x += d * unitX * pullTowardCenterForce;
+    circle.velocity.y += d * unitY * pullTowardCenterForce;
+  }
+}
+//void repelFromLabelLine(){
+//  for(int i = circles.size()-1;i&gt;=0;i--){
+//    Circle circle = circles.get(i);
+//    double dy = circle.point.y - circle.radius - labelLineY;
+//    double force = 1/(1+pow(2,(dy*2)));
+//    circle.velocity.y += force;
+//  }
+//}
+Circle getCircleUnderPoint(int x, int y){
+  for(int i = circles.size()-1;i&gt;=0;i--){
+    Circle circle = circles.get(i);
+    double dx = x-circle.point.x;
+    double dy = y-circle.point.y;
+    double d = sqrt(dx*dx+dy*dy);
+    if(d &lt; circle.radius)
+      return circle;
+  }
+  return null;
+}
+void touchStart(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    var touchId = touch.identifier;
+    Circle circleUnderPoint = getCircleUnderPoint(touch.pageX,touch.pageY);
+    if(circleUnderPoint != null){
+      Point circleStart = new Point(circleUnderPoint.point);
+      Point dragStart = new Point(touch.pageX,touch.pageY);
+      DragGesture drag = new DragGesture(circleUnderPoint,circleStart,dragStart);
+      pendingDragGestures.put(touchId,drag);
+    }
+  }
+} 
+void touchMove(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    DragGesture drag = pendingDragGestures.get(touchId);
+    if(drag != null)
+      drag.previousPoint.set(touch.pageX, touch.pageY);
+  }
+} 
+void touchEnd(e){
+  for(int i=0;i&lt;e.changedTouches.length;i++){
+    var touch = e.changedTouches[i];
+    int touchId = touch.identifier;
+    DragGesture drag = pendingDragGestures.get(touchId);
+    if(drag != null)
+      pendingDragGestures.remove(touchId);
+  }
+} </code><dependencies><script id="3" /><script id="4" /></dependencies><description></description><doc></doc><isApp>true</isApp><name>PackedCircles</name></script><script id="7"><code>var query = "";
+query += "PREFIX dbo: &lt;http://dbpedia.org/ontology/&gt;"
+query += "SELECT ?country ?label ?populationEstimate "
+query += "WHERE {"
+query += "  ?country &lt;http://dbpedia.org/property/populationEstimate&gt; ?populationEstimate."
+query += "  ?country rdf:type dbo:Country."
+query += "  ?country rdfs:label ?label."
+query += "  FILTER (lang(?label) ='en')."
+query += "}"
+query += "ORDER BY DESC(?populationEstimate) "
+query += "LIMIT 20";
+var queryURL = "http://dbpedia.org/sparql?query="+query+"&amp;format=json";
+$.get(queryURL,function(result){
+  var list = result.results.bindings;
+  for(i in list){
+    var countryName = list[i]["label"]["value"];
+    var population = list[i]["populationEstimate"]["value"];
+    //console.log(countryName +" : "+population);
+    addCircle(countryName,population);
+  }
+});
+
+</code><dependencies><script id="6" /></dependencies><description></description><doc>&lt;p&gt;
+	An app which queries &lt;a href="http://dbpedia.org/snorql/"&gt;DBPedia&amp;#39;s SPARQL endpoint &lt;/a&gt;for the top 20 most populous countries and visualizes them using self organizing labeled circles. Each circle is labeled with the name of the country it represents, and area of the circle corresponds to population of the country. Color is assigned arbitrarily.&lt;/p&gt;
+</doc><isApp>true</isApp><name>CountriesAsCircles</name></script></list>
