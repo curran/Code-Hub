@@ -16,9 +16,9 @@
             </g:if>
         </div>
         <div class="body">
-            <h1>${scriptInstance.name}</h1>
-            <h2>${scriptInstance.description}</h2> <br>
-            Created by <g:link controller="user" action="show" id="${scriptInstance?.creator?.id}">${scriptInstance?.creator?.encodeAsHTML()}</g:link>
+            <h1>${scriptInstance.current.name}</h1>
+            <h2>${scriptInstance.current.description}</h2> <br>
+            Created by <g:link controller="user" action="show" id="${scriptInstance?.current.creator?.id}">${scriptInstance?.current.creator?.encodeAsHTML()}</g:link>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -30,7 +30,7 @@
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.doc.label" default="Doc" /></td>
                             
-                            <td valign="top" class="value">${scriptInstance.doc}</td>
+                            <td valign="top" class="value">${scriptInstance.current.doc}</td>
                             
                         </tr>
                     
@@ -40,7 +40,7 @@
                             
                             <td valign="top" style="text-align: left;" class="value">
                                 <ul>
-                                <g:each in="${scriptInstance.dependencies}" var="d">
+                                <g:each in="${scriptInstance.current.dependencies}" var="d">
                                     <li><g:link controller="script" action="show" id="${d.id}">${d?.encodeAsHTML()}</g:link></li>
                                 </g:each>
                                 </ul>
@@ -51,7 +51,7 @@
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="script.isApp.label" default="Is App" /></td>
                             
-                            <td valign="top" class="value"><g:formatBoolean boolean="${scriptInstance?.isApp}" /></td>
+                            <td valign="top" class="value"><g:formatBoolean boolean="${scriptInstance?.current.isApp}" /></td>
                             
                         </tr>
                     
@@ -59,9 +59,9 @@
                 </table>
             </div>
             <div class="buttons">
-                <g:form>
-                    <g:hiddenField name="id" value="${scriptInstance?.id}" />
-                    <span class="button"><g:actionSubmit class="edit" action="edit" value="${message(code: 'default.button.edit.label', default: 'Edit')}" /></span>
+                <g:form controller= "revision">
+                    <g:hiddenField name="id" value="${scriptInstance?.current.id}" />
+                    <span class="button"><g:actionSubmit class="edit"  action="edit" value="${message(code: 'default.button.edit.label', default: 'Edit')}" /></span>
                     <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
                 </g:form>
             </div>

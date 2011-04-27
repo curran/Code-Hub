@@ -1,7 +1,8 @@
 package org.curransoft.processingdb
 
 class User {
-    static hasMany = [ scripts : Script ]
+    static hasMany = [ scripts : Script, revisions : Revision ]
+
     String login
     String password
     static constraints = {

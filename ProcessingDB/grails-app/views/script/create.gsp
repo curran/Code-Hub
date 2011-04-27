@@ -33,7 +33,7 @@
                                     <label for="name"><g:message code="script.name.label" default="Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'name', 'errors')}">
-                                    <g:textField name="name" value="${scriptInstance?.name}" />
+                                    <g:textField name="name" value="${scriptInstance?.current?.name}" />
                                 </td>
                             </tr>
                         
@@ -42,7 +42,7 @@
                                     <label for="description"><g:message code="script.description.label" default="Description" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: scriptInstance, field: 'description', 'errors')}">
-                                    <g:textArea name="description" cols="40" rows="5" value="${scriptInstance?.description}" />
+                                    <g:textArea name="description" cols="40" rows="5" value="${scriptInstance?.current?.description}" />
                                 </td>
                             </tr>
                         

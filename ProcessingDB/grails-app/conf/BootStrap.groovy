@@ -21,18 +21,30 @@ class BootStrap {
                 }
                 s.save(flush:true);
             }*/
-            User fred = new User(login:"fred",password:"test")
-            fred.save();
+            User fred = new User(login:"fred",password:"test").save()
 
-            Script point = new Script(
+            Revision pointR1 = new Revision(
+                revNum:1,
                 name:"Point",
                 description:"A two dimensional point class.",
                 code:"class Point{ double x; double y; }",
                 doc:"A <code>Point</code> is a mutable object with (y,x) cartesian coordinates to double precision",
                 isApp:false);
 
-            fred.addToScripts(point).save()
+            fred.addToRevisions(pointR1)
+         
 
+            Script point = new Script().save()
+            fred.addToScripts(point)
+            point.addToRevisions(pointR1)
+            point.first = point.current=pointR1
+
+            if(!point.save())
+                println point.errors
+            if(!pointR1.save())
+                println pointR1.errors
+
+/*
             Script color = new Script(
                 name:"Color",
                 description:"A color class.",
@@ -54,7 +66,7 @@ class BootStrap {
             circle.addToDependencies(point).save()
             circle.addToDependencies(color).save()
 
-
+*/
 
         }
     }

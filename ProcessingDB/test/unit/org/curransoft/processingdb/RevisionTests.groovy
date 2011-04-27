@@ -1,8 +1,8 @@
-package processingdb
+package org.curransoft.processingdb
 
 import grails.test.*
 
-class ScriptRevisionTests extends GrailsUnitTestCase {
+class RevisionTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

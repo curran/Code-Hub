@@ -63,15 +63,26 @@ class ScriptController {
     def save = {
 
         if(session.user){
-            def scriptInstance = new Script(params)
-
+            Revision firstRev = new Revision(params)
+            firstRev.revNum = 1
             def user = User.get(session.user.id)
-            scriptInstance.creator = user
+            user.addToRevisions(firstRev)
+            def scriptInstance = new Script().save()
+            user.addToScripts(scriptInstance)
+            scriptInstance.addToRevisions(firstRev)
+            scriptInstance.first = scriptInstance.current = firstRev
 
-            user.addToScripts(scriptInstance).save()
+            if(!firstRev.save())
+                println firstRev.errors
+
             if (scriptInstance.save(flush: true)) {
-                flash.message = "${message(code: 'script.created.message', args: [scriptInstance.name])}"
-                redirect(action: "edit", id: scriptInstance.id)
+                if (firstRev.save(flush: true)) {
+                    flash.message = "${message(code: 'script.created.message', args: [firstRev.name])}"
+                    redirect(controller: "revision", action: "edit", id: firstRev.id)
+                }
+                else {
+                    render(view: "create", model: [scriptInstance: firstRev])
+                }
             }
             else {
                 render(view: "create", model: [scriptInstance: scriptInstance])
@@ -92,7 +103,7 @@ class ScriptController {
         }
     }
 
-    def edit = {
+   /* def edit = {
         def scriptInstance = Script.get(params.id)
         if (!scriptInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
@@ -102,8 +113,8 @@ class ScriptController {
             return [scriptInstance: scriptInstance]
         }
     }
-
-    def update = {
+*/
+    /*def update = {
         def scriptInstance = Script.get(params.id)
         if (scriptInstance) {
             if (params.version) {
@@ -128,9 +139,9 @@ class ScriptController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
             redirect(action: "list")
         }
-    }
+    }*/
 
-    def delete = {
+    /*def delete = {
         def scriptInstance = Script.get(params.id)
         if (scriptInstance) {
             try {
@@ -147,5 +158,5 @@ class ScriptController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
             redirect(action: "list")
         }
-    }
+    }*/
 }
