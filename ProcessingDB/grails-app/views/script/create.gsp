@@ -23,6 +23,11 @@
                 <g:renderErrors bean="${scriptInstance}" as="list" />
             </div>
             </g:hasErrors>
+            <g:hasErrors bean="${scriptInstance.current}">
+            <div class="errors">
+                <g:renderErrors bean="${scriptInstance.current}" as="list" />
+            </div>
+            </g:hasErrors>
             <g:form action="save" >
                 <div class="dialog">
                     <table>

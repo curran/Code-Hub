@@ -4,7 +4,9 @@ class ScriptController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-     def run = {
+    def scriptService
+
+    def run = {
         def scriptInstance = Script.get(params.id)
         if (!scriptInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
@@ -64,28 +66,33 @@ class ScriptController {
 
         if(session.user){
             Revision firstRev = new Revision(params)
-            firstRev.revNum = 1
-            def user = User.get(session.user.id)
-            user.addToRevisions(firstRev)
-            def scriptInstance = new Script().save()
-            user.addToScripts(scriptInstance)
-            scriptInstance.addToRevisions(firstRev)
-            scriptInstance.first = scriptInstance.current = firstRev
+            Script scriptInstance = new Script()
+        
+            try{
+                //service.createScript(firstRev,scriptInstance)
 
-            if(!firstRev.save())
-                println firstRev.errors
-
-            if (scriptInstance.save(flush: true)) {
-                if (firstRev.save(flush: true)) {
-                    flash.message = "${message(code: 'script.created.message', args: [firstRev.name])}"
-                    redirect(controller: "revision", action: "edit", id: firstRev.id)
+                firstRev.revNum = 1
+                def user = User.get(session.user.id)
+                user.addToRevisions(firstRev)
+                scriptInstance.save()
+                
+                user.addToScripts(scriptInstance)
+                scriptInstance.addToRevisions(firstRev)
+                scriptInstance.first = scriptInstance.current = firstRev
+                if(!firstRev.validate() || !scriptInstance.validate())
+                    render(view: "create", model: [scriptInstance: scriptInstance])
+                else{
+                    Script.withTransaction{
+                        if (!firstRev.save(flush: true) || !scriptInstance.save(flush: true))
+                            render(view: "create", model: [scriptInstance: scriptInstance])//throw new RuntimeException(REVISION_ERROR_MESSAGE)
+                        else{
+                            flash.message = "${message(code: 'script.created.message', args: [firstRev.name])}"
+                            redirect(controller: "revision", action: "edit", id: firstRev.id)
+                        }
+                    }
                 }
-                else {
-                    render(view: "create", model: [scriptInstance: firstRev])
-                }
-            }
-            else {
-                render(view: "create", model: [scriptInstance: scriptInstance])
+            } catch (Exception e){
+                
             }
         }
         else

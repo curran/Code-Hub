@@ -13,6 +13,7 @@ class Revision {
   static constraints = {
     name(blank: false)
     code(size:0..2147483646, nullable:true)
+    test(size:0..2147483646, nullable:true)
     description(size:0..1000, nullable:true)
     doc(size:0..2147483646, nullable:true)
   }
