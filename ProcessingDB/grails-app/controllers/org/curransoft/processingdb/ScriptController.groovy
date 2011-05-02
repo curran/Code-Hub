@@ -6,38 +6,7 @@ class ScriptController {
 
     def scriptService
 
-    def run = {
-        def scriptInstance = Script.get(params.id)
-        if (!scriptInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            [scriptInstance: scriptInstance]
-        }
-    }
-
-    def get = {
-        def scriptInstance = Script.get(params.id)
-        if (!scriptInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'script.label', default: 'Script'), params.id])}"
-            redirect(action: "list")
-        }
-        else
-            render getFullCode(scriptInstance,[]);
-    }
-
-    String getFullCode(Script s,includedScripts){
-        String fullCode = "";
-        s.dependencies.each{
-          if(!includedScripts.contains(it.id)){
-            includedScripts.add(it.id)
-            fullCode+=getFullCode(it,includedScripts)+"\n"
-          }
-        };
-        fullCode += s.code;
-        return fullCode;
-    }
+    
 
     def archive = {
         render Script.list() as XML

@@ -19,6 +19,7 @@
             <h1>${scriptInstance.current.name}</h1>
             <h2>${scriptInstance.current.description}</h2> <br>
             Created by <g:link controller="user" action="show" id="${scriptInstance?.current.creator?.id}">${scriptInstance?.current.creator?.encodeAsHTML()}</g:link>
+            
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

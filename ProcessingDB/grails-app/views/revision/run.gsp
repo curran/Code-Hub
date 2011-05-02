@@ -7,7 +7,7 @@
 window.onload = init;
 var processing;
 function init(){ 
-  $.get("../get/${scriptInstance.id}", function(processingCode) {
+  $.get("../get/${revisionInstance.id}", function(processingCode) {
     processing = new Processing($("#PJSCanvas")[0], processingCode);
     processing.mousePressed = function(){ processing.touchStart(buildMouseTouchEvent()); };
     processing.mouseDragged = function(){ processing.touchMove(buildMouseTouchEvent()); };

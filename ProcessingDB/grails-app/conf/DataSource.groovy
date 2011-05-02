@@ -25,7 +25,7 @@ environments {
     }
     production {
         dataSource {
-            dbCreate = "update"
+            dbCreate = "create-drop"//"update"
             url = "jdbc:mysql://localhost/processingdb"
             driverClassName = "com.mysql.jdbc.Driver"
             username = "pdb"

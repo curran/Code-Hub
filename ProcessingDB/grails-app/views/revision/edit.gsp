@@ -51,6 +51,9 @@
         </div>
         <div class="body">
             <h1>Edit ${revisionInstance.name}</h1> Revision ${revisionInstance.revNum}
+            <g:if test="${revisionInstance.isApp}">
+                <g:link controller="revision" action="run" id="${revisionInstance.id}">Run</g:link>
+            </g:if>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

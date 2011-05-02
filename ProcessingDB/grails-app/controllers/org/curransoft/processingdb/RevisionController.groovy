@@ -4,6 +4,39 @@ class RevisionController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
+    def run = {
+        def revisionInstance = Revision.get(params.id)
+        if (!revisionInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'revision.label', default: 'Revision'), params.id])}"
+            redirect(action: "list")
+        }
+        else {
+            [revisionInstance: revisionInstance]
+        }
+    }
+
+    def get = {
+        def revisionInstance = Revision.get(params.id)
+        if (!revisionInstance) {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'revision.label', default: 'Revision'), params.id])}"
+            redirect(action: "list")
+        }
+        else
+            render getFullCode(revisionInstance,[]);
+    }
+
+    String getFullCode(Revision r,includedRevisions){
+        String fullCode = "";
+        r.dependencies.each{
+          if(!includedRevisions.contains(it.id)){
+            includedRevisions.add(it.id)
+            fullCode+=getFullCode(it,includedRevisions)+"\n"
+          }
+        };
+        fullCode += r.code;
+        return fullCode;
+    }
+
     def index = {
         redirect(action: "list", params: params)
     }
