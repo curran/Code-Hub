@@ -1,7 +1,11 @@
-ProcessingDB was just started and is not yet usable.
+ProcessingDB was just started and is not yet stable, but basically works.
 
 TODO List:
  Feature Requests
+  - Add a notice to the user registration page warning of plain text passwords going over the wire
+  - Use a security framework
+   - Make sure passwords are not sent as plain text as they are now
+  - Add timestamps to revisions
   - Use of Ctrl-S and AJAX for saving (eliminate refresh on save)
   - Build a better UI for managing dependencies
    - it must be up to date
@@ -22,6 +26,8 @@ TODO List:
   - Add the notion of packages (packages contain revisions and other packages)
    - Add a nice tree UI for browsing packages (for browsing scripts - only include latest revisions)
   - In the doc editor, add a button for "make the selected text look like code"
+  - Highlight mismatched brackets
+  - Highlight missing semicolons
  Refactorings
   - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
  Bugs
