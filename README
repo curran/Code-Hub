@@ -36,6 +36,7 @@ TODO List:
   - Delete revision/create page. Semantics are wrong, revisions are created through script edit page.
   - Exclude previous versions of the script being edited from the dependencies selection list
   - Get the correct (full screen) "width" and "height" values available in "setup()"
+  - In cases where two dependencies depend on different versions of the same script, use only the more recent of them and show a warning message
 
 
 
