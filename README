@@ -17,16 +17,25 @@ TODO List:
   - Add a visualization of the dependency graph
    - Visually represent failing test cases and lengths of commit messages
    - Add UI for updating dependency revisions to this visualization
+  - Add the ability to take screenshots of running applications and associate their thumbnails with revisions
+   - Would enable a visual revision history navigation system
+  - Add the notion of packages (packages contain revisions and other packages)
+   - Add a nice tree UI for browsing packages (for browsing scripts - only include latest revisions)
+  - In the doc editor, add a button for "make the selected text look like code"
  Refactorings
   - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
  Bugs
   - Delete revision/create page. Semantics are wrong, revisions are created through script edit page.
   - Exclude previous versions of the script being edited from the dependencies selection list
+  - Get the correct (full screen) "width" and "height" values available in "setup()"
 
-To deploy in a remote server:
+
+
+
+To deploy ProcessingDB in your server:
 
 Server Setup:
-Assuming a fresh install of Ubuntu Server, here's how to set it up to run datacubesinfo:
+Assuming a fresh install of Ubuntu Server, here's how to set it up to host an instance of ProcessingDB:
 
 # log in
 ssh root@your-server-ip
