@@ -9,10 +9,19 @@ TODO List:
   - Add commit messages (as a new attribute of Revision)
   - Add "New Script" link to front page
    - Use a hover popup and a disabled button to tell people they need to log in to create a script
+  - Add a UI flow for updating dependencies to newer versions
+   - Short term: make selection box bigger
+   - Incorporate unit tests
+  - Add a mini unit testing framework (that sends results back to the server which stores them)
+   - Would enable revisions failing tests to be publicly flagged
+  - Add a visualization of the dependency graph
+   - Visually represent failing test cases and lengths of commit messages
+   - Add UI for updating dependency revisions to this visualization
  Refactorings
   - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
  Bugs
   - Delete revision/create page. Semantics are wrong, revisions are created through script edit page.
+  - Exclude previous versions of the script being edited from the dependencies selection list
 
 To deploy in a remote server:
 
