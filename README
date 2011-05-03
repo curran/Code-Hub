@@ -28,6 +28,8 @@ TODO List:
   - In the doc editor, add a button for "make the selected text look like code"
   - Highlight mismatched brackets
   - Highlight missing semicolons
+  - Add indicator of "unsaved changes"
+  - Add a visual representation of the class hierarchy present in the full version of a given revision.
  Refactorings
   - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
  Bugs
