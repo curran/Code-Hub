@@ -1,5 +1,19 @@
 ProcessingDB was just started and is not yet usable.
 
+TODO List:
+ Feature Requests
+  - Use of Ctrl-S and AJAX for saving (eliminate refresh on save)
+  - Build a better UI for managing dependencies
+   - it must be up to date
+   - GrailsUI AutoComplete?
+  - Add commit messages (as a new attribute of Revision)
+  - Add "New Script" link to front page
+   - Use a hover popup and a disabled button to tell people they need to log in to create a script
+ Refactorings
+  - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
+ Bugs
+  - Delete revision/create page. Semantics are wrong, revisions are created through script edit page.
+
 To deploy in a remote server:
 
 Server Setup:
