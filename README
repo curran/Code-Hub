@@ -1,6 +1,7 @@
 ProcessingDB was just started and is not yet stable, but basically works.
 
 TODO List:
+ - Add all below into the GitHub issue tracker
  Feature Requests
   - Add a notice to the user registration page warning of plain text passwords going over the wire
   - Use a security framework
