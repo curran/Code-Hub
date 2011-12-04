@@ -1,0 +1,105 @@
+ProcessingDB was just started and is not yet stable, but basically works.
+
+TODO List:
+ - Add all below into the GitHub issue tracker
+ Feature Requests
+  - Add a notice to the user registration page warning of plain text passwords going over the wire
+  - Use a security framework
+   - Make sure passwords are not sent as plain text as they are now
+  - Add timestamps to revisions
+  - Use of Ctrl-S and AJAX for saving (eliminate refresh on save)
+  - Build a better UI for managing dependencies
+   - it must be up to date
+   - GrailsUI AutoComplete?
+  - Add commit messages (as a new attribute of Revision)
+  - Add "New Script" link to front page
+   - Use a hover popup and a disabled button to tell people they need to log in to create a script
+  - Add a UI flow for updating dependencies to newer versions
+   - Short term: make selection box bigger
+   - Incorporate unit tests
+  - Add a mini unit testing framework (that sends results back to the server which stores them)
+   - Would enable revisions failing tests to be publicly flagged
+  - Add a visualization of the dependency graph
+   - Visually represent failing test cases and lengths of commit messages
+   - Add UI for updating dependency revisions to this visualization
+  - Add the ability to take screenshots of running applications and associate their thumbnails with revisions
+   - Would enable a visual revision history navigation system
+  - Add the notion of packages (packages contain revisions and other packages)
+   - Add a nice tree UI for browsing packages (for browsing scripts - only include latest revisions)
+  - In the doc editor, add a button for "make the selected text look like code"
+  - Highlight mismatched brackets
+  - Highlight missing semicolons
+  - Add indicator of "unsaved changes"
+  - Add a visual representation of the class hierarchy present in the full version of a given revision.
+ Refactorings
+  - Eliminate "description" field on Revisions. When short summaries are needed, use the first sentence of "doc".
+ Bugs
+  - Delete revision/create page. Semantics are wrong, revisions are created through script edit page.
+  - Exclude previous versions of the script being edited from the dependencies selection list
+  - Get the correct (full screen) "width" and "height" values available in "setup()"
+  - In cases where two dependencies depend on different versions of the same script, use only the more recent of them and show a warning message
+
+
+
+
+To deploy ProcessingDB in your server:
+
+Server Setup:
+Assuming a fresh install of Ubuntu Server, here's how to set it up to host an instance of ProcessingDB:
+
+# log in
+ssh root@your-server-ip
+
+# to change the root password:
+passwd
+
+# make port 8080 appear as port 80
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+# to add a user for running the server:
+useradd -d /home/processingdb -m processingdb
+passwd processingdb
+
+# install java, mysql, unzip
+sudo apt-get install openjdk-6-jre mysql-server unzip -y
+
+# install Grails
+wget http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-1.3.7.zip
+unzip grails-1.3.7.zip
+rm grails-1.3.7.zip
+mv grails-1.3.7/ grails
+
+# set necessary environment variables
+echo export JAVA_HOME=/usr/lib/jvm/java-6-openjdk  >> ~/.profile
+echo export GRAILS_HOME=\$HOME/grails >> ~/.profile
+echo export PATH=\$PATH:\$HOME/grails/bin >> ~/.profile
+
+# create the database used by the application
+mysql -u root -p
+mysql> create database processingdb;
+mysql> grant all on processingdb.* to pdb identified by 'pdb';
+
+# download the ProcessingDB source code to the server
+git clone https://github.com/curran/ProcessingDB.git
+
+# run the server
+cd ProcessingDB
+grails prod run-app
+
+# running with Grails production mode is easy, but uses lots of memory (~1Gig!)
+# Here's how to deploy in Tomcat:
+
+# download and unzip Tomcat
+mkdir opt
+cd opt
+wget http://mirror.olnevhost.net/pub/apache/tomcat/tomcat-7/v7.0.6/bin/apache-tomcat-7.0.6.zip
+unzip apache-tomcat-7.0.6.zip
+mv apache-tomcat-7.0.6 tomcat
+rm apache-tomcat-7.0.6.zip 
+
+# set necessary environment variables
+echo 'export CATALINA_HOME=/tomcat' >> ~/.bashrc
+
+# set executable permissions on Tomcat startup/shutdown scripts
+cd tomcat/bin/
+chmod +x startup.sh shutdown.sh
