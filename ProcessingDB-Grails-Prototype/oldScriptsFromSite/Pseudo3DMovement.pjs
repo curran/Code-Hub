@@ -1,0 +1,78 @@
+class Node{
+  Circle circle;
+  public Node(Circle circle){
+    this.circle = circle;
+  }
+}
+class Edge{
+  Node u;
+  Node v;
+  public Edge(Node u, Node v){
+    this.u = u; this.v = v;
+  }
+}
+List edges = new ArrayList();/*<Edge>*/
+
+
+Color nodeColor = new Color(0,0,0);
+double maxRadius = 15 + 13;
+
+void setup(){  
+  frameRate(30);
+}
+
+List nodes = new ArrayList();/*<Node>*/
+int d = 0;
+void initNodes(){
+  if((d++)%3 == 0){
+    double x = random(width); double y = random(height);
+    Circle nodeCircle = new Circle(x, y, 2, nodeColor );
+    circles.add(nodeCircle);
+    Node node = new Node(nodeCircle);
+    nodes.add(node);
+    
+    
+    for(int j=0;j<nodes.size(); j++)
+      if(random(100) < 10)
+        edges.add(new Edge(node,nodes.get(j)));
+  }
+}
+
+//bool firstDraw = true;
+void draw(){
+  //if(firstDraw && !(firstDraw = false))
+  initNodes();
+    
+  background(255);
+
+  drawEdges();
+  drawCircles();
+  incrementLayout();
+}
+void drawEdges(){
+  for(int i = 0;i<edges.size();i++){
+    Edge e = edges.get(i);
+    double r = max(e.u.circle.radius, e.v.circle.radius);
+    double percent = 1.0 - r/maxRadius;
+    stroke(sqrt(percent) * 255);
+    line(e.u.circle.point.x, e.u.circle.point.y,
+         e.v.circle.point.x, e.v.circle.point.y);
+  }
+}
+double t = 0;
+double margin = 200;
+void incrementLayout(){
+  for(int i = 0;i<circles.size();i++){
+    Circle circle = circles.get(i);
+    circle.radius = 15 + sin(t*i/3)*13;
+    double dx = width/2 - circle.point.x;
+    double dy = height/2 - circle.point.y;
+    double d = sqrt(dx*dx+dy*dy)/min(width/2,height/2);
+    circle.radius *= 1 - d;//1/(d^2*5 + 1)- 1/6;
+    circle.point.x = (circle.point.x + width
+                   + sin(t)* circle.radius/6) % width;
+    circle.point.y = (circle.point.y + height 
+                   + sin(t*1.3)* circle.radius/6) % height;
+  }
+  t += 0.01;
+}

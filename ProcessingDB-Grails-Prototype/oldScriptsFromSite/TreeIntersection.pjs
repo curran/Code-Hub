@@ -1,0 +1,104 @@
+//the branching factor
+int branches = 2;
+//horizontal distance between levels
+double h = 50;
+//change this to make the tree deeper
+int maxDepth = 5;
+
+double minX;
+double maxX;
+double minY;
+double maxY;
+
+double sx;
+double sy;
+
+int j = 0;
+double t = 0;
+
+boolean HORIZONTAL = false;
+boolean VERTICAL = true;
+
+void setup(){
+  frameRate(20);
+}
+
+void draw(){
+  t += 0.1;
+  background(255);
+  console.log(t);
+
+  j = 0;
+  double margin = 10;
+  double side = min(width,height);
+  minX = margin+h*maxDepth;
+  maxX = side-margin;
+  minY = margin+h*maxDepth;
+  maxY = side-margin;
+    
+  sx = maxX - minX;
+  sy = maxY - minY;
+  tree((minX + maxX)/2,margin,1,VERTICAL);
+  tree(margin,(minY + maxY)/2,1,HORIZONTAL);
+}
+
+void tree(double x, double y, int depth, boolean orientation){
+  
+  if(depth <= maxDepth){
+    
+    double n = branches-1;
+    double f = n*(n+1)/2;
+    double x1;
+    double x2;
+    double y1;
+    double y2;
+    
+    if(orientation == VERTICAL){
+      double dx = f*sx/pow(branches,depth+1);
+      x1 = x - dx;
+      x2 = x + dx;
+      y1 = y + h;
+    }
+    else{
+      double dy = f*sy/pow(branches,depth+1);
+      y1 = y - dy;
+      y2 = y + dy;
+      x1 = x + h;
+    }
+    
+    for(int i=0;i < branches; i++){
+      if(orientation == VERTICAL){
+        double xi = x1 + (i/(branches-1))*(x2-x1);
+        stroke(0);
+        strokeWeight(1);
+        line(x,y,xi,y1);
+        tree(xi, y1, depth + 1, orientation);
+      }
+      else{
+        double yi = y1 + (i/(branches-1))*(y2-y1);
+        stroke(0);
+        strokeWeight(1);
+        line(x,y,x1,yi);
+        tree(x1, yi, depth + 1, orientation);
+      }
+      j++;
+      if(j > t*10)
+        return;
+    }
+  }
+  stroke(c(depth),c(depth*1.4),c(depth*3.2));
+  double p = (1-depth/maxDepth);
+  strokeWeight(1+p*10);
+  
+  if(orientation == VERTICAL)
+    line(x,y,x,maxY);
+  else
+    line(x,y,maxX,y);
+  
+  noStroke();
+  fill(0);
+  double circleSize = 4+p*10;
+  ellipse(x,y,circleSize,circleSize);
+  
+}
+int c(double x){ return (sin(x+t)/2+0.5)*255; }

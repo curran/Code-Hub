@@ -1,0 +1,6 @@
+$.get("http://dbpedia.org/sparql?query=PREFIX dbo: <http://dbpedia.org/ontology/>SELECT ?name WHERE {?country rdf:type dbo:Country.?country foaf:name ?name}LIMIT 50&format=json", function(result) {
+	  var list = result.results.bindings;
+  for(i in list)
+    console.log(list[i]["name"]["value"]+"<br>");
+});
+

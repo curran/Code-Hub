@@ -1,0 +1,479 @@
+float log10 (double x) {
+  return (log(x) / log(10));
+}
+
+class TickMarkUtils{
+  private static int[] niceIntervalBases = [ 1, 2, 5 ];
+  static String test(){return niceIntervalBases[1];}
+ 
+  static double getNiceInterval(double min, double max, int n) {
+    double span = max - min;
+    double interval = span / n;
+    double intervalExponent =floor(log10(interval));
+    double intervalBase = interval /pow(10, intervalExponent);
+    double bestIntervalBase = niceIntervalBases[0];
+    for (double i = 1; i < niceIntervalBases.length; i++)
+      if (Math.abs(intervalBase - niceIntervalBases[i])
+                                <
+          Math.abs(intervalBase - bestIntervalBase))
+        bestIntervalBase = niceIntervalBases[i];
+    double bestInterval = bestIntervalBase * 
+                          pow(10, intervalExponent);
+    return bestInterval;
+  }
+  static double getFirstTickValue(double min, double interval) {
+    double v = ceil(min / interval) * interval;
+    if (v == -0) { v = 0; }
+    return v;
+  }
+}
+
+class Interval{
+  private double min;
+  private double span;
+  public Interval(){
+    min = 0;
+    span = 1;
+  }
+  public Interval(double min, double max){
+    this.min = min;
+    this.span = max - min;
+  }
+  public double transformTo(Interval interval, double x){
+    if(max == min)
+      return interval.getMiddle();
+    else
+      return (x-min)/span*interval.span+interval.min;
+  }
+  public double getMiddle(){
+    return (max+min)/2;
+  }
+  public void setMin(min){ this.min = min }
+  public void setSpan(span){ this.span = span }
+  public void getMin(){ return min; }
+  public void getSpan(){ return span; }
+  public void getMax(){ return min + span; }
+}
+
+class Interval2D{
+  Interval x;
+  Interval y;
+  public Interval2D(){
+    x = new Interval();
+    y = new Interval();
+  }
+}
+class Point{
+  double x; double y;
+  public Point(){ x = y = 0; }
+  public Point(double x, double y){
+    this.x = x; this.y = y;
+  }
+  public Point(Point point){
+    this.x = point.x; this.y = point.y;
+  }
+  public void zero(){ x = y = 0; }
+  public void set(double x, double y){
+    this.x = x; this.y = y;
+  }
+}
+class Color{
+  int r; int g; int b;
+  public Color(int r,int g,int b){
+    this.r = r; this.g = g; this.b = b;
+  }
+}
+class Circle{
+  Point point; Point velocity = new Point(); 
+  int radius; Color color;
+  public Circle(int x,int y, int radius,Color color){
+    point = new Point(x,y);
+    this.radius = radius;
+    this.color = color;
+  }
+}
+
+class Node{
+  int degree = 0;
+  Circle circle;
+  public Node(Circle circle){
+    this.circle = circle;
+  }
+}
+class Edge{
+  Node u;
+  Node v;
+  public Edge(Node u, Node v){
+    this.u = u; this.v = v;
+  }
+}
+class Graph{
+  int degreeSum = 0;
+  List nodes = new ArrayList();/*<Node>*/
+  List edges = new ArrayList();/*<Edge>*/
+  
+  void addNode(Node n){
+    nodes.add(n);
+  }
+  
+  void addEdge(Node a, Node b){
+    edges.add(new Edge(a,b));
+    a.degree++;
+    b.degree++;
+    degreeSum+=2;
+  }
+}
+
+Color nodeColor = new Color(0,0,0);
+double nodeRadius = 0;
+int frame = 0;
+int nodeGenFrequency = 1; //a new node every 1 frames
+
+double dampening = 0.9;
+//c.point.x += (c.velocity.x *= dampening);
+
+double attraction = 0.01;
+//force = d * attraction
+
+double repulsion = 3;
+double repulsionWidth = 90;
+//force = repulsion/(d*d/repulsionWidth + 1);
+
+double epsilon = 1;
+
+boolean useWebGL = false;
+
+Graph graph = new Graph();
+
+//pv = Performance Visualization
+ArrayList benchmarkEntries = new ArrayList();/*<BenchmarkEntry>*/
+Interval2D pvDisplaySpace = new Interval2D();
+Interval2D pvDataSpace = new Interval2D();
+double pvSize = 0.4;//in percent of vertical display
+int pvApproxNumTickMarksX = 10;
+int pvApproxNumTickMarksY = 4;
+int pvMarginX = 30;//in pixels
+int pvMarginY = 50;//in pixels
+int glyphSize = 10;//in pixels
+double tickXLabelOffset = 30;
+double tickYLabelOffset = 30;
+Color edgeDrawTimeColor = new Color(0,200,200);
+Color nodeDrawTimeColor = new Color(200,0,200);
+Color layoutTimeColor = new Color(200,200,0);
+
+
+class BenchmarkEntry{
+  double edgeDrawTime;
+  double nodeDrawTime;
+  double layoutTime;
+}
+BenchmarkEntry currentBenchmarkEntry;
+double maxNodeDrawTime = 0;
+
+void setup(){  
+  frameRate(30);
+  
+  if(useWebGL)
+    {}//size(800, 600, OPENGL);
+  else{
+    PFont font = loadFont("Arial");
+    textFont(font, 24);  
+    textAlign(LEFT);
+  }
+  
+  console.log("hello");
+  
+  //TODO store as Interval unit test
+  //Interval a = new Interval(0,1);
+  //Interval b = new Interval(0,10);
+  //console.log(a.transformTo(b,0.5)+" =?= 5");
+  
+}
+
+void initNodes(){
+
+  if((frame++)%nodeGenFrequency == 0){
+  
+    if(graph.nodes.size() == 0){
+      //initialize the first two nodes, as required
+      //by the Barabási–Albert model
+    
+      double x = random(width); double y = random(height);
+      
+      Node a = new Node(
+        new Circle(x, y, nodeRadius, nodeColor ));
+      graph.addNode(a);
+      x = random(width); y = random(height);
+      Node b = new Node(
+        new Circle(x, y, nodeRadius, nodeColor ));
+      graph.addNode(b);
+      
+      graph.addEdge(a,b);
+    }
+    else{
+      double x = random(width); double y = random(height);
+      Circle nodeCircle =
+        new Circle(x, y, nodeRadius, nodeColor );
+      Node node = new Node(nodeCircle);
+      graph.addNode(node);
+      
+      for(int i=0;i<graph.nodes.size(); i++){
+        Node nodeI = graph.nodes.get(i);
+        double p = nodeI.degree/graph.degreeSum;
+        if(random(1000) < p*1000)
+          graph.addEdge(node,nodeI);
+      }
+    }
+  }
+}
+
+
+void drawNodes(){
+  for(int i = 0;i<graph.nodes.size();i++)
+    drawCircle(graph.nodes.get(i).circle);
+}
+void drawCircle(Circle circle){
+  Color color = circle.color;
+  Point point = circle.point;
+  int size = circle.radius * 2;
+  fill(color.r,color.g,color.b);
+  ellipseMode(CENTER);
+  ellipse(point.x,point.y,size,size);
+}
+
+//bool firstDraw = true;
+void draw(){
+  
+  //if(firstDraw && !(firstDraw = false))
+  initNodes();
+    
+  background(255);
+  
+  addCurrentBenchmarkEntry();
+  
+  currentBenchmarkEntry = new BenchmarkEntry();
+  int time = millis();
+  drawEdges();
+  currentBenchmarkEntry.edgeDrawTime = millis() - time;
+  
+  tome = millis();
+  drawNodes();
+  currentBenchmarkEntry.nodeDrawTime = millis() - time;
+  
+  
+  time = millis();
+  incrementLayout();
+  currentBenchmarkEntry.layoutTime = millis() - time;
+  
+  fill(0);
+  int y = 50;
+  int v = 30;
+  int x = 20;
+  int xo = -7;//the x and y offsets for the legend glyphs
+  int yo = -7;
+  if(!useWebGL){//text is broken in WebGL :(
+    BenchmarkEntry e = currentBenchmarkEntry;
+    text("Nodes: "+graph.nodes.size(), x,y);
+    
+    text("Node drawing time: "+e.nodeDrawTime+" ms", x, y+=v);
+    Color c = nodeDrawTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x+xo,y+yo,glyphSize,glyphSize);
+    fill(0);
+    text("Edges: "+graph.degreeSum/2, x,y+=v);
+    text("Edge drawing time: "+e.edgeDrawTime+" ms", x, y+=v);
+    Color c = edgeDrawTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x+xo,y+yo,glyphSize,glyphSize);
+    fill(0);
+    text("Layout time: "+e.layoutTime+" ms", x, y+=v);
+    Color c = layoutTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x+xo,y+yo,glyphSize,glyphSize);
+    fill(0);
+  }
+  
+  drawPerformanceViz();
+  
+}
+
+void addCurrentBenchmarkEntry(){
+  if(currentBenchmarkEntry != null){
+    benchmarkEntries.add(currentBenchmarkEntry);
+    if(currentBenchmarkEntry.nodeDrawTime > maxNodeDrawTime)
+      maxNodeDrawTime = currentBenchmarkEntry.nodeDrawTime;
+  }
+}
+
+void drawPerformanceViz(){
+  //draw the performance visualization
+  double x = 0 + pvMarginX;
+  double y = height - pvMarginY;
+  double w = width - 2*pvMarginX;
+  double h = -(pvSize*height - 2*pvMarginY);
+  //rect(x,y,w,h);
+  
+  pvDisplaySpace.x.setMin(x);
+  pvDisplaySpace.x.setSpan(w);
+  pvDisplaySpace.y.setMin(y);
+  pvDisplaySpace.y.setSpan(h);
+  
+  //data.x = # nodes
+  //data.y = time taken per operation
+  pvDataSpace.x.setMin(0);
+  pvDataSpace.x.setSpan(graph.nodes.size());
+  pvDataSpace.y.setMin(0);
+  pvDataSpace.y.setSpan(maxNodeDrawTime);
+  
+  int n = benchmarkEntries.size();
+  for(int i=0;i<n;i++){
+    BenchmarkEntry e = benchmarkEntries.get(i);
+    double x = pvDataSpace.x.transformTo(
+               pvDisplaySpace.x,
+               i);
+    double y = pvDataSpace.y.transformTo(
+               pvDisplaySpace.y,
+               e.edgeDrawTime);
+    Color c = edgeDrawTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x,y,10,10);
+    
+    x = pvDataSpace.x.transformTo(
+               pvDisplaySpace.x,
+               i);
+    y = pvDataSpace.y.transformTo(
+               pvDisplaySpace.y,
+               e.nodeDrawTime);
+    c = nodeDrawTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x,y,10,10);
+    
+    x = pvDataSpace.x.transformTo(
+               pvDisplaySpace.x,
+               i);
+    y = pvDataSpace.y.transformTo(
+               pvDisplaySpace.y,
+               e.layoutTime);
+    c = layoutTimeColor;
+    fill(c.r,c.g,c.b);
+    ellipse(x,y,10,10);
+  }
+  fill(0);
+  
+  double bestXInterval = TickMarkUtils.getNiceInterval(
+    pvDataSpace.x.getMin(),
+    pvDataSpace.x.getMax(),
+    pvApproxNumTickMarksX);
+  //console.log("bestInterval = "+bestInterval);
+  double tickX = TickMarkUtils.getFirstTickValue(
+    pvDataSpace.x.getMin(), bestXInterval);
+  //console.log("firstTickMark = "+firstTickMark);
+  
+  double maxX = pvDataSpace.x.getMax();
+  y = pvDisplaySpace.y.getMin() + tickXLabelOffset;
+  for(;tickX<maxX;tickX += bestXInterval){
+    x = pvDataSpace.x.transformTo(
+        pvDisplaySpace.x,
+        tickX);
+    text(""+tickX, x,y);
+  }
+  
+  double bestYInterval = TickMarkUtils.getNiceInterval(
+    pvDataSpace.y.getMin(),
+    pvDataSpace.y.getMax(),
+    pvApproxNumTickMarksY);
+  //console.log("bestInterval = "+bestInterval);
+  double tickY = TickMarkUtils.getFirstTickValue(
+    pvDataSpace.y.getMin(), bestYInterval);
+  //console.log("firstTickMark = "+firstTickMark);
+  
+  double maxY = pvDataSpace.y.getMax();
+  x = pvDisplaySpace.x.getMin() - tickYLabelOffset;
+  for(;tickY<maxY;tickY += bestYInterval){
+    y = pvDataSpace.y.transformTo(
+        pvDisplaySpace.y,
+        tickY);
+    text(""+tickY, x, y);
+  }
+}
+void drawEdges(){
+  if(useWebGL){
+    stroke(0);//transparency is broken in WebGL :(
+    strokeWeight(1);
+  }
+  else{
+    stroke(0,0,0,20);
+    strokeWeight(2);
+  }
+  
+  for(int i = 0;i<graph.edges.size();i++){
+    Edge e = graph.edges.get(i);
+    line(e.u.circle.point.x, e.u.circle.point.y,
+         e.v.circle.point.x, e.v.circle.point.y);
+  }
+}
+void incrementLayout(){
+  for(int i = 0;i<graph.edges.size();i++){
+    Edge e = graph.edges.get(i);
+    Point u = e.u.circle.point;
+    Point v = e.v.circle.point;
+    double dx = u.x - v.x;
+    double dy = u.y - v.y;
+    double d = sqrt(dx*dx+dy*dy);
+    if(d < epsilon)
+      d = epsilon;
+    
+    double force = d * attraction;
+    
+    double forceX = dx/d * force;
+    double forceY = dy/d * force;
+    
+    e.u.circle.velocity.x -= forceX;
+    e.u.circle.velocity.y -= forceY;
+    
+    e.v.circle.velocity.x += forceX;
+    e.v.circle.velocity.y += forceY;
+    
+  }
+  
+  double repulsionWidth2 = repulsionWidth * repulsionWidth;
+  for(int i = 0; i<graph.nodes.size(); i++){
+    for(int j = i+1; j<graph.nodes.size(); j++){
+      Node nodeI = graph.nodes.get(i);
+      Node nodeJ = graph.nodes.get(j);
+      
+      Point u = nodeI.circle.point;
+      Point v = nodeJ.circle.point;
+      double dx = u.x - v.x;
+      double dy = u.y - v.y;
+      double d2 = dx*dx+dy*dy;
+      
+      if(d2 < repulsionWidth2){
+      
+        double d = sqrt(d2);
+        if(d < epsilon)
+          d = epsilon;
+    
+        double force = repulsion/(d*d/repulsionWidth + 1);
+      
+        double forceX = dx/d * force;
+        double forceY = dy/d * force;
+    
+        nodeI.circle.velocity.x += forceX;
+        nodeI.circle.velocity.y += forceY;
+    
+        nodeJ.circle.velocity.x -= forceX;
+        nodeJ.circle.velocity.y -= forceY;
+      }
+    }
+  }
+  
+  for(int i = 0;i<graph.nodes.size();i++){
+    Node nodeI = graph.nodes.get(i);
+    Circle c = nodeI.circle;
+    c.point.x += (c.velocity.x *= dampening);
+    c.point.y += (c.velocity.y *= dampening);
+    
+    c.radius = log(nodeI.degree)*2;
+  }
+}
