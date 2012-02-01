@@ -1,0 +1,8 @@
+* { margin: 0; padding: 0;}
+body, html { height:100%; }
+canvas { display: block; }
+#c {
+  position:absolute;
+  width:100%;
+  height:100%;
+}
