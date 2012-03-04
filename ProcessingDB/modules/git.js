@@ -5,10 +5,13 @@
 // Author: Curran Kelleher
 
 var spawn = require('child_process').spawn,
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path');
 var CONTENT_FILE_NAME = 'content.txt';
 var prefix = '.';
-function dirFromName(name){ return prefix+'/repos/'+name; }
+var repoDirName = 'repos';
+function repoDir(){ return prefix+'/'+repoDirName; }
+function dirFromName(name){ return repoDir()+'/'+name; }
 
 // executes a series of command line commands serially.
 // callback()
@@ -23,16 +26,30 @@ function executeCommands(dir, queue, callback){
   })();
 }
 
+function ensureRepoDirectoryExists(callback){
+  path.exists(repoDir(), function (exists) {
+    if(exists)
+      callback();
+    else
+      fs.mkdir(repoDir(),0755, callback);
+  });
+}
+
 function createRepo(name,callback){
-  var dir = dirFromName(name);
-  fs.mkdir(dir, 0755, function(err){
+  ensureRepoDirectoryExists(function(err){
     if(err) callback(err);
-    else executeCommands(dir,[
-      {command:'git', args:['init']},
-      {command:'touch', args:[CONTENT_FILE_NAME]},
-      {command:'git', args:['add','*']},
-      {command:'git', args:['commit','-m','Initial Creation']}
-    ], callback);
+    else {
+      var dir = dirFromName(name);
+      fs.mkdir(dir, 0755, function(err){
+        if(err) callback(err);
+        else executeCommands(dir,[
+          {command:'git', args:['init']},
+          {command:'touch', args:[CONTENT_FILE_NAME]},
+          {command:'git', args:['add','*']},
+          {command:'git', args:['commit','-m','Initial Creation']}
+        ], callback);
+      });
+    }
   });
 }
 
