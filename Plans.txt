@@ -1,0 +1,80 @@
+Plans for next ProcessingDB iteration:
+Curran Kelleher
+2/4/2012
+
+Model:
+
+var RevisionPointers = new Schema({
+  id: Number, // an integer
+  version: Number // an integer
+});
+
+var Revisions = new Schema({
+  id: Number, // an integer, the Script id
+  version: Number, // an integer, the Revision id
+  commitMessage: {type: String, default:''},
+  commitDate: Date, // date & time of save
+  parentRevision: RevisionPointers, // from whence this came, for tracking branching
+  
+  type: String, // in ['module','app','template']
+  
+  // relevant when type == 'app'
+  template: RevisionPointers,
+  
+  // relevant when (type == 'app' || type == 'module')
+  dependencies: [RevisionPointers],
+});
+
+var Scripts = new Schema({
+  id: Number, // an integer
+  latestVersion: Number // an integer - the latest saved revision number
+});
+
+processingdb.com/
+ - Render a page with the following structure:
+ ----------------------------------------------------------------------------
+ | ProcessingDB Logo                   |Your comments here..| (Save Button) |
+ |--------------------------------------------------------------------------|
+ |//syntax highlighted code area here                                       |
+ |                                                                          |
+ |--------------------------------------------------------------------------|
+ 
+ 
+Click on Save Button -> processingdb.com/#:ScriptNum,:RevNum
+ - e.g. processingdb.com/#5.3
+ ----------------------------------------------------------------------------
+ | ProcessingDB Logo  (Run Link)       |Your comments here..| (Save Button) |
+ |--------------------------------------------------------------------------|
+ |//syntax highlighted code area here                                       |
+ |@app fullScreenCanvas                                                     |
+ |var foo = require('foo');                                                 |
+ |--------------------------------------------------------------------------|
+ |Embedded in (link to fullScreenCanvas)                                    |
+ |Depends on (link to foo)                                                  |
+ |--------------------------------------------------------------------------|
+ 
+
+Click on Run Link -> processingdb.com/5.3
+ - Renders code with dependencies compiled, embedded into template
+
+Click on ProcessingDB Logo -> processingdb.com/about
+ ----------------------------------------------------------------------------
+ | ProcessingDB Logo                                                        |
+ |--------------------------------------------------------------------------|
+ |About ProcessingDB                                                        |
+ | @module <moduleName> defines a module                                    |
+ |         available in apps using require('<moduleName>')                  |
+ | @language <languageName in ['js', 'coffeescript]> default is js          |
+ | @app defines an app                                                      |
+ | @template <templateName> defines an HTML template for use by apps.       |
+ |         Within a template, ${code} is used as a placeholder for app code.|
+ | @app <templateName> used in apps to specify the HTML template            |
+ |         into which the code content (including all dependencies)         |
+ |         will be injected.                                                |
+ |                                                                          |
+ | See all scripts                                                          |
+ | See all modules                                                          |
+ | See all apps                                                             |
+ |--------------------------------------------------------------------------|
+ 
+ Render based on http://wiki.commonjs.org/wiki/Modules/CompiledModules

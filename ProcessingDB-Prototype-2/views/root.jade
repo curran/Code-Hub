@@ -1,0 +1,9 @@
+p
+  a(href='/scripts/new') New script
+h2 scripts:
+- var n = scripts.length;
+- for(var i = 0; i < n; i++)
+  - var s = scripts[i];
+    a(href='/scripts/'+s.name+'/'+s.latestVersion) #{s.name}
+    - if(i < n-1)
+      , 
