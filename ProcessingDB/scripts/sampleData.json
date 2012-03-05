@@ -1,9 +1,0 @@
-{"type":"script","name":"A","latestVersion":0.02}
-{"type":"revision","name":"A","version":0.01,"message":"Initial creation","content":"println(\"Helo\");"}
-{"type":"revision","name":"A","version":0.02,"message":"Corrected Helo -> Hello","content":"println(\"Hello\");"}
-{"type":"script","name":"B","latestVersion":0.01}
-{"type":"revision","name":"B","version":0.01,"message":"Initial creation","content":"@depends on A 0.01\r\nprintln(\"World!\");"}
-{"type":"script","name":"ProcessingTemplate","latestVersion":0.01}
-{"type":"revision","name":"ProcessingTemplate","version":0.01,"message":"Initial creation","content":"<html>\r\n<body>\r\n<script src=\"../../../js/processing-1.3.6.js\"></script>\r\n<script type=\"application/processing\" data-processing-target=\"pjs\">\r\n${code}\r\n</script>\r\n<canvas id=\"pjs\"> </canvas>\r\n</body>\r\n</html>"}
-{"type":"script","name":"C","latestVersion":0.01}
-{"type":"revision","name":"C","version":0.01,"message":"Initial creation","content":"@depends on B 0.01\r\n@depends on A 0.02\r\n@embed in ProcessingTemplate 0.01"}
