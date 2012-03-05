@@ -30,6 +30,18 @@ var Scripts = new Schema({
   latestVersion: Number // an integer - the latest saved revision number
 });
 
+var Modules = new Schema({
+  name: String,
+  definition: RevisionPointers,
+  active: Boolean // allows for "deletion" and "renaming" of modules
+});
+
+var Templates = new Schema({
+  name: String,
+  definition: RevisionPointers,
+  active: Boolean // allows for "deletion" and "renaming" of templates
+});
+
 processingdb.com/
  - Render a page with the following structure:
  ----------------------------------------------------------------------------
@@ -42,6 +54,7 @@ processingdb.com/
  
 Click on Save Button -> processingdb.com/#:ScriptNum,:RevNum
  - e.g. processingdb.com/#5.3
+ - e.g. processingdb.com/#s.b <- use alphanumeric id encodings for shorter URLs
  ----------------------------------------------------------------------------
  | ProcessingDB Logo  (Run Link)       |Your comments here..| (Save Button) |
  |--------------------------------------------------------------------------|
