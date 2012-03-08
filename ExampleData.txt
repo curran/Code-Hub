@@ -1,0 +1,60 @@
+@module math
+exports.add = function() {
+    var sum = 0, i = 0, args = arguments, l = args.length;
+    while (i < l) {
+        sum += args[i++];
+    }
+    return sum;
+};
+
+@module increment
+var add = require('math').add;
+exports.increment = function(val) {
+    return add(val, 1);
+};
+
+@app program
+var inc = require('increment').increment;
+var a = 1;
+console.log(inc(a)); // 2
+
+
+
+
+@template canvas
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${name}</title>
+</head>
+<body>
+  <canvas id="canvas" width="${width}" height="${height}"/>
+<script>
+${code}
+</script>
+</body>
+</html>
+
+@app template canvas
+@app name chaos
+@app width 257
+@app height 257
+
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+var corners = [
+  {x:0, y:0},
+  {x:256, y:0},
+  {x:0, y:256}
+];
+
+var numberOfPointsDrawn = 100000;
+var x = 0, y = 0;
+for(var i = 0; i < numberOfPointsDrawn ; i++){
+  var j = Math.floor(Math.random() * corners.length);
+  var corner = corners[j];
+  x = (x + corner.x)/2;
+  y = (y + corner.y)/2;
+  ctx.fillRect(x,y,1,1);
+}
