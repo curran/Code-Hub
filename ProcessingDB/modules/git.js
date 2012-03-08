@@ -1,4 +1,6 @@
-var spawn = require('child_process').spawn, fs = require('fs'), path = require('path');
+var spawn = require('child_process').spawn;
+var fs = require('fs');
+var path = require('path');
 
 //var CONTENT_FILE_NAME = 'c';
 var prefix = '.';
@@ -21,10 +23,7 @@ function repoDirExists(callback) {
 // callback(err)
 function createRepoDir(callback) {
   repoDirExists(function(exists) {
-    if(exists)
-      callback(null);
-    else
-      fs.mkdir(repoDir(), 0755, callback);
+    exists ? callback() : fs.mkdir(repoDir(), 755, callback);
   });
 }
 
