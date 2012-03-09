@@ -30,7 +30,7 @@ The following parts of the model are persisted in a MongoDB database:
    - type:String in ['app','module','template']
    - name:String
    - commitMessate:String
-   - dependencies:List<Revision>
+   - dependencies:List of Revisions (if type == 'module' or 'app')
    - template:Revision
 
 The following parts of the model are persisted in a set of Git repositories in the file system:
