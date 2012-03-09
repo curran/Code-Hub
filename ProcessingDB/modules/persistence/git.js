@@ -5,32 +5,24 @@ var path = require('path');
 /**
  * The Git Module of ProcessingDB.
  * 
- * The purpose of this module is to provide an API to the following model:
- *  - A set of Git repositories, each containing a single text file.
- *  - Each repository has a string id.
- *  - Each repository has many revisions.
- *  - Revisions have revision numbers
- *    - starting at 1
- *    - incrementing at the latest revision number of the repository
- * Exported methods are provided for
- *    - Setting the text contents, which
- *      - commits a new revision, and
- *      - increments the latest revision number of the repository
- *    - Getting the text contents
- *      - For a particular revision number
- *    - Getting the latest revision number
- *      - For a particular repository
+ * The purpose of this module is to provide an API to the following on-disk model:
+ *  - A set of "Scripts"
+ *    - Each Script is a Git repository containing a single text file.
+ *  - Each Script has a string id.
+ *  - Each Script has many revisions with
+ *    - revision numbers are incrementing integers starting at 1
  * 
+ * Exported methods are provided for
+ *  - Setting the text contents of revisions
+ *  - Getting the text contents of revisions
  * 
  * The following exported methods are provided:
- *    - setContent(repoId:String, content:String, revNum:Number)
- *      Sets the text contents (contents) of the repository, which
- *      - commits a new revision, and
- *      - increments the latest revision number of the repository
- *    - Getting the text contents
- *      - For a particular revision number
- *    - Getting the latest revision number
- *      - For a particular repository
+ *  - setContent(repoId:String, revNum:Number, content:String, callback(err))
+ *    Sets the text content of the repository, which
+ *     - writes the content to the file on disk in the repository, and
+ *     - commits a new revision.
+ *    A queue is used to ensure only a single setContent task is being
+ *    executed at a time for a given Script.
  * 
  * 
  * The following lower level methods are made available only to support unit testing:
@@ -42,36 +34,62 @@ var path = require('path');
  */
 
 //var CONTENT_FILE_NAME = 'c';
-var prefix = '.';
-var repoDirName = 'repos';
+var repoDir = './repos';
 
-function repoDir() {
-  return prefix + '/' + repoDirName;
-}
 //function scriptDir(scriptName){ return repoDir()+'/'+scriptName; }
 
-// checks if the repository directory exists
-// callback(err, exists:Boolean)
+/**
+ * Checks if the repository directory exists.
+ * callback(err, exists:Boolean)
+ */
 function repoDirExists(callback) {
-  path.exists(repoDir(), function(exists) {
+  path.exists(repoDir, function(exists) {
     callback(null, exists)
   });
 }
 
-// creates the repository directory if it doesn't exist
-// callback(err)
+/**
+ * Creates the repository directory if it doesn't exist.
+ * callback(err)
+ */ 
 function createRepoDir(callback) {
   repoDirExists(function(exists) {
-    exists ? callback() : fs.mkdir(repoDir(), 755, callback);
+    exists ? callback() : fs.mkdir(repoDir, 755, callback);
   });
 }
 
-// deletes the repository directory and all contents
-// callback(err)
+/**
+ * Deletes the repository directory and all contents.
+ * callback(err)
+ */
 function deleteRepoDir(callback) {
-  fs.rmdir(repoDir(), callback);
+  fs.rmdir(repoDir, callback);
+}
+
+/**
+ * Sets the content of the given repository and revision number.
+ * callback(err)
+ */
+var _content;
+function setContent(repoId, revNum, content, callback){
+  //todo implement using async.queue
+  _content = content;
+  callback();
+}
+
+/**
+ * Gets the content of the given repository and revision number.
+ * callback(err, content:String)
+ */
+
+function getContent(repoId, revNum, callback){
+  //todo implement
+  callback(null,_content);
 }
 
 module.exports.repoDirExists = repoDirExists;
 module.exports.createRepoDir = createRepoDir;
 module.exports.deleteRepoDir = deleteRepoDir;
+module.exports.setContent = setContent;
+module.exports.getContent = getContent;
+
