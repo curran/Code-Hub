@@ -33,9 +33,6 @@ The following parts of the model are persisted in a MongoDB database:
 
 The following parts of the model are persisted in a set of Git repositories in the file system:
 
- - Script
-   - scriptId:String This is the name of the directory containing the Git repository.
-
  - Revision
    - scriptId:String
    - revisionNumber:Number
