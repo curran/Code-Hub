@@ -10,6 +10,7 @@ This module provides an API to an on-disk model consisting of instances of the f
    - scriptId:String
    - revisionNumber:Number
    - content:String
+   - commitMessage:String
    - type:String in ['app','module','template']
    - name:String (if type == 'module')
    - dependencies:List of Revisions (if type == 'module' or 'app')
@@ -28,6 +29,7 @@ The following parts of the model are persisted in a MongoDB database:
    - revisionNumber:Number
    - type:String in ['app','module','template']
    - name:String
+   - commitMessate:String
    - dependencies:List<Revision>
    - template:Revision
 
