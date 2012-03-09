@@ -11,9 +11,9 @@ This module provides an API to an on-disk model consisting of instances of the f
    - revisionNumber:Number
    - content:String
    - type:String in ['app','module','template']
-   - name:String - only relevant when type == 'module'
-   - dependencies:List of Revisions - only relevant when type == 'module' or 'app'
-   - template:Revision - only relevant when type == 'app'
+   - name:String (if type == 'module')
+   - dependencies:List of Revisions (if type == 'module' or 'app')
+   - template:Revision (if type == 'app')
 
 The on-disk model is implemented using a combination of MongoDB and Git.
 
