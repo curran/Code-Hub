@@ -1,5 +1,4 @@
 var child_process = require('child_process');
-var spawn = child_process.spawn;
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
@@ -61,19 +60,36 @@ function ensureReposDirExists(callback) {
 }
 
 function deleteReposDir(callback) {
-  child_process.exec("rm -r " + reposDir, callback);
+  child_process.exec("rm -r -f " + reposDir, callback);
 }
 
-function initScriptRepo(scriptId, callback){
+function spawn(cwd, command, args){
+  return child_process.spawn(command, args, {cwd : cwd});
+}
+
+
+function run(cwd, command, args) {
+  return function(callback){
+    var child = spawn(cwd, command, args);
+    child.on('exit', function(exitCode){
+      callback();
+    });
+  }
+}
+
+function initScriptRepo(scriptId, outerCallback){
   var dir = scriptDir(scriptId);
-  fs.mkdir(dir, function(err){
-    var child = spawn('touch', [CONTENT_FILE_NAME], {
-      cwd : dir
-    });
-    child.on('exit', function(err) {
-      callback()
-    });
-  });
+  async.waterfall([
+    function(callback){
+      fs.mkdir(dir,callback);
+    },
+    run(dir, 'git', ['init']),
+    run(dir, 'touch', [CONTENT_FILE_NAME]),
+    run(dir, 'git', ['add','./']),
+    function(callback){
+      outerCallback();
+    }
+  ]);
 }
 
 function ensureScriptRepoExists(scriptId, callback){
@@ -84,19 +100,12 @@ function ensureScriptRepoExists(scriptId, callback){
   });
 }
 
-function run(cwd, command, args, callback) {
-  var options = {
-    cwd : cwd
-  };
-  var child = spawn(command, args, options);
-  child.on('exit', callback);
-}
+
 
 /**
  * Sets the content of the given repository and revision number.
  * callback(err)
  */
-var _content;
 function setContent(scriptId, revNum, content, outerCallback) {
   var dir = scriptDir(scriptId);
   async.waterfall([
@@ -104,24 +113,25 @@ function setContent(scriptId, revNum, content, outerCallback) {
       ensureScriptRepoExists(scriptId, callback);
     },
     function(callback){
-      fs.writeFile(scriptDir(scriptId)+'/'+CONTENT_FILE_NAME, content, callback);
+      fs.writeFile(dir+'/'+CONTENT_FILE_NAME, content, callback);
     },
-    function(callback) {
-      //{command:'git', args:['commit','-m','x','-a']},
-      //{command:'git', args:['tag','-a','v'+version,'-m','x']}
-      run(dir, 'git',['commit','-m','x','-a'],outerCallback);
+    run(dir, 'git',['commit','-m','x','-a']),
+    run(dir, 'git',['tag','-a','v'+revNum,'-m','x']),
+    function(callback){
+      outerCallback();
     }
   ]);
 }
 
-/**
- * Gets the content of the given repository and revision number.
- * callback(err, content:String)
- */
-
-function getContent(repoId, revNum, callback) {
-  //todo implement
-  callback(null, _content);
+function getContent(scriptId, revNum, callback) {
+  var child = spawn(scriptDir(scriptId), 'git', ['show', 'v' + revNum + ':' + CONTENT_FILE_NAME]);
+  var content = [];
+  child.stdout.on('data', function(data) {
+    content.push(data.toString());
+  });
+  child.on('exit', function(code) {
+    callback(null, content.join(''));
+  });
 }
 
 module.exports.reposDirExists = reposDirExists;
