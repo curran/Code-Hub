@@ -75,18 +75,14 @@ function run(cwd, command, args) {
   }
 }
 
-function initScriptRepo(scriptId, outerCallback){
+function initScriptRepo(scriptId, callback){
   var dir = scriptDir(scriptId);
   async.waterfall([
-    function(callback){
-      fs.mkdir(dir,callback);
-    },
+    function(callback){ fs.mkdir(dir, callback); },
     run(dir, 'git', ['init']),
     run(dir, 'touch', [CONTENT_FILE_NAME]),
     run(dir, 'git', ['add','./']),
-    function(callback){
-      outerCallback();
-    }
+    function(){ callback(); }
   ]);
 }
 
@@ -122,13 +118,22 @@ function queueSetContentTask(scriptId, revNum, content, callback){
 }
 
 function getContent(scriptId, revNum, callback) {
-  var child = spawn(scriptDir(scriptId), 'git', ['show', 'v' + revNum + ':' + CONTENT_FILE_NAME]);
-  var content = [];
-  child.stdout.on('data', function(data) {
-    content.push(data);
-  });
-  child.on('exit', function(exitCode) {
-    callback(null, content.join(''));
+  var dir = scriptDir(scriptId);
+  path.exists(dir, function(exists) {
+    if(!exists)
+      callback('No script exists with id '+scriptId);
+    else{
+      var child = spawn(dir, 'git', ['show', 'v' + revNum + ':' + CONTENT_FILE_NAME]);
+      var content = [], failed = false;
+      child.stdout.on('data', function(data) { content.push(data); });
+      child.stderr.on('data', function(data) { failed = true; });
+      child.on('exit', function(exitCode) {
+        if(failed)
+          callback('Revision '+revNum+' does not exists for script '+scriptId);
+        else
+          callback(null, content.join(''));
+      });
+    }
   });
 }
 

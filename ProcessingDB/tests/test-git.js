@@ -16,15 +16,6 @@ exports.testReposDirCreate = function(test) {
   ]);
 };
 
-// exports.testGetErrors = function(test){
-  // // test that errors are properly emitted when a script or revision does not exist
-  // var scriptId = 2, revNum = 4; // nonexistant
-  // git.getContent(scriptId, revNum, function(err, content){
-    // test.equal(err, "No script exists with id "+scriptId, "Request for nonexistent script id should pass an error.");
-    // callback(null);
-  // });
-// }
-
 exports.testSetGetContent = function(test){
   function testGet(scriptId, revNum, testContent){
     return function(callback){
@@ -67,6 +58,23 @@ exports.testSetGetContent = function(test){
     testGet('4','1','Test Content 4.1'),
     function() { test.done(); }
   ]);
+}
+
+exports.testGetErrors = function(test){
+  // test that errors are properly emitted when a script does not exist
+  var scriptId = 25, revNum = 4, errMsg;
+  git.getContent(scriptId, revNum, function(err, content){
+    errMsg = 'No script exists with id '+scriptId;
+    test.equal(err, errMsg, 'Request for nonexistent script id should pass an error.');
+    
+    // test that errors are properly emitted when a revision does not exist
+    scriptId = 1, revNum = 3;
+    git.getContent(scriptId, revNum, function(err, content){
+      errMsg = 'Revision '+revNum+' does not exists for script '+scriptId;
+      test.equal(err, errMsg, 'Request for nonexistent revision should pass an error.');
+      test.done();
+    });
+  });
 }
 
 exports.testReposDirDelete = function(test) {
