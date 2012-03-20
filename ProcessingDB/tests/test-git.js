@@ -16,25 +16,35 @@ exports.testReposDirCreate = function(test) {
   ]);
 };
 
+// exports.testGetErrors = function(test){
+  // // test that errors are properly emitted when a script or revision does not exist
+  // var scriptId = 2, revNum = 4; // nonexistant
+  // git.getContent(scriptId, revNum, function(err, content){
+    // test.equal(err, "No script exists with id "+scriptId, "Request for nonexistent script id should pass an error.");
+    // callback(null);
+  // });
+// }
+
 exports.testSetGetContent = function(test){
-  function testGet(repoId, revNum, testContent){
+  function testGet(scriptId, revNum, testContent){
     return function(callback){
-      git.getContent(repoId, revNum, function(err, content){
+      git.getContent(scriptId, revNum, function(err, content){
         test.equal(testContent, content, "get() should match set() content");
-        callback();
+        callback(null);
       });
     }
   }
   
-  function testSetGet(repoId, revNum, testContent){
+  function testSetGet(scriptId, revNum, testContent){
     return function(callback){
-      git.setContent(repoId, revNum, testContent, function(err){
-        testGet(repoId, revNum, testContent)(callback);
+      git.setContent(scriptId, revNum, testContent, function(err){
+        testGet(scriptId, revNum, testContent)(callback);
       });
     };
   }
   
   async.series([
+    // Test serial execution
     testSetGet('1','1','Test Content 1.1'),
     testSetGet('1','2','Test Content 1.2'),
     testSetGet('2','1','Test Content 2.1'),
@@ -42,10 +52,22 @@ exports.testSetGetContent = function(test){
     testGet('1','1','Test Content 1.1'),
     testGet('2','1','Test Content 2.1'),
     function(callback) {
-      test.done();
-    }
+      // Test parallel execution which would
+      // break if a queue were not used.
+      async.parallel(
+        [
+          testSetGet('3','1','Test Content 3.1'),
+          testSetGet('3','2','Test Content 3.2'),
+          testSetGet('4','1','Test Content 4.1'),
+          testSetGet('4','2','Test Content 4.2')
+        ], callback
+      );
+    },
+    testGet('3','1','Test Content 3.1'),
+    testGet('4','1','Test Content 4.1'),
+    function() { test.done(); }
   ]);
-};
+}
 
 exports.testReposDirDelete = function(test) {
   git.deleteReposDir(function(){

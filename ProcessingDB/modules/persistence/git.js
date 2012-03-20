@@ -9,8 +9,8 @@ var async = require('async');
  * The purpose of this module is to provide an API to the following on-disk model:
  *  - A set of "Scripts"
  *    - Each Script is a Git repository containing a single text file.
- *  - Each Script has a string id.
- *  - Each Script has many revisions with
+ *  - Each Script has a string id, which is the name of its repository directory.
+ *  - Each Script has many revisions
  *    - revision numbers are incrementing integers starting at 1
  *
  * Exported methods are provided for
@@ -71,9 +71,7 @@ function spawn(cwd, command, args){
 function run(cwd, command, args) {
   return function(callback){
     var child = spawn(cwd, command, args);
-    child.on('exit', function(exitCode){
-      callback();
-    });
+    child.on('exit', function(exitCode){ callback(); });
   }
 }
 
@@ -100,36 +98,36 @@ function ensureScriptRepoExists(scriptId, callback){
   });
 }
 
-
-
 /**
  * Sets the content of the given repository and revision number.
  * callback(err)
  */
-function setContent(scriptId, revNum, content, outerCallback) {
+function setContent(scriptId, revNum, content, callback) {
   var dir = scriptDir(scriptId);
-  async.waterfall([
-    function(callback){
-      ensureScriptRepoExists(scriptId, callback);
-    },
-    function(callback){
-      fs.writeFile(dir+'/'+CONTENT_FILE_NAME, content, callback);
-    },
+  async.series([
+    function(callback){ ensureScriptRepoExists(scriptId, callback); },
+    function(callback){ fs.writeFile(dir+'/'+CONTENT_FILE_NAME, content, callback); },
     run(dir, 'git',['commit','-m','x','-a']),
     run(dir, 'git',['tag','-a','v'+revNum,'-m','x']),
-    function(callback){
-      outerCallback();
-    }
+    function(){ callback(); }
   ]);
+}
+
+var setContentTaskQueue = async.queue(function (task, callback) {
+  setContent(task.scriptId, task.revNum, task.content, callback);
+}, 1);
+
+function queueSetContentTask(scriptId, revNum, content, callback){
+  setContentTaskQueue.push({scriptId: scriptId,revNum:revNum,content:content}, callback);
 }
 
 function getContent(scriptId, revNum, callback) {
   var child = spawn(scriptDir(scriptId), 'git', ['show', 'v' + revNum + ':' + CONTENT_FILE_NAME]);
   var content = [];
   child.stdout.on('data', function(data) {
-    content.push(data.toString());
+    content.push(data);
   });
-  child.on('exit', function(code) {
+  child.on('exit', function(exitCode) {
     callback(null, content.join(''));
   });
 }
@@ -137,5 +135,5 @@ function getContent(scriptId, revNum, callback) {
 module.exports.reposDirExists = reposDirExists;
 module.exports.ensureReposDirExists = ensureReposDirExists;
 module.exports.deleteReposDir = deleteReposDir;
-module.exports.setContent = setContent;
+module.exports.setContent = queueSetContentTask;
 module.exports.getContent = getContent;

@@ -8,33 +8,18 @@ This module provides an API to an on-disk model consisting of instances of the f
 
  - Revision
    - scriptId:String
-   - revisionNumber:Number
+   - revNum:Number
    - content:String
+   - commitMessage:String
+   - commitDate: Date
+   - parentRevision:Revision pointer
    - type:String in ['app','module','template']
-   - name:String - only relevant when type == 'module'
-   - dependencies:List of Revisions - only relevant when type == 'module' or 'app'
-   - template:Revision - only relevant when type == 'app'
+   - name:String (if type == 'module' or 'template')
+   - dependencies:List of Revision pointer (if type == 'module' or 'app')
+   - template:Revision pointer (if type == 'app')
 
-The on-disk model is implemented using a combination of MongoDB and Git.
+A "Revision pointer" is a (scriptId, revNum) pair.
 
-The following parts of the model are persisted in a MongoDB database:
- - Script
-   - scriptId:String
-   - latestRevisionNumber:Number
-
- - Revision
-   - scriptId:String
-   - revisionNumber:Number
-   - type:String in ['app','module','template']
-   - name:String
-   - dependencies:List<Revision>
-   - template:Revision
-
-The following parts of the model are persisted in a set of Git repositories in the file system:
- - Script
-   - scriptId:String This is the name of the directory containing the Git repository.
-
- - Revision
-   - scriptId:String
-   - revisionNumber:Number
-   - content:String
+The on-disk model is implemented using a combination of MongoDB and Git. Most of the model 
+is stored in a MongoDB database. The content is tracked using a set of Git repositories (one
+repository per scriptId, and one commit and tag for each revNum).
