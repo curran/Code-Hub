@@ -15,7 +15,6 @@ var Counters = new Schema({
   count: Number
 });
 
-// TODO emit error when no connection made
 mongoose.connect('mongodb://localhost/'+dbName,function(err){
   if(err)
     throw "Failed to connect to MongoDB. Is mongod running?";
@@ -48,11 +47,21 @@ function incrementCounter(schemaName, callback){
 
 // creates a new script
 // callback(err, scriptId)
-function createScript(callback){
+exports.createScript = function(callback){
   incrementCounter('Script',callback);
+};
+
+// Clears all database content
+exports.clearDB = function(callback){
+  Script.remove({},function(){
+    Counter.remove({},callback);
+  });
 }
 
-exports.createScript = createScript;
+// Disconnects from MongoDB so the Node process can end.
+exports.disconnect = function(){
+  mongoose.disconnect();
+}
 
 // var RevisionPointers = new Schema({
   // scriptId: Number,
