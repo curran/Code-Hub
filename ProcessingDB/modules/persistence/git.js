@@ -137,8 +137,8 @@ function getContent(scriptId, revNum, callback) {
   });
 }
 
-module.exports.reposDirExists = reposDirExists;
-module.exports.ensureReposDirExists = ensureReposDirExists;
-module.exports.deleteReposDir = deleteReposDir;
-module.exports.setContent = queueSetContentTask;
-module.exports.getContent = getContent;
+exports.reposDirExists = reposDirExists;
+exports.ensureReposDirExists = ensureReposDirExists;
+exports.deleteReposDir = deleteReposDir;
+exports.setContent = queueSetContentTask;
+exports.getContent = getContent;

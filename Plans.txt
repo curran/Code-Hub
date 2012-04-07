@@ -4,25 +4,27 @@ Curran Kelleher
 
 Model:
 
+// For embedded documents only
 var RevisionPointers = new Schema({
-  id: Number, // an integer
-  version: Number // an integer
+  scriptId: Number, // an integer
+  revNum: Number // an integer
 });
 
 var Revisions = new Schema({
-  id: Number, // an integer, the Script id
-  version: Number, // an integer, the Revision id
-  commitMessage: {type: String, default:''},
+  // an integer, the Script id
+  scriptId: Number,
+
+  // an integer, the Revision id
+  revNum: Number, 
+  commitMessage: String,
   commitDate: Date, // date & time of save
-  parentRevision: RevisionPointers, // from whence this came, for tracking branching
-  
+  parentRevision: RevisionPointers, // for tracking branching
   type: String, // in ['module','app','template']
   
-  // relevant when type == 'app'
-  template: RevisionPointers,
+  template: RevisionPointers, // if type == 'app'
   
-  // relevant when (type == 'app' || type == 'module')
-  dependencies: [RevisionPointers],
+  // relevant when (type == 'app') || type == 'module')
+  appDependencies: [RevisionPointers],
 });
 
 var Scripts = new Schema({
@@ -52,14 +54,13 @@ processingdb.com/
  |--------------------------------------------------------------------------|
  
  
-Click on Save Button -> processingdb.com/#:ScriptNum,:RevNum
+Click on Save Button -> processingdb.com/#:ScriptNum.:RevNum
  - e.g. processingdb.com/#5.3
- - e.g. processingdb.com/#s.b <- use alphanumeric id encodings for shorter URLs
  ----------------------------------------------------------------------------
  | ProcessingDB Logo  (Run Link)       |Your comments here..| (Save Button) |
  |--------------------------------------------------------------------------|
  |//syntax highlighted code area here                                       |
- |@app fullScreenCanvas                                                     |
+ |@app template fullScreenCanvas                                            |
  |var foo = require('foo');                                                 |
  |--------------------------------------------------------------------------|
  |Embedded in (link to fullScreenCanvas)                                    |
