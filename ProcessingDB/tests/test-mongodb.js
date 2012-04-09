@@ -8,6 +8,10 @@ db.setDbName('ProcessingDB-Test');
  */
 exports.testCreateScript = function(test) {
   async.waterfall([
+    // db.clearDB,
+    // function(callback){
+      // db.createScript(callback);
+    // },
     db.createScript,
     function(scriptId, callback){
       test.equal(scriptId, 1 , "First Script id should be 1");

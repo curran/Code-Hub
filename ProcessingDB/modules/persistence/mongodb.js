@@ -15,11 +15,6 @@ var Scripts = new Schema({
   latestRevNum: Number
 });
 
-var RevisionPointers = new Schema({
-  scriptId: Number,
-  revNum: Number
-});
-
 var Revisions = new Schema({
   _id: String, // scriptId.revNum
   commitMessage: String,
@@ -56,8 +51,8 @@ mongoose.connect('mongodb://localhost/'+dbName,function(err){
 });
 
 var Counter = mongoose.model('Counter', Counters);
-
 var Script = mongoose.model('Script', Scripts);
+var Revision = mongoose.model('Revision', Revisions);
 
 /**
  * Upserts and increments.
@@ -89,7 +84,9 @@ exports.createScript = function(callback){
  */
 exports.clearDB = function(callback){
   Script.remove({},function(){
-    Counter.remove({},callback);
+    Revision.remove({},function(){
+      Counter.remove({},callback);
+    });
   });
 }
 
@@ -145,22 +142,24 @@ exports.createRevision = function(revisionObject, callback){
     if(err)
       callback(err);
     else{
-      increment(Script,"latestRevNum", revisionObject.scriptId, function(err, revNum){
-        callback(null, revNum);
+      var scriptId = revisionObject.scriptId;
+      //increment(Script,"latestRevNum", scriptId,callback);
+      increment(Script,"latestRevNum", scriptId, function(err, revNum){
+        var revision = new Revision();
+        revision._id = scriptId+'.'+revNum;
+        revision.commitMessage = revisionObject.commitMessage;
+        revision.commitDate = revisionObject.commitDate;
+        revision.parentRevision = revisionObject.parentRevision;
+        revision.type = revisionObject.type;
+        revision.name = revisionObject.name;
+        revision.dependencies = revisionObject.dependencies;
+        revision.template = revisionObject.template;
+        //callback(null,revNum);
+        revision.save(function(err){
+          if(err) throw err;//callback(err);
+          else callback(null,revNum);
+        });
       });
-      
-      // var revision = new Revision();
-      // revision._id = revisionObject.scriptId;
-      // revision.name = revisionObject.name;
-//       
-      // scriptId:scriptId,
-            // commitMessage: "Test Commit Message",
-            // commitDate: new Date(2012, 4, 9),
-            // parentRevision: "",
-            // type: 'template',
-            // name: 'TestTemplate',
-            // dependencies: "",
-            // template: ""
     }
   });
 }
