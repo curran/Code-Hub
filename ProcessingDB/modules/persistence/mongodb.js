@@ -43,9 +43,13 @@ var Revisions = new Schema({
   template: String // "scriptId.revNum" or ""
 });
 
-Counters.statics.findAndModify = function (query, sort, doc, options, callback) {
+
+var findAndModify = function (query, sort, doc, options, callback) {
   return this.collection.findAndModify(query, sort, doc, options, callback);
 };
+
+Counters.statics.findAndModify = findAndModify;
+Scripts.statics.findAndModify = findAndModify;
 
 mongoose.connect('mongodb://localhost/'+dbName,function(err){
   if(err) throw "Failed to connect to MongoDB. Is mongod running?";
@@ -56,28 +60,27 @@ var Counter = mongoose.model('Counter', Counters);
 var Script = mongoose.model('Script', Scripts);
 
 /**
- * Increments the counter associated with the given schema name.
- * @param {string} schemaName The name of the schema for which to
- *   increment the associated counter.
- * @param {function(err, count)} The callback called with the updated
- *   count (a Number).
+ * Upserts and increments.
+ * callback(err,incrementedValue)
  */
-function incrementCounter(schemaName, callback){
-  Counter.findAndModify({ _id: schemaName }, [], 
-    { $inc: { count: 1 } }, {"new":true, upsert:true}, function (err, result) {
-      if (err)
-        callback(err);
-      else
-        callback(null, result.count);
+function increment(schema, fieldToIncrement, id, callback){
+  var fieldInc = {};
+  fieldInc[fieldToIncrement] = 1;
+  schema.findAndModify({ _id: id }, [], { $inc: fieldInc }, 
+    {"new":true, upsert:true}, function (err, result) {
+      if (err) callback(err);
+      else callback(null, result[fieldToIncrement]);
   });
 }
 
 /**
  * Creates a new script.
+ * Really it just increments the counter.
+ * The Script is inserted when the first Revision is made.
  * callback(err, scriptId)
  */
 exports.createScript = function(callback){
-  incrementCounter('Script',callback);
+  increment(Counter,"count", 'Script', callback);
 };
 
 /**
@@ -105,6 +108,12 @@ exports.disconnect = function(){
 exports.setDbName = function(newDbName){
   dbName = newDbName;
 }
+
+function validateRevisionObject(revisionObject,callback){
+  //TODO implement validation
+  callback(null);
+}
+
 /**
  * Creates a new revision.
  * @param {scriptId} The id of the script for which to 
@@ -131,6 +140,27 @@ exports.setDbName = function(newDbName){
  *    relevant when type == 'app'
  * @param callback(err, revNum) Passes the new revision number
  */
-exports.createRevision = function(scriptId, revisionObject, callback){
-  
+exports.createRevision = function(revisionObject, callback){
+  validateRevisionObject(revisionObject, function(err){
+    if(err)
+      callback(err);
+    else{
+      increment(Script,"latestRevNum", revisionObject.scriptId, function(err, revNum){
+        callback(null, revNum);
+      });
+      
+      // var revision = new Revision();
+      // revision._id = revisionObject.scriptId;
+      // revision.name = revisionObject.name;
+//       
+      // scriptId:scriptId,
+            // commitMessage: "Test Commit Message",
+            // commitDate: new Date(2012, 4, 9),
+            // parentRevision: "",
+            // type: 'template',
+            // name: 'TestTemplate',
+            // dependencies: "",
+            // template: ""
+    }
+  });
 }
