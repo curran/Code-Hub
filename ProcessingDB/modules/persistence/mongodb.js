@@ -106,6 +106,14 @@ exports.setDbName = function(newDbName){
   dbName = newDbName;
 }
 
+/**
+ * Converts scriptId, revNum to the id 
+ * form used by Revision._id
+ */
+function revId(scriptId, revNum){
+  return scriptId+'.'+revNum;
+}
+
 function validateRevisionObject(revisionObject,callback){
   //TODO implement validation
   callback(null);
@@ -139,14 +147,12 @@ function validateRevisionObject(revisionObject,callback){
  */
 exports.createRevision = function(revisionObject, callback){
   validateRevisionObject(revisionObject, function(err){
-    if(err)
-      callback(err);
+    if(err) callback(err);
     else{
       var scriptId = revisionObject.scriptId;
-      //increment(Script,"latestRevNum", scriptId,callback);
       increment(Script,"latestRevNum", scriptId, function(err, revNum){
         var revision = new Revision();
-        revision._id = scriptId+'.'+revNum;
+        revision._id = revId(scriptId,revNum);
         revision.commitMessage = revisionObject.commitMessage;
         revision.commitDate = revisionObject.commitDate;
         revision.parentRevision = revisionObject.parentRevision;
@@ -154,12 +160,38 @@ exports.createRevision = function(revisionObject, callback){
         revision.name = revisionObject.name;
         revision.dependencies = revisionObject.dependencies;
         revision.template = revisionObject.template;
-        //callback(null,revNum);
         revision.save(function(err){
-          if(err) throw err;//callback(err);
+          if(err) callback(err);
           else callback(null,revNum);
         });
       });
     }
   });
-}
+};
+/**
+ * Gets a revision entry from the database.
+ * The object passed to the callback is of the same
+ * form as the object passed into createRevision, with
+ * an additional revNum property.
+ * callback(err,revisionFromDB)
+ */
+exports.getRevision = function(scriptId, revNum, callback){
+  Revision.findOne({ _id: revId(scriptId, revNum) }, function(err, revision){
+    if(err)
+      callback(err);
+    else if(!revision)
+      callback("Revision not found with scriptId "+scriptId+" and revNum "+revNum);
+    else
+      callback(null, {
+        scriptId:scriptId,
+        revNum:revNum,
+        commitMessage: revision.commitMessage,
+        commitDate: revision.commitDate,
+        parentRevision: revision.parentRevision,
+        type: revision.type,
+        name: revision.name,
+        dependencies: revision.dependencies,
+        template: revision.template
+      });
+  });
+};
