@@ -1,7 +1,8 @@
-var db = require('../modules/persistence/mongodb');
+var db = require('../modules/backend/mongodb');
 var async = require('async');
 
-db.setDbName('ProcessingDB-Test');
+// Use a test DB so as not to interfere with a production DB 
+db.setDbName('ProcessingDBTest');
 
 /**
  * Tests incrementing script ids.

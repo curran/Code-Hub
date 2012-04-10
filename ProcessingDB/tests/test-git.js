@@ -1,5 +1,8 @@
-var git = require('../modules/persistence/git');
+var git = require('../modules/backend/git');
 var async = require('async');
+
+// Use a test reposDir so as not to interfere with a production reposDir
+git.setReposDir('./reposTest');
 
 exports.testReposDirCreate = function(test) {
   async.waterfall([

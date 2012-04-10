@@ -27,7 +27,6 @@ var async = require('async');
  *    A queue is used to ensure only a single setContent task is being
  *    executed at a time for a given script id.
  *
- *
  * The following lower level methods are made available only to support unit testing:
  *  - createReposDir(callback(err))
  *    Creates the directory containing script repositories if it doesn't already exist.
@@ -35,7 +34,6 @@ var async = require('async');
  *  - reposDirExists(callback(err,exists:Boolean))
  *    Tests whether or not the directory containing script repositories exists.
  */
-
 var CONTENT_FILE_NAME = 'content.txt';
 var reposDir = './repos';
 
@@ -142,3 +140,6 @@ exports.ensureReposDirExists = ensureReposDirExists;
 exports.deleteReposDir = deleteReposDir;
 exports.setContent = queueSetContentTask;
 exports.getContent = getContent;
+exports.setReposDir = function(newReposDir){
+  reposDir = newReposDir;
+}
