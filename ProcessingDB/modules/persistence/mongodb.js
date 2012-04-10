@@ -116,7 +116,20 @@ function revId(scriptId, revNum){
 
 function validateRevisionObject(revisionObject,callback){
   //TODO implement validation
-  callback(null);
+  if(!revisionObject)
+    callback("Revision object is null.");
+  else if(!revisionObject.commitMessage)
+    callback("commitMessage is null.");
+    // TODO validate all fields
+    // revision.commitMessage = revisionObject.commitMessage;
+        // revision.commitDate = revisionObject.commitDate;
+        // revision.parentRevision = revisionObject.parentRevision;
+        // revision.type = revisionObject.type;
+        // revision.name = revisionObject.name;
+        // revision.dependencies = revisionObject.dependencies;
+        // revision.template = revisionObject.template;
+  else
+    callback(null);
 }
 
 /**
@@ -145,11 +158,10 @@ function validateRevisionObject(revisionObject,callback){
  *    relevant when type == 'app'
  * @param callback(err, revNum) Passes the new revision number
  */
-exports.createRevision = function(revisionObject, callback){
+exports.createRevision = function(scriptId, revisionObject, callback){
   validateRevisionObject(revisionObject, function(err){
     if(err) callback(err);
     else{
-      var scriptId = revisionObject.scriptId;
       increment(Script,"latestRevNum", scriptId, function(err, revNum){
         var revision = new Revision();
         revision._id = revId(scriptId,revNum);
@@ -171,8 +183,7 @@ exports.createRevision = function(revisionObject, callback){
 /**
  * Gets a revision entry from the database.
  * The object passed to the callback is of the same
- * form as the object passed into createRevision, with
- * an additional revNum property.
+ * form as the object passed into createRevision.
  * callback(err,revisionFromDB)
  */
 exports.getRevision = function(scriptId, revNum, callback){
@@ -183,8 +194,6 @@ exports.getRevision = function(scriptId, revNum, callback){
       callback("Revision not found with scriptId "+scriptId+" and revNum "+revNum);
     else
       callback(null, {
-        scriptId:scriptId,
-        revNum:revNum,
         commitMessage: revision.commitMessage,
         commitDate: revision.commitDate,
         parentRevision: revision.parentRevision,

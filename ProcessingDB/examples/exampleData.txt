@@ -1,21 +1,18 @@
-// "math" Script
-module.id = "math"
+@module math
 exports.add = function() {
-    var sum = 0, i = 0, args = arguments, l = args.length;
-    while (i < l) {
-        sum += args[i++];
-    }
-    return sum;
+  var sum = 0, i = 0, args = arguments, l = args.length;
+  while (i < l) {
+    sum += args[i++];
+  }
+  return sum;
 };
 
-// "increment" Script
-module.id = 'increment'
+@module increment
 var add = require('math').add;
 exports.increment = function(val) {
-    return add(val, 1);
+  return add(val, 1);
 };
 
-// "minimalHTML" Script
 @template minimalHTML
 <!DOCTYPE html>
 <html>
@@ -29,7 +26,6 @@ ${code}
 </body>
 </html>
 
-// "Increment Test" Script
 @app name Increment Test
 @app template minimalHTML
 var inc = require('increment').increment;
@@ -43,7 +39,10 @@ console.log(inc(a)); // will output 2
 
 
 
-// "canvas" Script
+
+
+
+
 @template canvas
 <!DOCTYPE html>
 <html>
@@ -57,6 +56,8 @@ ${code}
 </script>
 </body>
 </html>
+
+
 
 // "Chaos Game" Script
 @app template canvas

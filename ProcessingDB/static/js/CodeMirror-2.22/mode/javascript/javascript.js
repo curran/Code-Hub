@@ -76,6 +76,10 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         return ret("operator", null, stream.current());
       }
     }
+    else if (ch == "@") {
+      stream.skipToEnd();
+      return ret("meta", "meta");
+    }
     else if (ch == "#") {
         stream.skipToEnd();
         return ret("error", "error");

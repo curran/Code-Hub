@@ -6,6 +6,10 @@ style(type="text/css")
   .CodeMirror-scroll {height: auto; overflow: visible;}
 script
   var codeEditor = CodeMirror(document.body, {
-    value: "function myScript(){return 100;}",
+    value:  "@app name Increment Test\\n"+
+            "@app template minimalHTML\\n"+
+            "var inc = require('increment');\\n"+
+            "var a = 1;\\n"+
+            "console.log(inc(a)); // will output 2",
     mode:  "javascript"
   });

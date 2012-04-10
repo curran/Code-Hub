@@ -1,0 +1,12 @@
+For handling the ProcessingDJ DSL where lines begin with @ symbols, 
+insert the following script into CodeMirror/mode/javascript:
+
+else if (ch == "@") {
+  stream.skipToEnd();
+  return ret("meta", "meta");
+}
+// context - put the code above the following code:
+else if (ch == "#") {
+    stream.skipToEnd();
+    return ret("error", "error");
+}
