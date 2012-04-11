@@ -78,11 +78,11 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     }
     else if (ch == "@") {
       stream.skipToEnd();
-      return ret("meta", "meta");
+      return ret("comment", "meta");
     }
     else if (ch == "#") {
-        stream.skipToEnd();
-        return ret("error", "error");
+      stream.skipToEnd();
+      return ret("error", "error");
     }
     else if (isOperatorChar.test(ch)) {
       stream.eatWhile(isOperatorChar);

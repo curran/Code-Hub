@@ -3,7 +3,7 @@ insert the following script into CodeMirror/mode/javascript:
 
 else if (ch == "@") {
   stream.skipToEnd();
-  return ret("meta", "meta");
+  return ret("comment", "meta");
 }
 // context - put the code above the following code:
 else if (ch == "#") {

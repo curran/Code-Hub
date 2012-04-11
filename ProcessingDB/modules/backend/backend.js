@@ -20,3 +20,83 @@ exports.setModelName = function(modelName){
 }
 
 exports.createScript = db.createScript;
+
+/**
+ * Clears the content of the Git repositories
+ * and MongoDB database.
+ * callback(err)
+ */
+exports.clear = function(callback){
+  db.clear(function(err1){
+    git.deleteReposDir(function(err2){
+      callback(err1 || err2);
+    });
+  });
+}
+
+/**
+ * Disconnects from MongoDB so the Node process can end.
+ * Useful for unit testing.
+ */
+exports.disconnect = db.disconnect;
+
+/**
+ * Creates a new revision entry in the MongoDB database
+ * and tracks the content using Git.
+ * @param {scriptId} The id of the script for which to 
+ *   create the new revision.
+ * @param {revisionObject} The content to be persisted,
+ *   expected to contain the following fields:
+ *  - scriptId
+ *  - revNum
+ *  - commitMessage: String
+ *  - commitDate: Date,
+ *  - parentRevision: String, "scriptId.revNum" or ""
+ *  - type: String, // in ['module','app','template']
+ *  - name: String,
+ *    relevant when (type == 'module' || type == 'template')
+ *  - dependencies: String,
+ *    relevant when type == 'module' or type == 'app'
+ *    if 'module', contains direct dependencies by module name
+ *      of the form "moduleA,moduleB,moduleC"
+ *    if 'app', contains transitive dependencies by revision id
+ *      of the form "scriptIdA.revNumA,scriptIdB.revNumB"
+ *      e.g. "4.2,6.3,8.1"
+ *    or "" for no dependencies or if type == 'template'
+ *  - template: String // "scriptId.revNum" or ""
+ *    relevant when type == 'app'
+ *  - content: String The text content to be tracked using Git.
+ * @param callback(err, revNum) Passes the new revision number.
+ */
+exports.createRevision = function(scriptId, revisionObject, callback){
+  if(!revisionObject)
+    callback("Revision object is null.");
+  var content = revisionObject.content || "";
+  db.createRevision(scriptId, revisionObject, function(err,revNum){
+    if(err)
+      callback(err);
+    else{
+      git.setContent(scriptId, revNum, content, function(err){
+        callback(err, revNum);
+      });
+    }
+  });
+};
+
+/**
+ * Gets a revision entry from the database and the content from Git.
+ * The object passed to the callback is of the same
+ * form as the object passed into createRevision.
+ * callback(err,revisionFromBackend)
+ */
+exports.getRevision = function(scriptId, revNum, callback){
+  db.getRevision(scriptId, revNum, function(err, revisionFromBackend){
+    if(err) callback(err);
+    else{
+      git.getContent(scriptId, revNum, function(err, content){
+        revisionFromBackend.content = content;
+        callback(null,revisionFromBackend);
+      });
+    }
+  });
+};

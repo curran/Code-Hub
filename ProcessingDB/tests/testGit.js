@@ -81,7 +81,7 @@ exports.testGetErrors = function(test){
 }
 
 exports.testReposDirDelete = function(test) {
-  git.deleteReposDir(function(){
+  git.deleteReposDir(function(err){
     git.reposDirExists(function(err, exists) {
       test.ok(!exists, "Repo dir should no longer exist.");
       test.done();

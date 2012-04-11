@@ -82,7 +82,7 @@ exports.createScript = function(callback){
  * Clears all database content.
  * callback(err)
  */
-exports.clearDB = function(callback){
+exports.clear = function(callback){
   Script.remove({},function(){
     Revision.remove({},function(){
       Counter.remove({},callback);
@@ -191,6 +191,7 @@ exports.getRevision = function(scriptId, revNum, callback){
     if(err)
       callback(err);
     else if(!revision)
+      //TODO write a unit test for this error
       callback("Revision not found with scriptId "+scriptId+" and revNum "+revNum);
     else
       callback(null, {
