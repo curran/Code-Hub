@@ -39,7 +39,7 @@ exports.testTemplatePreprocessing = function(test) {
 /**
  * Tests extraction of '@app property value' directive.
  */
-/*exports.testTemplatePreprocessing = function(test) {
+exports.testTemplatePreprocessing = function(test) {
   readTestData('ChaosGame',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
       
@@ -47,13 +47,19 @@ exports.testTemplatePreprocessing = function(test) {
 @app name Chaos Game
 @app width 257
 @app height 257*/
-/*
+
       test.equal(revision.type, 'app' , 'Type should be template.');
-      test.equal(revision.properties., 'minimalHTML' , 'Name should be minimalHTML.');
+      test.equal(revision.template, 'canvas' , 'template should be canvas.');
+      
+      test.equal(revision.properties.name, 'The  Chaos  Game' , 'Name should be Chaos Game.');
+      //test.equal(revision.properties.name, 'Chaos  Game' , 'Name should be Chaos Game.');
+      test.equal(revision.properties.width, 257 , 'width should be 257.');
+      test.equal(revision.properties.height, 257 , 'width should be 257.');
+      
       test.done();
     });
   });
-};*/
+};
 
 /**
  * Tests extraction of the require('moduleName') directive.

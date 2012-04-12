@@ -1,6 +1,6 @@
 // "Chaos Game" Script
 @app template canvas
-@app name Chaos Game
+@app name The  Chaos  Game
 @app width 257
 @app height 257
 
