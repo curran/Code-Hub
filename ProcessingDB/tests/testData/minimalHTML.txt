@@ -1,0 +1,12 @@
+@template minimalHTML
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${name}</title>
+</head>
+<body>
+<script>
+${code}
+</script>
+</body>
+</html>

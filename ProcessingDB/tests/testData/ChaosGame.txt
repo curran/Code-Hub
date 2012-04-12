@@ -1,0 +1,24 @@
+// "Chaos Game" Script
+@app template canvas
+@app name Chaos Game
+@app width 257
+@app height 257
+
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+var corners = [
+  {x:0, y:0},
+  {x:256, y:0},
+  {x:0, y:256}
+];
+
+var numberOfPointsDrawn = 100000;
+var x = 0, y = 0;
+for(var i = 0; i < numberOfPointsDrawn ; i++){
+  var j = Math.floor(Math.random() * corners.length);
+  var corner = corners[j];
+  x = (x + corner.x)/2;
+  y = (y + corner.y)/2;
+  ctx.fillRect(x,y,1,1);
+}
