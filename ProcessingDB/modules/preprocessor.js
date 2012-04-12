@@ -9,7 +9,7 @@
 var _ = require('underscore');
 
 /**
- * Parses ProcessingDB directives from a line.
+ * Parses ProcessingDB directives starting with @ from a line.
  * Returns null if no directive was found.
  * Returns an object if a directive was found
  * where the 'type' property is
@@ -21,19 +21,24 @@ var _ = require('underscore');
  * If an error occurs, type=='error' and the 'message' property is available.
  */
 function parse(line, callback){
+  //TODO make this more efficient by first checking that the first non ' ' char is a @
+  
   // split on whitespace and trim tokens
   var tokens = _.filter(line.split(" "),_.identity);
   
-  if(tokens[0] == '@module')
-    if(tokens.length == 2)
-      return { type:'module', name:tokens[1] };
-    else
-      return {
-        type:'error',
-        message:"'@module' directive found with wrong number of arguments."+
-          " Expected form is '@module moduleName' where "+
-          "moduleName is the name of the module."
-      };
+  if(tokens.length > 0){
+    var type = tokens[0].substr(1);
+    if(type == 'module' || type == 'template'){
+      if(tokens.length == 2)
+        return { type:type, name:tokens[1] };
+      else{
+        return { type:'error', message:"'@module' directive found with"+
+          " wrong number of arguments.Expected form is '@module moduleName' "+
+          "where moduleName is the name of the module."
+        };
+      }
+    }
+  }
 }
 
 /**
@@ -47,11 +52,16 @@ exports.parseContent = function(content, callback){
   for(i = 0; i < lines.length; i++){
     directive = parse(lines[i]);
     if(directive){
-      if(directive.type == 'module')
+      if(directive.type == 'module' || directive.type == 'template')
+        //TODO report error when type is declared multiple times
         // inject type and name from directive into revision
         revision = _.defaults(revision, directive);
     }
   }
+  var requires = content.match(/require\(['|"]([^)]+)['|"]\)/gm);
+  revision.dependencies = _.map(requires, function(s){
+    return s.replace(/"/g,"'").replace("require('",'').replace("')",'')
+  });
   
   callback(null,revision);
 };

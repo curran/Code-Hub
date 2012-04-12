@@ -1,0 +1,9 @@
+@module multipleDependencies
+
+var foo = require('foo');
+var bar = require('bar');
+var baz = require("baz");
+
+var zoo = require('zoo'); var zar = require('zar'); var zaz = require("zaz");
+
+
