@@ -37,6 +37,25 @@ exports.testTemplatePreprocessing = function(test) {
 };
 
 /**
+ * Tests extraction of '@app property value' directive.
+ */
+/*exports.testTemplatePreprocessing = function(test) {
+  readTestData('ChaosGame',function(err,content){
+    preprocessor.parseContent(content, function(err, revision){
+      
+    /*  @app template canvas
+@app name Chaos Game
+@app width 257
+@app height 257*/
+/*
+      test.equal(revision.type, 'app' , 'Type should be template.');
+      test.equal(revision.properties., 'minimalHTML' , 'Name should be minimalHTML.');
+      test.done();
+    });
+  });
+};*/
+
+/**
  * Tests extraction of the require('moduleName') directive.
  */
 exports.testModuleDependencyPreprocessing = function(test) {

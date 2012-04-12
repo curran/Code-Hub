@@ -20,9 +20,7 @@ var _ = require('underscore');
  * If (type=='module') or (type=='template'), the 'name' property is available.
  * If an error occurs, type=='error' and the 'message' property is available.
  */
-function parse(line, callback){
-  //TODO make this more efficient by first checking that the first non ' ' char is a @
-  
+function parse(line){
   // split on whitespace and trim tokens
   var tokens = _.filter(line.split(" "),_.identity);
   
@@ -32,6 +30,7 @@ function parse(line, callback){
       if(tokens.length == 2)
         return { type:type, name:tokens[1] };
       else{
+        //TODO write unit test for this error
         return { type:'error', message:"'@module' directive found with"+
           " wrong number of arguments.Expected form is '@module moduleName' "+
           "where moduleName is the name of the module."
@@ -45,22 +44,26 @@ function parse(line, callback){
  * callback(err, revision)
  */
 exports.parseContent = function(content, callback){
-  var lines = content.split('\n');
-  var revision = { content:content };
+  //TODO test errors when content contains no directives
+  
+  var matches = content.match(/(require\(['|"][^)]+['|"]\))|@.*/gm);
+  var hasAtSymbol = function(s){ return s.indexOf("@") != -1 };
+  var directives = _.map(_.filter(matches, hasAtSymbol), parse);
+  var requires = _.reject(matches, hasAtSymbol);
+  
+  var revision;
+  //TODO report error when type is declared multiple times
+  _.each(directives,function(directive){
+    if(directive.type == 'module' || directive.type == 'template')
+      revision = directive; // 'type' and 'name' from directive
+    //TODO handle app properties
+  });
+  
+  //TODO test errors when content contains no type declarations
+  revision.content = content;
 
-  var i, directive;  
-  for(i = 0; i < lines.length; i++){
-    directive = parse(lines[i]);
-    if(directive){
-      if(directive.type == 'module' || directive.type == 'template')
-        //TODO report error when type is declared multiple times
-        // inject type and name from directive into revision
-        revision = _.defaults(revision, directive);
-    }
-  }
-  var requires = content.match(/require\(['|"]([^)]+)['|"]\)/gm);
   revision.dependencies = _.map(requires, function(s){
-    return s.replace(/"/g,"'").replace("require('",'').replace("')",'')
+    return s.replace(/"/g,"'").replace(/require\('|'\)/g,'')
   });
   
   callback(null,revision);
