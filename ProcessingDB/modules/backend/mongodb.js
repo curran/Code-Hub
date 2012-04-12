@@ -118,8 +118,9 @@ function validateRevisionObject(revisionObject,callback){
   //TODO implement validation
   if(!revisionObject)
     callback("Revision object is null.");
-  else if(!revisionObject.commitMessage && revisionObject.commitMessage != "")
-    callback("commitMessage is null.");
+  else{
+    if(!revisionObject.commitMessage)
+      revisionObject.commitMessage = "";
     // TODO validate all fields
     // revision.commitMessage = revisionObject.commitMessage;
         // revision.commitDate = revisionObject.commitDate;
@@ -128,8 +129,9 @@ function validateRevisionObject(revisionObject,callback){
         // revision.name = revisionObject.name;
         // revision.dependencies = revisionObject.dependencies;
         // revision.template = revisionObject.template;
-  else
+  
     callback(null);
+  }
 }
 
 /**

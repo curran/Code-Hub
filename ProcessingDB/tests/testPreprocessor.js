@@ -1,14 +1,6 @@
 var preprocessor = require('../modules/preprocessor');
-var fs = require('fs');
+var readTestData = require('./testData/readTestData');
 var _ = require('underscore');
-
-/**
- * Reads the file './testData/'+scriptName+'.txt'.
- * callback(err, content);
- */
-function readTestData(scriptName, callback){
-  fs.readFile('./testData/'+scriptName+'.txt', 'ascii', callback);
-}
 
 /**
  * Tests extraction of the '@module moduleName' directive.
@@ -42,17 +34,10 @@ exports.testTemplatePreprocessing = function(test) {
 exports.testTemplatePreprocessing = function(test) {
   readTestData('ChaosGame',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
-      
-    /*  @app template canvas
-@app name Chaos Game
-@app width 257
-@app height 257*/
-
       test.equal(revision.type, 'app' , 'Type should be template.');
       test.equal(revision.template, 'canvas' , 'template should be canvas.');
       
-      test.equal(revision.properties.name, 'The  Chaos  Game' , 'Name should be Chaos Game.');
-      //test.equal(revision.properties.name, 'Chaos  Game' , 'Name should be Chaos Game.');
+      test.equal(revision.properties.name, 'The  Chaos  Game' , 'Name should be "The  Chaos  Game".');
       test.equal(revision.properties.width, 257 , 'width should be 257.');
       test.equal(revision.properties.height, 257 , 'width should be 257.');
       
