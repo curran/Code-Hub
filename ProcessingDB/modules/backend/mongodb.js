@@ -118,7 +118,7 @@ function validateRevisionObject(revisionObject,callback){
   //TODO implement validation
   if(!revisionObject)
     callback("Revision object is null.");
-  else if(!revisionObject.commitMessage)
+  else if(!revisionObject.commitMessage && revisionObject.commitMessage != "")
     callback("commitMessage is null.");
     // TODO validate all fields
     // revision.commitMessage = revisionObject.commitMessage;

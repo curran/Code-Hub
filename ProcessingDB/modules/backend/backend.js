@@ -69,6 +69,7 @@ exports.disconnect = db.disconnect;
  * @param callback(err, revNum) Passes the new revision number.
  */
 exports.createRevision = function(scriptId, revisionObject, callback){
+  scriptId = parseInt(scriptId); //in case we get strings as input
   if(!revisionObject)
     callback("Revision object is null.");
   var content = revisionObject.content || "";
@@ -86,16 +87,19 @@ exports.createRevision = function(scriptId, revisionObject, callback){
 /**
  * Gets a revision entry from the database and the content from Git.
  * The object passed to the callback is of the same
- * form as the object passed into createRevision.
+ * form as the object passed into createRevision, with additional
+ * scriptId and revNum properties.
  * callback(err,revisionFromBackend)
  */
 exports.getRevision = function(scriptId, revNum, callback){
-  db.getRevision(scriptId, revNum, function(err, revisionFromBackend){
+  db.getRevision(scriptId, revNum, function(err, revision){
     if(err) callback(err);
     else{
       git.getContent(scriptId, revNum, function(err, content){
-        revisionFromBackend.content = content;
-        callback(null,revisionFromBackend);
+        revision.content = content;
+        revision.scriptId = scriptId;
+        revision.revNum = revNum;
+        callback(null,revision);
       });
     }
   });

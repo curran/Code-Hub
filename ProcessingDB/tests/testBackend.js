@@ -18,7 +18,6 @@ exports.testCreateScript = function(test) {
  */
 exports.testRevisionWriteRead = function(test){
   backendFunctions.testRevisionWriteRead(backend, test);
-  //test.done();
 };
 
 exports.testDisconnect = function(test) {
