@@ -12,6 +12,8 @@
  */
 var backend = require('../modules/backend/backend');
 var async = require('async');
+var _ = require('underscore');
+
 
 /**
  * Expects revision.dependencies as an array of module name strings.
@@ -22,13 +24,32 @@ var async = require('async');
 module.exports.lookupDependencies = function(revision, callback){
   // this array will contain revision references looked up from module names
   var dependencies = [];
-  async.forEach(revision.dependencies,function(moduleName, callback){
-    backend.getLatestRevisionByName(moduleName, function(err, scriptId, revNum){
-      dependencies.push(scriptId+'.'+revNum);
+  var q;
+  
+  function push(moduleNames){
+    _(moduleNames).each(function(moduleName){
+      // TODO add: if the module has not already been looked up ...
+      q.push(moduleName, function (err) {
+        //console.log('finished processing '+moduleName);
+        // TODO test this code path: when a module is not found
+        if(err) callback(err);
+      });
+    });
+  }
+  
+  q = async.queue(function(moduleName, callback){
+    backend.getLatestRevisionByName(moduleName, function(err, revision){
+      dependencies.push(revision.scriptId+'.'+revision.revNum);
+      push(revision.dependencies)
       callback(err);
     });
-  }, function(err){
+  },5);
+  
+  q.drain = function() {
+    revision = _.clone(revision); //to avoid side effects
     revision.dependencies = dependencies;
-    callback(err, revision);
-  });
+    callback(null, revision);
+  }
+  
+  push(revision.dependencies);
 }

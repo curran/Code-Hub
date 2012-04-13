@@ -13,7 +13,8 @@ var Counters = new Schema({
 var Scripts = new Schema({
   _id: Number, //scriptId
   latestRevNum: Number,
-  latestName: String
+  latestName: String,
+  latestDependencies: [String]
 });
 
 var Revisions = new Schema({
@@ -26,14 +27,11 @@ var Revisions = new Schema({
   // relevant when (type == 'module' || type == 'template')
   name: String,
   
-  // relevant when type == 'module' or type == 'app'
-  // if 'module', contains direct dependencies by module name
-  //   of the form "moduleA,moduleB,moduleC"
-  // if 'app', contains transitive dependencies by revision id
+  // relevant when type == 'app'.
+  // contains transitive dependencies by revision reference
   //   of the form "scriptIdA.revNumA,scriptIdB.revNumB"
-  //   e.g. "4.2,6.3,8.1"
-  // or "" for no dependencies or if type == 'template'
-  dependencies: String,
+  //   e.g. ['4.2','6.3','8.1']
+  dependencies: [String],
   
   // relevant when type == 'app'
   template: String // "scriptId.revNum" or ""
@@ -177,8 +175,11 @@ exports.createRevision = function(scriptId, revisionObject, callback){
   validateRevisionObject(revisionObject, function(err){
     if(err) callback(err);
     else{
-      var set = {latestName: revisionObject.name};
-      incrementAndSet(Script,"latestRevNum", scriptId, set,function(err, revNum){
+      var set = {
+        latestName: revisionObject.name,
+        latestDependencies: revisionObject.dependencies
+      };
+      incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
         var revision = new Revision();
         revision._id = revId(scriptId,revNum);
         revision.commitMessage = revisionObject.commitMessage;
@@ -232,6 +233,10 @@ exports.getLatestRevisionByName = function(name, callback){
     if(!script)
       callback('No script found with name "'+name+'".');
     else
-      callback(null,script._id,script.latestRevNum);
+      callback(null,{
+        scriptId:script._id,
+        revNum:script.latestRevNum, 
+        dependencies: script.latestDependencies
+      });
   });
 }

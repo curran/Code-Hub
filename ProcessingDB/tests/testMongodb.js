@@ -17,7 +17,7 @@ exports.testRevisionWriteRead = function(test) {
 };
 
 exports.testGetLatestRevisionByName = function(test) {
-  var revision = {name:'foo'};
+  var revision = {name:'foo', dependencies:['a','b']};
   var scriptId;
   async.waterfall([
     db.createScript,
@@ -28,18 +28,21 @@ exports.testGetLatestRevisionByName = function(test) {
     function(revNum, callback){
       test.equal(revNum, 1 , "First revNum should be 1");
       
-      db.getLatestRevisionByName('foo',function(err, latestScriptId, latestRevNum){
-        test.equal(revNum, latestRevNum, "revNum should match");
-        test.equal(scriptId, latestScriptId, "scriptId should match");
+      db.getLatestRevisionByName('foo',function(err, revision){
+        test.equal(scriptId, revision.scriptId, "scriptId should match");
+        test.equal(revNum, revision.revNum, "revNum should match");
+        test.equal(revision.dependencies.length, 2, "should have 2 dependencies");
         
         revision.name = 'bar';
+        revision.dependencies.push('c');
         db.createRevision(scriptId, revision, callback);
       });
     },
     function(revNum, callback){
-      db.getLatestRevisionByName('bar',function(err, latestScriptId, latestRevNum){
-        test.equal(revNum, latestRevNum, "revNum should match");
-        test.equal(scriptId, latestScriptId, "scriptId should match");
+      db.getLatestRevisionByName('bar',function(err, revision){
+        test.equal(scriptId, revision.scriptId, "scriptId should match");
+        test.equal(revNum, revision.revNum, "revNum should match");
+        test.equal(revision.dependencies.length, 3, "should have 3 dependencies");
         callback(null);
       });
     }],

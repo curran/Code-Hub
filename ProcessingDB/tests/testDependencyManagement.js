@@ -28,6 +28,11 @@ exports.testLookupDependencies = function(test){
     name: 'baz',
     dependencies: ['foo','bar']
   };
+  var a = {
+    type: 'app',
+    name: 'a',
+    dependencies: ['baz']
+  };
   
   function loadRevision(revision, callback){
      backend.createScript(function(err, scriptId){
@@ -44,17 +49,44 @@ exports.testLookupDependencies = function(test){
   }
   
   async.waterfall([
+    // Test direct dependency lookup
     function(callback){ loadRevision(foo, callback);  },
     function(callback){ loadRevision(bar, callback);  },
     function(callback){ dependencyManagement.lookupDependencies(baz, callback); },
     function(bazAfter, callback){
-      var expected = [id(foo),id(bar)];
+      var expected = [id(foo), id(bar)];
       test.equal(bazAfter.dependencies.length, expected.length, 'Number of dependencies should match.');
       _(expected).each(function(d){
         test.ok(_(bazAfter.dependencies).contains(d),'Dependencies should contain '+d);
       });
       callback();
+    },
+    
+    // Test recursive dependency lookup
+    function(callback){ loadRevision(baz, callback);  },
+    function(callback){ dependencyManagement.lookupDependencies(a, callback); },
+    function(aAfter, callback){
+      var expected = [id(baz), id(foo), id(bar)];
+      test.equal(aAfter.dependencies.length, expected.length, 'Number of dependencies should match.');
+      _(expected).each(function(d){
+        test.ok(_(aAfter.dependencies).contains(d),'Dependencies should contain '+d);
+      });
+      callback();
     }
+    
+    // TODO test for correct behavior when the revision has no dependencies
+    
+    // TODO test for circular dependency error
+    
+    // TODO test for error when a dependency is not found
+    
+    // TODO test for b -> a, c -> a, d -> b, d-> a
+    //     a
+    //    / \
+    //   b   c
+    //    \ /
+    //     d
+    // make sure a is included only once
   ],
   function(err, result){
     backend.clear(function(err){
