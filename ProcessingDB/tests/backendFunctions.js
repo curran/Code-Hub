@@ -54,7 +54,10 @@ exports.testRevisionWriteRead = function(module, test){
     },
     function(revNum, callback){
       test.equal(revNum, 1 , "First revNum should be 1");
-      module.createRevision(scriptId, revision, callback);
+      module.createRevision(scriptId, null, function(err, revNum){
+        test.equal(err, "Revision object is null." , "Null revision should cause error.");
+        module.createRevision(scriptId, revision, callback);
+      });
     },
     function(revNum, callback){
       test.equal(revNum, 2 , "Second revNum should be 2");

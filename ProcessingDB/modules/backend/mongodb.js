@@ -12,7 +12,8 @@ var Counters = new Schema({
 
 var Scripts = new Schema({
   _id: Number, //scriptId
-  latestRevNum: Number
+  latestRevNum: Number,
+  latestName: String
 });
 
 var Revisions = new Schema({
@@ -55,17 +56,29 @@ var Script = mongoose.model('Script', Scripts);
 var Revision = mongoose.model('Revision', Revisions);
 
 /**
+ * Upserts and increments, and sets the property:value pair found in setObject.
+ * callback(err,incrementedValue)
+ */
+function incrementAndSet(schema, fieldToIncrement, id, setObject, callback){
+  var fieldInc = {};
+  fieldInc[fieldToIncrement] = 1;
+  var options = { $inc: fieldInc };
+  if(setObject)
+    options.$set = setObject;
+  schema.findAndModify({ _id: id }, [], options, {"new":true, upsert:true},
+    function (err, result) {
+      if (err) callback(err);
+      else callback(null, result[fieldToIncrement]);
+    }
+  );
+}
+
+/**
  * Upserts and increments.
  * callback(err,incrementedValue)
  */
 function increment(schema, fieldToIncrement, id, callback){
-  var fieldInc = {};
-  fieldInc[fieldToIncrement] = 1;
-  schema.findAndModify({ _id: id }, [], { $inc: fieldInc }, 
-    {"new":true, upsert:true}, function (err, result) {
-      if (err) callback(err);
-      else callback(null, result[fieldToIncrement]);
-  });
+  incrementAndSet(schema, fieldToIncrement, id, null, callback);
 }
 
 /**
@@ -164,7 +177,8 @@ exports.createRevision = function(scriptId, revisionObject, callback){
   validateRevisionObject(revisionObject, function(err){
     if(err) callback(err);
     else{
-      increment(Script,"latestRevNum", scriptId, function(err, revNum){
+      var set = {latestName: revisionObject.name};
+      incrementAndSet(Script,"latestRevNum", scriptId, set,function(err, revNum){
         var revision = new Revision();
         revision._id = revId(scriptId,revNum);
         revision.commitMessage = revisionObject.commitMessage;
@@ -197,6 +211,7 @@ exports.getRevision = function(scriptId, revNum, callback){
       callback("Revision not found with scriptId "+scriptId+" and revNum "+revNum);
     else
       callback(null, {
+        //TODO use _.pick here
         commitMessage: revision.commitMessage,
         commitDate: revision.commitDate,
         parentRevision: revision.parentRevision,
@@ -207,3 +222,16 @@ exports.getRevision = function(scriptId, revNum, callback){
       });
   });
 };
+/**
+ * Gets the scriptId and revNum for the latest version of the 
+ * script with the given name (which is of type 'module' or 'template').
+ * callback(err, scriptId, revNum)
+ */
+exports.getLatestRevisionByName = function(name, callback){
+  Script.findOne({ latestName: name }, function(err, script){
+    if(!script)
+      callback('No script found with name "'+name+'".');
+    else
+      callback(null,script._id,script.latestRevNum);
+  });
+}

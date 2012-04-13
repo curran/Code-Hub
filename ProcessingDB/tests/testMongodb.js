@@ -16,8 +16,8 @@ exports.testRevisionWriteRead = function(test) {
   backendFunctions.testRevisionWriteRead(db, test);
 };
 
-exports.testRevisionValidation = function(test) {
-  var revision = backendFunctions.createTestRevision();
+exports.testGetLatestRevisionByName = function(test) {
+  var revision = {name:'foo'};
   var scriptId;
   async.waterfall([
     db.createScript,
@@ -28,26 +28,26 @@ exports.testRevisionValidation = function(test) {
     function(revNum, callback){
       test.equal(revNum, 1 , "First revNum should be 1");
       
-      db.createRevision(scriptId, null, function(err, revNum){
-        test.equal(err, "Revision object is null." , "Null revision should cause error.");
-        callback();
+      db.getLatestRevisionByName('foo',function(err, latestScriptId, latestRevNum){
+        test.equal(revNum, latestRevNum, "revNum should match");
+        test.equal(scriptId, latestScriptId, "scriptId should match");
+        
+        revision.name = 'bar';
+        db.createRevision(scriptId, revision, callback);
       });
     },
-    function(callback){
-      revision = backendFunctions.createTestRevision();
-      delete revision.commitMessage;
-      db.createRevision(scriptId, revision, function(err, revNum){
-        test.equal(err, "commitMessage is null." , "Null commitMessage should cause error.");
-        callback();
+    function(revNum, callback){
+      db.getLatestRevisionByName('bar',function(err, latestScriptId, latestRevNum){
+        test.equal(revNum, latestRevNum, "revNum should match");
+        test.equal(scriptId, latestScriptId, "scriptId should match");
+        callback(null);
       });
-    },
-    // TODO test validation for all fields
-    function(callback){
-      db.clear(callback);
-    },
-    function(callback){
-      db.disconnect();
-      test.done();
+    }],
+    function(err){
+      db.clear(function(err){
+        db.disconnect();
+        test.done();
+      });
     }
-  ]);
+  );
 };

@@ -62,9 +62,14 @@ exports.testModuleDependencyPreprocessing = function(test) {
           test.equal(revision.type, 'module' , 'Type should be module.');
           test.equal(revision.name, 'multipleDependencies' , 'Name should be multipleDependencies.');
           test.equal(revision.dependencies.length, 6, 'There should be six dependencies.');
-          var expectedDependencies = [ 'foo', 'bar', 'baz', 'zoo', 'zar', 'zaz' ];
-          var difference = _.difference(revision.dependencies,expectedDependencies);
-          test.equal(difference.length, 0, 'Dependencies should match.');
+          var expected = [ 'foo', 'bar', 'baz', 'zoo', 'zar', 'zaz' ];
+          test.equal(revision.dependencies.length, expected.length, 'Number of dependencies should match.');
+          _(expected).each(function(d){
+            test.ok(_(revision.dependencies).contains(d),'Dependencies should contain '+d);
+          });
+          
+          // var intersection = _.intersection(expected, revision.dependencies);
+          // test.equal(intersection.length, expected.length, 'Dependencies should match.');
           //console.log(revision.dependencies);
           test.done();
         });

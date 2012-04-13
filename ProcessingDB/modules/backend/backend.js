@@ -5,6 +5,9 @@
  * the Git repositories the MongoDB database which together implement
  * the on-disk ProcessingDB model.
  */
+
+//TODO rename this module to 'model' or 'store' or 'onDiskModel'
+
 var git = require('./git');
 var db = require('./mongodb');
 
@@ -71,16 +74,18 @@ exports.createRevision = function(scriptId, revisionObject, callback){
   scriptId = parseInt(scriptId); //in case we get strings as input
   if(!revisionObject)
     callback("Revision object is null.");
-  var content = revisionObject.content || "";
-  db.createRevision(scriptId, revisionObject, function(err,revNum){
-    if(err)
-      callback(err);
-    else{
-      git.setContent(scriptId, revNum, content, function(err){
-        callback(err, revNum);
-      });
-    }
-  });
+  else{
+    var content = revisionObject.content || "";
+    db.createRevision(scriptId, revisionObject, function(err,revNum){
+      if(err)
+        callback(err);
+      else{
+        git.setContent(scriptId, revNum, content, function(err){
+          callback(err, revNum);
+        });
+      }
+    });
+  }
 };
 
 /**
@@ -103,3 +108,5 @@ exports.getRevision = function(scriptId, revNum, callback){
     }
   });
 };
+
+exports.getLatestRevisionByName = db.getLatestRevisionByName;
