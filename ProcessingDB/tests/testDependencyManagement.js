@@ -14,7 +14,6 @@ var _ = require('underscore');
 // Use a test model so as not to interfere with a production model.
 backend.setModelName('Test');
 
-
 exports.testLookupDependencies = function(test){
   var foo = {
     type: 'module',
