@@ -21,7 +21,8 @@ exports.testLookupDependencies = function(test){
   };
   var bar = {
     type: 'module',
-    name: 'bar'
+    name: 'bar',
+    dependencies:[]
   };
   var baz = {
     type: 'module',
@@ -33,6 +34,32 @@ exports.testLookupDependencies = function(test){
     name: 'a',
     dependencies: ['baz']
   };
+    
+  var zoo = {
+    type: 'module',
+    name: 'zoo',
+    dependencies: ['foo']
+  }
+  
+  var b = {
+    type: 'app',
+    name: 'b',
+    dependencies: ['baz', 'zoo']
+  };
+  
+  var c = {
+    type: 'app',
+    name: 'c',
+    dependencies: ['unknownModule']
+  }
+  
+  // Dependency graph:
+  // (edges directed bottom to top)
+  // bar  foo
+  //  \   / \
+  //   baz  zoo  unknownModule
+  //    | \ /         |
+  //    a  b          c
   
   function loadRevision(revision, callback){
      backend.createScript(function(err, scriptId){
@@ -48,47 +75,73 @@ exports.testLookupDependencies = function(test){
     return revision.scriptId+'.'+revision.revNum
   }
   
+  function assertSetsEqual(expected, actual){
+    test.equal(actual.length, expected.length, 'Number of dependencies should match.');
+    _(expected).each(function(d){
+      test.ok(_(actual).contains(d),'Dependencies should contain '+d);
+    });
+  }
+  
   async.waterfall([
     // Test direct dependency lookup
     function(callback){ loadRevision(foo, callback);  },
     function(callback){ loadRevision(bar, callback);  },
-    function(callback){ dependencyManagement.lookupDependencies(baz, callback); },
+    function(callback){ loadRevision(baz, callback);  },
+    function(callback){ loadRevision(a, callback);  },
+    function(callback){ loadRevision(zoo, callback);  },
+    function(callback){ loadRevision(b, callback);  },
+    
+    function(callback){
+      dependencyManagement.lookupDependencies(baz, callback);
+    },
     function(bazAfter, callback){
-      var expected = [id(foo), id(bar)];
-      test.equal(bazAfter.dependencies.length, expected.length, 'Number of dependencies should match.');
-      _(expected).each(function(d){
-        test.ok(_(bazAfter.dependencies).contains(d),'Dependencies should contain '+d);
-      });
+      assertSetsEqual(_.map([foo,bar], id), bazAfter.dependencies);
       callback();
     },
     
     // Test recursive dependency lookup
-    function(callback){ loadRevision(baz, callback);  },
     function(callback){ dependencyManagement.lookupDependencies(a, callback); },
     function(aAfter, callback){
-      var expected = [id(baz), id(foo), id(bar)];
-      test.equal(aAfter.dependencies.length, expected.length, 'Number of dependencies should match.');
-      _(expected).each(function(d){
-        test.ok(_(aAfter.dependencies).contains(d),'Dependencies should contain '+d);
-      });
+      assertSetsEqual(_.map([foo,bar,baz], id), aAfter.dependencies);
       callback();
-    }
+    },
     
-    // TODO test for correct behavior when the revision has no dependencies
-    
-    // TODO test for circular dependency error
-    
-    // TODO test for error when a dependency is not found
-    
-    // TODO test for b -> a, c -> a, d -> b, d-> a
-    //     a
+    //    foo
     //    / \
-    //   b   c
+    // baz  zoo
     //    \ /
-    //     d
-    // make sure a is included only once
+    //     b
+    // Test that foo is included only once.
+    function(callback){ dependencyManagement.lookupDependencies(b, callback); },
+    function(aAfter, callback){
+      assertSetsEqual(_.map([foo,bar,baz,zoo], id), aAfter.dependencies);
+      callback();
+    },
+
+    // Test for correct behavior when the revision has dependencies == null
+    function(callback){ dependencyManagement.lookupDependencies(foo, callback); },
+    function(fooAfter, callback){
+      test.ok(fooAfter.dependencies == null, "Should have dependencies == null.");
+      callback();
+    },
+    
+    // Test for correct behavior when the revision has dependencies == []
+    function(callback){ dependencyManagement.lookupDependencies(bar, callback); },
+    function(barAfter, callback){
+      test.equal(barAfter.dependencies.length, 0, "Should have dependencies.length == 0.");
+      callback();
+    },
+    
+    // Test for error when a dependency is not found
+    function(callback){
+      dependencyManagement.lookupDependencies(c, function(err,cAfter){
+        test.equal(err, "No module found with name 'unknownModule'","Should give error for not found module.");
+        callback();
+      });
+    }
   ],
   function(err, result){
+    if(err) throw err;
     backend.clear(function(err){
       test.done();
     });
@@ -107,7 +160,7 @@ function load(scriptName,callback){
     });
   });
 }
-
+/*
 exports.testAppCompilation = function(test) {
   async.waterfall([
     function(callback){
@@ -136,7 +189,7 @@ exports.testAppCompilation = function(test) {
     test.done();
   });
 };
-
+*/
 exports.testDisconnect = function(test) {
   backend.clear(function(err){
     backend.disconnect();
