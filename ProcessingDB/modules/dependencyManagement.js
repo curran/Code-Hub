@@ -29,21 +29,6 @@ module.exports.lookupDependencies = function(revision, callback){
     // this keeps track of which module names have already been looked up
     var addedModuleNames = [];
     
-    function push(moduleNames){
-      _(moduleNames).each(function(moduleName){
-        // TODO add: if the module has not already been looked up ...
-        if(!_(addedModuleNames).contains(moduleName)){
-          addedModuleNames.push(moduleName);
-          q.push(moduleName, function (err) {
-            //console.log('finished processing '+moduleName);
-            // TODO test this code path: when a module is not found
-            console.log("err = "+err);
-            if(err) callback(err);
-          });
-        }
-      });
-    }
-    
     // concurrency arbitrarily chosen
     // not sure how to pick the best number
     var concurrency = 10;
@@ -64,6 +49,21 @@ module.exports.lookupDependencies = function(revision, callback){
       callback(null, revision);
     }
   
+    function push(moduleNames){
+      _(moduleNames).each(function(moduleName){
+        // TODO add: if the module has not already been looked up ...
+        if(!_(addedModuleNames).contains(moduleName)){
+          addedModuleNames.push(moduleName);
+          q.push(moduleName, function (err) {
+            if(err){
+              q.drain = null; // so the callback is not called twice
+              callback(err);
+            }
+          });
+        }
+      });
+    }
+    
     push(revision.dependencies);
   }
   else

@@ -231,7 +231,7 @@ exports.getRevision = function(scriptId, revNum, callback){
 exports.getLatestRevisionByName = function(name, callback){
   Script.findOne({ latestName: name }, function(err, script){
     if(!script)
-      callback('No script found with name "'+name+'".');
+      callback("No script found with name '"+name+"'.");
     else
       callback(null,{
         scriptId:script._id,

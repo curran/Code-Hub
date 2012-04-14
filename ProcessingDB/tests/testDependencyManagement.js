@@ -132,10 +132,10 @@ exports.testLookupDependencies = function(test){
       callback();
     },
     
-    // Test for error when a dependency is not found
+    //Test for error when a dependency is not found
     function(callback){
       dependencyManagement.lookupDependencies(c, function(err,cAfter){
-        test.equal(err, "No module found with name 'unknownModule'","Should give error for not found module.");
+        test.equal(err, "No script found with name 'unknownModule'.","Should give error for not found module.");
         callback();
       });
     }
