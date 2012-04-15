@@ -32,20 +32,20 @@ app.configure('production',function(){
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
-var testContent =  "@app name Increment Test\n"+
+var initialContent = "";/* "@app name Increment Test\n"+
             "@app template minimalHTML\n"+
             "var inc = require('increment');\n"+
             "var a = 1;\n"+
-            "console.log(inc(a)); // will output 2";
+            "console.log(inc(a)); // will output 2";*/
 
 app.get('/', function(req, res){
   res.redirect('/edit/');
 });
 
 app.get('/edit/', function(req, res){
-  res.render('root',{locals:{
+  res.render('edit',{locals:{
     revision: {
-      content: testContent,
+      content: initialContent,
       scriptId: -1
     }
   }});
@@ -53,7 +53,19 @@ app.get('/edit/', function(req, res){
 
 app.get('/edit/:scriptId.:revNum', function(req, res){
   model.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
-    res.render('root',{locals:{ revision: revision }});
+    if(err)
+      res.render('error',{locals:{error:err}});
+    else
+      res.render('edit',{locals:{ revision: revision }});
+  });
+});
+
+app.get('/edit/:scriptName', function(req, res){
+  model.getLatestRevisionByName(req.params.scriptName, function(err, revision){
+    if(err)
+      res.render('error',{locals:{error:err}});
+    else
+      res.redirect('/edit/'+revision.scriptId+'.'+revision.revNum);
   });
 });
 

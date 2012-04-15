@@ -6,6 +6,8 @@
  * This module uses all the others. The dependency graph is as follows:
  * (dependencies go bottom to top)
  * 
+ *   strings
+ *        \
  *  git  mongodb
  *    \   /
  *    model 

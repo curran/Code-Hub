@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
+var strings = require('./strings');
 
 // The name of the MongoDB database
 // May be changed for unit testing.
@@ -209,7 +210,7 @@ exports.getRevision = function(scriptId, revNum, callback){
       callback(err);
     else if(!revision)
       //TODO write a unit test for this error
-      callback("Revision not found with scriptId "+scriptId+" and revNum "+revNum);
+      callback(strings.revNotFound(scriptId, revNum));
     else
       callback(null, {
         //TODO use _.pick here
@@ -224,9 +225,10 @@ exports.getRevision = function(scriptId, revNum, callback){
   });
 };
 /**
- * Gets the scriptId and revNum for the latest version of the 
+ * Gets the scriptId, revNum, and dependencies for the latest version of the 
  * script with the given name (which is of type 'module' or 'template').
  * callback(err, revision)
+ * revision has 'scriptId', 'revNum' and 'dependencies' properties
  */
 exports.getLatestRevisionByName = function(name, callback){
   Script.findOne({ latestName: name }, function(err, script){

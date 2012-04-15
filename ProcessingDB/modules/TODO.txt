@@ -1,2 +1,2 @@
 Clean up:
- - always use 'revision' in preference to 'revisionObject'
+ - Move all strings into strings.js
