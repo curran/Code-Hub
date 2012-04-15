@@ -1,5 +1,5 @@
-var db = require('../modules/backend/mongodb');
-var backendFunctions = require('./backendFunctions');
+var db = require('../modules/mongodb');
+var modelFunctions = require('./modelFunctions');
 var async = require('async');
 
 // Use a test DB so as not to interfere with a production DB 
@@ -9,11 +9,11 @@ db.setDbName('ProcessingDBTest');
  * Tests incrementing script ids.
  */
 exports.testCreateScript = function(test) {
-  backendFunctions.testCreateScript(db,test);
+  modelFunctions.testCreateScript(db,test);
 };
 
 exports.testRevisionWriteRead = function(test) {
-  backendFunctions.testRevisionWriteRead(db, test);
+  modelFunctions.testRevisionWriteRead(db, test);
 };
 
 exports.testGetLatestRevisionByName = function(test) {

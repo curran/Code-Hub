@@ -1,4 +1,4 @@
-var git = require('../modules/backend/git');
+var git = require('../modules/git');
 var async = require('async');
 
 // Use a test reposDir so as not to interfere with a production reposDir

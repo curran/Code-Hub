@@ -1,5 +1,5 @@
 nodeunit testGit.js
 nodeunit testMongodb.js
-nodeunit testBackend.js
+nodeunit testModel.js
 nodeunit testPreprocessor.js
 nodeunit testDependencyManagement.js

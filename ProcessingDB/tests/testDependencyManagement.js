@@ -1,18 +1,18 @@
 /**
  * This unit test tests the following sequence of events:
- *  - Parse and store in the backend two modules, a template, and an app.
+ *  - Parse and store in the model two modules, a template, and an app.
  *  - Compile the app together with its dependencies
  */
 var readTestData = require('./testData/readTestData');
 var preprocessor = require('../modules/preprocessor');
-var backend = require('../modules/backend/backend');
+var model = require('../modules/model');
 var dependencyManagement = require('../modules/dependencyManagement');
 var async = require('async');
 var _ = require('underscore');
 
 
 // Use a test model so as not to interfere with a production model.
-backend.setModelName('Test');
+model.setModelName('Test');
 
 exports.testLookupDependencies = function(test){
   var foo = {
@@ -62,8 +62,8 @@ exports.testLookupDependencies = function(test){
   //    a  b          c
   
   function loadRevision(revision, callback){
-     backend.createScript(function(err, scriptId){
-      backend.createRevision(scriptId, revision, function(err, revNum){
+     model.createScript(function(err, scriptId){
+      model.createRevision(scriptId, revision, function(err, revNum){
         revision.scriptId = scriptId;
         revision.revNum = revNum;
         callback(err);
@@ -119,14 +119,18 @@ exports.testLookupDependencies = function(test){
     },
 
     // Test for correct behavior when the revision has dependencies == null
-    function(callback){ dependencyManagement.lookupDependencies(foo, callback); },
+    function(callback){
+      dependencyManagement.lookupDependencies(foo, callback);
+    },
     function(fooAfter, callback){
       test.ok(fooAfter.dependencies == null, "Should have dependencies == null.");
       callback();
     },
     
     // Test for correct behavior when the revision has dependencies == []
-    function(callback){ dependencyManagement.lookupDependencies(bar, callback); },
+    function(callback){
+      dependencyManagement.lookupDependencies(bar, callback);
+    },
     function(barAfter, callback){
       test.equal(barAfter.dependencies.length, 0, "Should have dependencies.length == 0.");
       callback();
@@ -142,7 +146,7 @@ exports.testLookupDependencies = function(test){
   ],
   function(err, result){
     if(err) throw err;
-    backend.clear(function(err){
+    model.clear(function(err){
       test.done();
     });
   });
@@ -152,15 +156,15 @@ exports.testLookupDependencies = function(test){
 function load(scriptName,callback){
   readTestData(scriptName,function(err,content){
     preprocessor.parseContent(content, function(err, revision){
-      backend.createScript(function(err, scriptId){
-        backend.createRevision(scriptId, revision, function(err, revNum){
+      model.createScript(function(err, scriptId){
+        model.createRevision(scriptId, revision, function(err, revNum){
           callback(err, scriptId, revNum);
         });
       });
     });
   });
 }
-/*
+
 exports.testAppCompilation = function(test) {
   async.waterfall([
     function(callback){
@@ -178,8 +182,8 @@ exports.testAppCompilation = function(test) {
     function(scriptId, revNum, callback){
       test.equal(scriptId, 4 , "Fourth Script id should be 4, it is "+scriptId);
       test.equal(revNum, 1 , "First revNum should be 1, it is "+revNum);
-
-      //TODO test dependencyManagement.compileAppCode(revision, callback(code))
+      
+      //dependencyManagement.compileAppCode(revision, callback(code))
       
       callback();
     }
@@ -189,10 +193,10 @@ exports.testAppCompilation = function(test) {
     test.done();
   });
 };
-*/
+
 exports.testDisconnect = function(test) {
-  backend.clear(function(err){
-    backend.disconnect();
+  model.clear(function(err){
+    model.disconnect();
     test.done();
   });
 };

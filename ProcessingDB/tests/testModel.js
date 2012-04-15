@@ -1,15 +1,15 @@
-var backend = require('../modules/backend/backend');
-var backendFunctions = require('./backendFunctions');
+var model = require('../modules/model');
+var modelFunctions = require('./modelFunctions');
 var async = require('async');
 
 // Use a test model so as not to interfere with a production model.
-backend.setModelName('Test');
+model.setModelName('Test');
 
 /**
  * Tests incrementing script ids.
  */
 exports.testCreateScript = function(test) {
-  backendFunctions.testCreateScript(backend,test);
+  modelFunctions.testCreateScript(model,test);
 };
 
 /**
@@ -17,12 +17,12 @@ exports.testCreateScript = function(test) {
  * metadata from MongoDB and their content from git.
  */
 exports.testRevisionWriteRead = function(test){
-  backendFunctions.testRevisionWriteRead(backend, test);
+  modelFunctions.testRevisionWriteRead(model, test);
 };
 
 exports.testDisconnect = function(test) {
-  backend.clear(function(err){
-    backend.disconnect();
+  model.clear(function(err){
+    model.disconnect();
     test.done();
   });
 };

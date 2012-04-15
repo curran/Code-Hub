@@ -1,6 +1,6 @@
 /**
  * This module deals with the following aspects of dependency management:
- *  - When an app Revision is passed into the backend to be stored, it has
+ *  - When an app Revision is passed into the model to be stored, it has
  *    as its 'dependencies' property the names of the modules it depends on.
  *    This 'lookupDependencies' function of this module is responsible for 
  *    looking up the current versions of those dependencies, and returning
@@ -10,7 +10,7 @@
  *    dependencies and the app code together into one Javascript bundle,
  *    inspired by http://wiki.commonjs.org/wiki/Modules/CompiledModules
  */
-var backend = require('../modules/backend/backend');
+var model = require('./model');
 var async = require('async');
 var _ = require('underscore');
 
@@ -34,7 +34,7 @@ module.exports.lookupDependencies = function(revision, callback){
     var concurrency = 10;
     
     q = async.queue(function(moduleName, callback){
-      backend.getLatestRevisionByName(moduleName, function(err, revision){
+      model.getLatestRevisionByName(moduleName, function(err, revision){
         if(!err){
           dependencies.push(revision.scriptId+'.'+revision.revNum);
           push(revision.dependencies);

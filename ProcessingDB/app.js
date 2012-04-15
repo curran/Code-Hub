@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express.createServer();
-var backend = require('./modules/backend/backend');
+var model = require('./modules/model');
 
 app.configure(function(){
   app.use(express.bodyParser());
@@ -44,7 +44,7 @@ app.get('/edit/', function(req, res){
 });
 
 app.get('/edit/:scriptId.:revNum', function(req, res){
-  backend.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
+  model.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
     res.render('root',{locals:{ revision: revision }});
   });
 });
@@ -52,7 +52,7 @@ app.get('/edit/:scriptId.:revNum', function(req, res){
 // If scriptId is -1, make a new script
 function createScriptIfNecessary(scriptId, callback){
   if(scriptId == -1)
-    backend.createScript(callback);
+    model.createScript(callback);
   else
     callback(null, scriptId);
 }
@@ -72,7 +72,7 @@ app.put('/:scriptId', function(req, res){
       template: ''//TODO add this
     };
     
-    backend.createRevision(scriptId, revision, function(err, revNum){
+    model.createRevision(scriptId, revision, function(err, revNum){
       if(err)
         throw err; //TODO handle errors properly
       res.redirect('/edit/'+scriptId+'.'+revNum);
