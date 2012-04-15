@@ -60,11 +60,12 @@ exports.disconnect = db.disconnect;
  *    relevant when (type == 'module' || type == 'template')
  *  - dependencies: Array of Strings,
  *    relevant when type == 'module' or type == 'app'
- *    Contains direct dependencies by module name
+ *    If type == 'module', this is expected to contain
+ *      direct dependencies by module name
  *      of the form ["moduleA","moduleB","moduleC"]
- *    If type == 'app', transitive dependencies will 
- *    be evaluated and stored in the on-disk model at the
- *    time this function is called.
+ *    If type == 'app', this is expected to contain 
+ *      transitive dependencies by revision reference
+ *      of the form ["2.4","5.3","7.9"]
  *  - template: String // "scriptId.revNum" or ""
  *    relevant when type == 'app'
  *  - content: String The text content to be tracked using Git.

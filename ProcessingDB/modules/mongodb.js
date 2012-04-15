@@ -226,7 +226,7 @@ exports.getRevision = function(scriptId, revNum, callback){
 /**
  * Gets the scriptId and revNum for the latest version of the 
  * script with the given name (which is of type 'module' or 'template').
- * callback(err, scriptId, revNum)
+ * callback(err, revision)
  */
 exports.getLatestRevisionByName = function(name, callback){
   Script.findOne({ latestName: name }, function(err, script){

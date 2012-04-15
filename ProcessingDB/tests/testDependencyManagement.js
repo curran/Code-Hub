@@ -3,8 +3,6 @@
  *  - Parse and store in the model two modules, a template, and an app.
  *  - Compile the app together with its dependencies
  */
-var readTestData = require('./testData/readTestData');
-var preprocessor = require('../modules/preprocessor');
 var model = require('../modules/model');
 var dependencyManagement = require('../modules/dependencyManagement');
 var async = require('async');
@@ -151,48 +149,6 @@ exports.testLookupDependencies = function(test){
     });
   });
 }
-
-
-function load(scriptName,callback){
-  readTestData(scriptName,function(err,content){
-    preprocessor.parseContent(content, function(err, revision){
-      model.createScript(function(err, scriptId){
-        model.createRevision(scriptId, revision, function(err, revNum){
-          callback(err, scriptId, revNum);
-        });
-      });
-    });
-  });
-}
-
-exports.testAppCompilation = function(test) {
-  async.waterfall([
-    function(callback){
-      load('math',callback);
-    },
-    function(scriptId, revNum, callback){
-      load('increment',callback);
-    },
-    function(scriptId, revNum, callback){
-      load('minimalHTML',callback);
-    },
-    function(scriptId, revNum, callback){
-      load('incrementTest',callback);
-    },
-    function(scriptId, revNum, callback){
-      test.equal(scriptId, 4 , "Fourth Script id should be 4, it is "+scriptId);
-      test.equal(revNum, 1 , "First revNum should be 1, it is "+revNum);
-      
-      //dependencyManagement.compileAppCode(revision, callback(code))
-      
-      callback();
-    }
-  ],
-  function (err, result) {
-    if(err) throw err;
-    test.done();
-  });
-};
 
 exports.testDisconnect = function(test) {
   model.clear(function(err){

@@ -33,6 +33,9 @@ module.exports.lookupDependencies = function(revision, callback){
     // not sure how to pick the best number
     var concurrency = 10;
     
+    // TODO Pull out this queue so it is global to the module.
+    //      As it is there is no real concurrency limit, as each
+    //      call has a limit but there is no limit on the number of simultaneous calls.
     q = async.queue(function(moduleName, callback){
       model.getLatestRevisionByName(moduleName, function(err, revision){
         if(!err){
@@ -69,4 +72,18 @@ module.exports.lookupDependencies = function(revision, callback){
   else
     // if no dependencies, don't change the revision object
     callback(null, revision);
+}
+
+/**
+ * callback(err,templateRevisionRefence)
+ */
+exports.lookupTemplate = function(revision, callback){
+  model.getLatestRevisionByName(revision.template, function(err, template){
+    if(err)
+      callback(err); //TODO test this path
+    else{
+      revision.template = template.scriptId+'.'+template.revNum;
+      callback(null, revision);
+    }
+  });
 }
