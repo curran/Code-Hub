@@ -54,9 +54,12 @@ app.get('/edit/', function(req, res){
 app.get('/edit/:scriptId.:revNum', function(req, res){
   model.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
     if(err)
-      res.render('error',{locals:{error:err}});
+      res.render('error',{locals:{ error:err }});
     else
-      res.render('edit',{locals:{ revision: revision }});
+      res.render('edit',{locals:{
+        revision: revision,
+        mode:revision.type == 'template'? 'htmlmixed':'javascript'
+      }});
   });
 });
 
@@ -65,7 +68,7 @@ app.get('/edit/:scriptName', function(req, res){
     if(err)
       res.render('error',{locals:{error:err}});
     else
-      res.redirect('/edit/'+revision.scriptId+'.'+revision.revNum);
+      res.redirect('edit/'+revision.scriptId+'.'+revision.revNum);
   });
 });
 

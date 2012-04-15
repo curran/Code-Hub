@@ -1,6 +1,11 @@
 script(src="../js/CodeMirror-2.22/lib/codemirror.js")
 link(rel="stylesheet", href="../js/CodeMirror-2.22/lib/codemirror.css")
 script(src="../js/CodeMirror-2.22/mode/javascript/javascript.js")
+- if(mode == 'htmlmixed')
+  script(src="../js/CodeMirror-2.22/mode/xml/xml.js")
+  script(src="../js/CodeMirror-2.22/mode/css/css.js")
+  script(src="../js/CodeMirror-2.22/mode/htmlmixed/htmlmixed.js")
+  
 style(type="text/css")
   .CodeMirror {border: 1px solid #B8B8B8;}
   .CodeMirror-scroll {height: auto; overflow: visible;}
@@ -14,7 +19,7 @@ form(action='/'+revision.scriptId, method='POST')
     input(type='text', id='revision_message', name='revision[message]')
     input(type='submit', value='Save')
 script
-  var myCodeMirror = CodeMirror.fromTextArea(revision_content, {mode:  "javascript"});
+  var myCodeMirror = CodeMirror.fromTextArea(revision_content, {mode:  "#{mode}"});
 #footer
   p(style='float:left')
     - if(revision.dependencies && revision.dependencies.length != 0)
