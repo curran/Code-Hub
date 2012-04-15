@@ -3,6 +3,18 @@
  * which also performs dependency management tasks.
  * 
  * This is the only module that the route middleware (app.js) should use.
+ * This module uses all the others. The dependency graph is as follows:
+ * (dependencies go bottom to top)
+ * 
+ *  git  mongodb
+ *    \   /
+ *    model 
+ *     |   \  
+ *     |  dependencyManagement
+ *     |   /
+ *     |  /  preprocessor
+ *     | /  /
+ *   backend
  */
 
 var model = require('./model');

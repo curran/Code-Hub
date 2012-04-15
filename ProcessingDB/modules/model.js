@@ -48,8 +48,8 @@ exports.disconnect = db.disconnect;
  * and tracks the content using Git.
  * @param {scriptId} The id of the script for which to 
  *   create the new revision.
- * @param {revisionObject} The content to be persisted,
- *   expected to contain the following fields:
+ * @param {revisionObject} The revision object whose contents
+ *   is to be persisted. Expected to contain the following fields:
  *  - scriptId
  *  - revNum
  *  - commitMessage: String

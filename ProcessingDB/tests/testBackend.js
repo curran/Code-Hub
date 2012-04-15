@@ -1,23 +1,12 @@
 var backend = require('../modules/backend');
-var readTestData = require('./testData/readTestData');
+var testData = require('./testData');
 var async = require('async');
 var _ = require('underscore');
 
 /**
- * Tests loading of content into the backend and app compilation.
+ * Tests loading of content into the backend, transitive dependency
+ * lookup, and app template lookup.
  */
-
-function load(scriptName,callback){
-  readTestData(scriptName,function(err,content){
-    backend.createScript(function(err, scriptId){
-      backend.createRevision(scriptId, content, function(err, revNum){
-        callback(err, scriptId, revNum);
-      });
-    });
-  });
-}
-
-
 exports.testAppCompilation = function(test) {
   function assertSetsEqual(expected, actual){
     test.equal(actual.length, expected.length, 'Number of dependencies should match.');
@@ -28,19 +17,19 @@ exports.testAppCompilation = function(test) {
   var expectedDependencies = [], expectedTemplate;
   async.waterfall([
     function(callback){
-      load('math',callback);
+      testData.load('math',callback);
     },
     function(scriptId, revNum, callback){
       expectedDependencies.push(scriptId+'.'+revNum);
-      load('increment',callback);
+      testData.load('increment',callback);
     },
     function(scriptId, revNum, callback){
       expectedDependencies.push(scriptId+'.'+revNum);
-      load('minimalHTML',callback);
+      testData.load('minimalHTML',callback);
     },
     function(scriptId, revNum, callback){
       expectedTemplate = scriptId+'.'+revNum;
-      load('incrementTest',callback);
+      testData.load('incrementTest',callback);
     },
     function(scriptId, revNum, callback){
       test.equal(scriptId, 4 , "Fourth Script id should be 4, it is "+scriptId);

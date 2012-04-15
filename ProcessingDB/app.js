@@ -14,6 +14,14 @@ app.configure('development',function(){
     dumpExceptions: true,
     showStack: true
   }));
+  require('./tests/testData').loadExampleModel();
+  process.on('SIGINT', function () {
+    console.log('Got SIGINT. Clearing test model...');
+    model.clear(function(err){
+      console.log('Test model cleared. Exiting.');
+      process.exit();
+    });
+  });
 });
 
 // NODE_ENV=production node app.js

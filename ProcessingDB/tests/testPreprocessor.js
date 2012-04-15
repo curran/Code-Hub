@@ -1,12 +1,12 @@
 var preprocessor = require('../modules/preprocessor');
-var readTestData = require('./testData/readTestData');
+var testData = require('./testData');
 var _ = require('underscore');
 
 /**
  * Tests extraction of the '@module moduleName' directive.
  */
 exports.testModulePreprocessing = function(test) {
-  readTestData('math',function(err,content){
+  testData.read('math',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
       test.equal(revision.type, 'module' , 'Type should be module.');
       test.equal(revision.name, 'math' , 'Name should be math.');
@@ -19,7 +19,7 @@ exports.testModulePreprocessing = function(test) {
  * Tests extraction of the '@template templateName' directive.
  */
 exports.testTemplatePreprocessing = function(test) {
-  readTestData('minimalHTML',function(err,content){
+  testData.read('minimalHTML',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
       test.equal(revision.type, 'template' , 'Type should be template.');
       test.equal(revision.name, 'minimalHTML' , 'Name should be minimalHTML.');
@@ -32,7 +32,7 @@ exports.testTemplatePreprocessing = function(test) {
  * Tests extraction of '@app property value' directive.
  */
 exports.testTemplatePreprocessing = function(test) {
-  readTestData('ChaosGame',function(err,content){
+  testData.read('ChaosGame',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
       test.equal(revision.type, 'app' , 'Type should be template.');
       test.equal(revision.template, 'canvas' , 'template should be canvas.');
@@ -50,14 +50,14 @@ exports.testTemplatePreprocessing = function(test) {
  * Tests extraction of the require('moduleName') directive.
  */
 exports.testModuleDependencyPreprocessing = function(test) {
-  readTestData('increment',function(err,content){
+  testData.read('increment',function(err,content){
     preprocessor.parseContent(content, function(err, revision){
       test.equal(revision.type, 'module' , 'Type should be module.');
       test.equal(revision.name, 'increment' , 'Name should be increment.');
       test.equal(revision.dependencies[0], 'math', 'Math should be the only dependency');
       
       //This tests for parsing both quote styles: require('foo') and require("foo")
-      readTestData('multipleDependencies',function(err,content){
+      testData.read('multipleDependencies',function(err,content){
         preprocessor.parseContent(content, function(err, revision){
           test.equal(revision.type, 'module' , 'Type should be module.');
           test.equal(revision.name, 'multipleDependencies' , 'Name should be multipleDependencies.');

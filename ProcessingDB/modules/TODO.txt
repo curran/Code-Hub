@@ -1,3 +1,2 @@
 Clean up:
  - always use 'revision' in preference to 'revisionObject'
- - rename 'backend' to 'model' or 'onDiskModel'
