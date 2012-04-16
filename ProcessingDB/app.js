@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express.createServer();
-var model = require('./modules/model');
+var backend = require('./modules/backend');
 
 app.configure(function(){
   app.use(express.bodyParser());
@@ -17,7 +17,7 @@ app.configure('development',function(){
   require('./tests/testData').loadExampleModel();
   process.on('SIGINT', function () {
     console.log('Got SIGINT. Clearing test model...');
-    model.clear(function(err){
+    backend.clearModel(function(err){
       console.log('Test model cleared. Exiting.');
       process.exit();
     });
@@ -47,17 +47,13 @@ app.get('/edit/', function(req, res){
     revision: {
       content: initialContent,
       scriptId: -1
-    }
+    },
+    mode:'javascript'
   }});
 });
 
 app.get('/edit/:scriptId.:revNum', function(req, res){
-  model.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
-    
-    console.log('revision.template = '+revision.template);
-    console.log('revision.templateName = '+revision.templateName);
-    
-    
+  backend.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
     if(err)
       res.render('error',{locals:{ error:err }});
     else
@@ -68,9 +64,19 @@ app.get('/edit/:scriptId.:revNum', function(req, res){
   });
 });
 
+app.get('/run/:scriptId.:revNum',function(req, res){
+  backend.compileApp(req.params.scriptId, req.params.revNum, function(err, compiledApp){
+    if(err)
+      res.render('error',{locals:{ error:err }});
+    else{
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.end(compiledApp);
+    }
+  });
+});
+
 app.get('/edit/:scriptName', function(req, res){
-  model.getLatestRevisionByName(req.params.scriptName, function(err, revision){
-    console.log("here "+'edit/'+revision.scriptId+'.'+revision.revNum);
+  backend.getLatestRevisionByName(req.params.scriptName, function(err, revision){
     if(err)
       res.render('error',{locals:{error:err}});
     else
@@ -81,7 +87,7 @@ app.get('/edit/:scriptName', function(req, res){
 // If scriptId is -1, make a new script
 function createScriptIfNecessary(scriptId, callback){
   if(scriptId == -1)
-    model.createScript(callback);
+    backend.createScript(callback);
   else
     callback(null, scriptId);
 }
@@ -101,7 +107,7 @@ app.put('/:scriptId', function(req, res){
       template: ''//TODO add this
     };
     
-    model.createRevision(scriptId, revision, function(err, revNum){
+    backend.createRevision(scriptId, revision, function(err, revNum){
       if(err)
         throw err; //TODO handle errors properly
       res.redirect('/edit/'+scriptId+'.'+revNum);

@@ -5,7 +5,6 @@ script(src="../js/CodeMirror-2.22/mode/javascript/javascript.js")
   script(src="../js/CodeMirror-2.22/mode/xml/xml.js")
   script(src="../js/CodeMirror-2.22/mode/css/css.js")
   script(src="../js/CodeMirror-2.22/mode/htmlmixed/htmlmixed.js")
-  
 style(type="text/css")
   .CodeMirror {border: 1px solid #B8B8B8;}
   .CodeMirror-scroll {height: auto; overflow: visible;}
@@ -16,6 +15,8 @@ form(action='/'+revision.scriptId, method='POST')
            name='revision[content]', 
            style='width:100%;height:800px;')= revision.content
   p(style='float:right')
+    - if(revision.type == 'app')
+      a(href='/run/#{revision.scriptId+'.'+revision.revNum}') run
     input(type='text', id='revision_message', name='revision[message]')
     input(type='submit', value='Save')
 script
