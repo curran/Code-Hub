@@ -76,7 +76,7 @@ exports.parseContent = function(content, callback){
     else if(directive.type == 'app'){
       revision.type = 'app';
       if(directive.property == 'template')
-        revision.template = directive.value;
+        revision.templateName = directive.value;
       else{
         if(!revision.properties)
           revision.properties = {};

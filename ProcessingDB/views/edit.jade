@@ -30,9 +30,9 @@ script
           a(href='/edit/#{d}') #{d}
           - if(i < n-1)
             , 
-      - if(revision.template)
+      - if(revision.templateName)
         , 
-    - if(revision.template)
+    - if(revision.templateName)
       | embedded in 
-      a(href='/scripts/'+revision.template)
-        #{revision.template}
+      a(href='/edit/'+revision.templateName)
+        #{revision.templateName}

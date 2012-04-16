@@ -15,7 +15,8 @@ var createTestRevision = function(){
     name: 'TestTemplate',
     content: 'Test Content',
     dependencies: '',
-    template: ''
+    template: '4.3',
+    templateName: 'TestTemplate'
   };
 }
 
@@ -69,6 +70,7 @@ exports.testRevisionWriteRead = function(module, test){
         test.equal(revision.name , revisionFromStore.name , "name  should match");
         test.equal(revision.dependencies , revisionFromStore.dependencies , "dependencies  should match");
         test.equal(revision.template , revisionFromStore.template , "template  should match");
+        test.equal(revision.templateName , revisionFromStore.templateName , "template  should match");
         test.done();
       });
     }

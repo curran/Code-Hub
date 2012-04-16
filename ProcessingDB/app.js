@@ -53,6 +53,11 @@ app.get('/edit/', function(req, res){
 
 app.get('/edit/:scriptId.:revNum', function(req, res){
   model.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
+    
+    console.log('revision.template = '+revision.template);
+    console.log('revision.templateName = '+revision.templateName);
+    
+    
     if(err)
       res.render('error',{locals:{ error:err }});
     else

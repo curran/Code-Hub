@@ -78,7 +78,7 @@ module.exports.lookupDependencies = function(revision, callback){
  * callback(err,templateRevisionRefence)
  */
 exports.lookupTemplate = function(revision, callback){
-  model.getLatestRevisionByName(revision.template, function(err, template){
+  model.getLatestRevisionByName(revision.templateName, function(err, template){
     if(err)
       callback(err); //TODO test this path
     else{

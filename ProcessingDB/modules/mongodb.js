@@ -39,7 +39,9 @@ var Revisions = new Schema({
   appDependencies: [String],
   
   // relevant when type == 'app'
-  template: String // "scriptId.revNum" or ""
+  template: String, // "scriptId.revNum" or ""
+  
+  templateName: String // the name of the template, for display
 });
 
 
@@ -186,6 +188,8 @@ exports.createRevision = function(scriptId, revisionObject, callback){
       };
       incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
         var revision = new Revision();
+        //TODO make this code conditional - only include non-null fields
+        //TODO use _.extend here
         revision._id = revId(scriptId,revNum);
         revision.commitMessage = revisionObject.commitMessage;
         revision.commitDate = revisionObject.commitDate;
@@ -195,6 +199,7 @@ exports.createRevision = function(scriptId, revisionObject, callback){
         revision.dependencies = revisionObject.dependencies;
         revision.appDependencies= revisionObject.appDependencies,
         revision.template = revisionObject.template;
+        revision.templateName = revisionObject.templateName;
         revision.save(function(err){
           if(err) callback(err);
           else callback(null,revNum);
@@ -226,7 +231,8 @@ exports.getRevision = function(scriptId, revNum, callback){
         name: revision.name,
         dependencies: revision.dependencies,
         appDependencies: revision.appDependencies,
-        template: revision.template
+        template: revision.template,
+        templateName: revision.templateName
       });
   });
 };
