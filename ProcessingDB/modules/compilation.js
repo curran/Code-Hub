@@ -58,7 +58,7 @@ function parseRevisionReference(revisionReference, callback){
 function splitTemplate(template, callback){
   var split = template.split("${code}");
   if(split.length != 2)
-    callback("Templates must have exactly one occurrence of ${code}");
+    callback(strings.wrongNumberOfCodeStringsInTemplate(split.length - 1));
   else
     callback(null, split[0], split[1]);
 }

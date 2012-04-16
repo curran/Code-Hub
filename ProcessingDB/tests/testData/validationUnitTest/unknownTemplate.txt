@@ -1,0 +1,2 @@
+@app template fdsafhdjs
+//Should fail with unknown template error

@@ -7,6 +7,7 @@
  *  - require('moduleName') or require("moduleName")
  */
 var _ = require('underscore');
+var strings = require('./strings');
 
 /**
  * Parses ProcessingDB directives starting with @ from a line.
@@ -88,9 +89,18 @@ exports.parseContent = function(content, callback){
   //TODO test errors when content contains no type declarations
   revision.content = content;
 
+  // Add instances of require() to the dependencies
   revision.dependencies = _.map(requires, function(s){
     return s.replace(/"/g,"'").replace(/require\('|'\)/g,'')
   });
   
-  callback(null,revision);
+  // Validate the content of templates
+  var err;
+  if(revision.type == 'template'){
+    var split = content.split("${code}");
+    if(split.length != 2)
+      err = strings.wrongNumberOfCodeStringsInTemplate(split.length - 1);
+  }
+  
+  callback(err,revision);
 };

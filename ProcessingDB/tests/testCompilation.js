@@ -7,7 +7,6 @@ var prefix = 'compilationUnitTest/';
  * Tests app compilation.
  */
 exports.testLookup = function(test) {
-  var expectedDependencies = [], expectedTemplate;
   async.waterfall([
     function(callback){
       testData.load(prefix+'A',callback);

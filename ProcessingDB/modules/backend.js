@@ -48,14 +48,19 @@ exports.disconnect = model.disconnect;
  */
 exports.createRevision = function(scriptId, content, callback){
   preprocessor.parseContent(content, function(err, revision){
-    if(revision.type == 'app'){
+    if(err)
+      callback(err);
+    else if(revision.type == 'app'){
       dependencyManagement.lookupDependencies(revision, function(err, revision){
-        dependencyManagement.lookupTemplate(revision, function(err, revision){
-          if(err)
-            callback(err);
-          else
-            model.createRevision(scriptId, revision, callback);
-        });
+        if(err)
+          callback(err);
+        else
+          dependencyManagement.lookupTemplate(revision, function(err, revision){
+            if(err)
+              callback(err);
+            else
+              model.createRevision(scriptId, revision, callback);
+          });
       });
     }
     else

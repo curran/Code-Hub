@@ -1,0 +1,2 @@
+@app template testTemplate
+var foo = require('fdshajfkds');

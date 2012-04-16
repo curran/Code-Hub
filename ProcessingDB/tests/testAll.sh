@@ -4,3 +4,5 @@ nodeunit testModel.js
 nodeunit testPreprocessor.js
 nodeunit testDependencyManagement.js
 nodeunit testBackend.js
+nodeunit testCompilation.js
+nodeunit testValidation.js
