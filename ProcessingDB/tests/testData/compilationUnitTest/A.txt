@@ -1,0 +1,2 @@
+@module A
+exports.getA = function(){ return 5; }

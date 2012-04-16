@@ -1,0 +1,10 @@
+@module B
+var a = require('A');
+
+function getB(){
+  return 7;
+}
+
+exports.getAPlusB = function(){
+  return a.getA() + getB();
+}

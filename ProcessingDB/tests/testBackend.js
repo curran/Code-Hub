@@ -7,7 +7,7 @@ var _ = require('underscore');
  * Tests loading of content into the backend, transitive dependency
  * lookup, and app template lookup.
  */
-exports.testAppCompilation = function(test) {
+exports.testLookup = function(test) {
   function assertSetsEqual(expected, actual){
     test.equal(actual.length, expected.length, 'Number of dependencies should match.');
     _(expected).each(function(d){
@@ -37,14 +37,8 @@ exports.testAppCompilation = function(test) {
       backend.getRevision(scriptId, revNum, function(err, revision){
         assertSetsEqual(expectedDependencies,revision.appDependencies);
         test.equal(revision.template, expectedTemplate,"Template should match");
-        
-        backend.compileApp(scriptId, revNum, callback);
+        callback();
       });
-      //TODO test errors
-    },
-    function(compiledApp, callback){
-      test.equals(compiledApp, "CompiledApp","Compiled app should match.");
-      callback();
     }
   ],
   function (err, result) {

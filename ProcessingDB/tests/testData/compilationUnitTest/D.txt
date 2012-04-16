@@ -1,0 +1,3 @@
+@app template C
+var B = require('B');
+return B.getAPlusB();

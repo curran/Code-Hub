@@ -11,28 +11,40 @@ var _ = require('underscore');
 // method of compilation inspired by http://wiki.commonjs.org/wiki/Modules/CompiledModules
 var library = [
   "var require = (function() {",
-  "  var exportsObjects = {}",
+  "  var exports = {}",
   "  var require = function(name) {",
-  "    if (exportsObjects.hasOwnProperty(name))",
-  "      return exportsObjects[name];",
-  "    var exports = {};",
-  "    exportsObjects[name] = exports;",
-  "    modules[name](require, exports);",
-  "    return exports;",
+  "    if (exports.hasOwnProperty(name))",
+  "      return exports[name];",
+  "    return exports[name] = modules[name](require);",
   "  };",
   "  return require;",
-  "})();"
+  "})();",
+  "var modules = {};"
 ].join('\n');
 
-function beforeModuleContent(moduleName){
-  return "modules['"+moduleName+"'] = function(require, exports) {";
+function indent(text){
+  return _.map(text.split('\n'), function(line){
+    return "  "+line;
+  }).join('\n');
 }
 
-var afterModuleContent = "};";
+function moduleContent(module){
+  return [
+    "modules['"+module.name+"'] = function(require) {",
+    "  var exports = {};",
+    indent(module.content),
+    "  return exports;",
+    "};"
+  ].join('\n');
+}
 
 function stripDirectives(content){
   //removes ProcessingDB directives starting with @
-  return content.replace(/@[^\n]*\n/g,'');
+  return content.replace(/@[^\n]*\n|/g,'');
+}
+
+function stripEmptyLines(text){
+  return text.replace(/^\s*$[\n\r]{1,}/gm, '');
 }
 
 function parseRevisionReference(revisionReference, callback){
@@ -40,6 +52,15 @@ function parseRevisionReference(revisionReference, callback){
   var scriptId = revisionReference.substring(0,i);
   var revNum = revisionReference.substring(i+1);
   callback(scriptId, revNum);
+}
+
+// callback(err, templateBegin, templateEnd)
+function splitTemplate(template, callback){
+  var split = template.split("${code}");
+  if(split.length != 2)
+    callback("Templates must have exactly one occurrence of ${code}");
+  else
+    callback(null, split[0], split[1]);
 }
 
 /**
@@ -103,35 +124,20 @@ exports.compileApp = function(scriptId, revNum, callback){
           callback(err);
         else{
           // at this point 'modules', 'app', and 'template' have been populated
-          
-          var splitTemplate = template.split("${code}");
-          if(splitTemplate.length != 2)
-            callback("Templates must have exactly one occurrence of ${code}");
-          else{
-            var templateBeginning = splitTemplate[0];
-            var templateEnd = splitTemplate[1];
-            
-            var compiledApp = [
-              templateBeginning,
-              library,
-              _.map(modules, function(module){
-                return [
-                  beforeModuleContent(module.name),
-                  module.content,
-                  afterModuleContent
-                ].join('\n');
-              }).join('\n'),
-              templateEnd
-            ].join('\n');
-            
-            //console.log("modules[1] = "+modules[1].content);
-            
-            //console.log("app = "+app);
-            
-            console.log("compiledApp = "+compiledApp);
-            
-            callback(null, "CompiledApp");
-          }
+          splitTemplate(template, function(err, templateBegin, templateEnd){
+            if(err)
+              callback(err);
+            else{
+              var compiledApp = [
+                templateBegin,
+                library,
+                _.map(modules, moduleContent).join('\n'),
+                app,
+                templateEnd
+              ].join('\n');
+              callback(null, compiledApp);
+            }
+          });
         }
       });
     }
