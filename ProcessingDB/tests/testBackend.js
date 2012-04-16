@@ -34,14 +34,17 @@ exports.testAppCompilation = function(test) {
     function(scriptId, revNum, callback){
       test.equal(scriptId, 4 , "Fourth Script id should be 4, it is "+scriptId);
       test.equal(revNum, 1 , "First revNum should be 1, it is "+revNum);
-      backend.getRevision(scriptId, revNum, callback);
-      //dependencyManagement.compileAppCode(revision, callback(code))
-    },
-    function(revision, callback){
-      assertSetsEqual(expectedDependencies,revision.appDependencies);
-      test.equal(revision.template, expectedTemplate,"Template should match");
-      callback();
+      backend.getRevision(scriptId, revNum, function(err, revision){
+        assertSetsEqual(expectedDependencies,revision.appDependencies);
+        test.equal(revision.template, expectedTemplate,"Template should match");
+        
+        backend.compileApp(scriptId, revNum, callback);
+      });
       //TODO test errors
+    },
+    function(compiledApp, callback){
+      test.equals(compiledApp, "CompiledApp","Compiled app should match.");
+      callback();
     }
   ],
   function (err, result) {

@@ -5,3 +5,7 @@
 exports.revNotFound = function(scriptId, revNum){
   return "No revision exists with script id "+scriptId+" and revision number "+revNum+".";
 };
+
+exports.cantRunNonApp = function(scriptId, revNum, type){
+  return "The revision with script id "+scriptId+" and revision number "+revNum+" is not an app, therefore it cannot be run. This revision is a "+type;
+};

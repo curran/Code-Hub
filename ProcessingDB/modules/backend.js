@@ -14,14 +14,18 @@
  *     |   \  
  *     |  dependencyManagement
  *     |   /
- *     |  /  preprocessor
- *     | /  /
+ *     |  / preprocessor
+ *     | / / compilation
+ *     |/ / /
  *   backend
+ * 
+ * TODO make this into a graphviz figure, and correct it
  */
 
 var model = require('./model');
 var dependencyManagement = require('./dependencyManagement');
 var preprocessor = require('../modules/preprocessor');
+var compilation = require('./compilation');
 
 exports.setModelName = model.setModelName;
 exports.clearModel = model.clear;
@@ -58,3 +62,5 @@ exports.createRevision = function(scriptId, content, callback){
 
 exports.getRevision = model.getRevision;
 exports.getLatestRevisionByName = model.getLatestRevisionByName;
+
+exports.compileApp = compilation.compileApp;
