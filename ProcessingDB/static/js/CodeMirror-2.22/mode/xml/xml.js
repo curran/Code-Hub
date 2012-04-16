@@ -19,7 +19,11 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
     }
 
     var ch = stream.next();
-    if (ch == "<") {
+    if (ch == "@") {
+      stream.skipToEnd();
+      return "comment";
+    }
+    else if (ch == "<") {
       if (stream.eat("!")) {
         if (stream.eat("[")) {
           if (stream.match("CDATA[")) return chain(inBlock("atom", "]]>"));

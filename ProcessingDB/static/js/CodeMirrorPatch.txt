@@ -3,10 +3,30 @@ insert the following script into CodeMirror/mode/javascript:
 
 else if (ch == "@") {
   stream.skipToEnd();
-  return ret("comment", "meta");
+  return ret("comment", "comment");
 }
 // context - put the code above the following code:
 else if (ch == "#") {
     stream.skipToEnd();
     return ret("error", "error");
 }
+
+
+
+in XML.js for handling HTML:
+
+if (ch == "@") {
+  stream.skipToEnd();
+  return "comment";
+}
+
+// context - put the code above the following code:
+else if (ch == "<") {
+  if (stream.eat("!")) {
+    if (stream.eat("[")) {
+      if (stream.match("CDATA[")) return chain(inBlock("atom", "]]>"));
+      else return null;
+    }
+    else if (stream.match("--")) return chain(inBlock("comment", "-->"));
+    else if (stream.match("DOCTYPE", true, true)) {
+      stream.eatWhile(/

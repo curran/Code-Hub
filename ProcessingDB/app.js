@@ -65,10 +65,11 @@ app.get('/edit/:scriptId.:revNum', function(req, res){
 
 app.get('/edit/:scriptName', function(req, res){
   model.getLatestRevisionByName(req.params.scriptName, function(err, revision){
+    console.log("here "+'edit/'+revision.scriptId+'.'+revision.revNum);
     if(err)
       res.render('error',{locals:{error:err}});
     else
-      res.redirect('edit/'+revision.scriptId+'.'+revision.revNum);
+      res.redirect('/edit/'+revision.scriptId+'.'+revision.revNum);
   });
 });
 

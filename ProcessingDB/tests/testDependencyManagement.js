@@ -93,14 +93,14 @@ exports.testLookupDependencies = function(test){
       dependencyManagement.lookupDependencies(baz, callback);
     },
     function(bazAfter, callback){
-      assertSetsEqual(_.map([foo,bar], id), bazAfter.dependencies);
+      assertSetsEqual(_.map([foo,bar], id), bazAfter.appDependencies);
       callback();
     },
     
     // Test recursive dependency lookup
     function(callback){ dependencyManagement.lookupDependencies(a, callback); },
     function(aAfter, callback){
-      assertSetsEqual(_.map([foo,bar,baz], id), aAfter.dependencies);
+      assertSetsEqual(_.map([foo,bar,baz], id), aAfter.appDependencies);
       callback();
     },
     
@@ -112,7 +112,7 @@ exports.testLookupDependencies = function(test){
     // Test that foo is included only once.
     function(callback){ dependencyManagement.lookupDependencies(b, callback); },
     function(aAfter, callback){
-      assertSetsEqual(_.map([foo,bar,baz,zoo], id), aAfter.dependencies);
+      assertSetsEqual(_.map([foo,bar,baz,zoo], id), aAfter.appDependencies);
       callback();
     },
 
@@ -121,7 +121,7 @@ exports.testLookupDependencies = function(test){
       dependencyManagement.lookupDependencies(foo, callback);
     },
     function(fooAfter, callback){
-      test.ok(fooAfter.dependencies == null, "Should have dependencies == null.");
+      test.ok(fooAfter.appDependencies == null, "Should have dependencies == null.");
       callback();
     },
     
@@ -130,7 +130,7 @@ exports.testLookupDependencies = function(test){
       dependencyManagement.lookupDependencies(bar, callback);
     },
     function(barAfter, callback){
-      test.equal(barAfter.dependencies.length, 0, "Should have dependencies.length == 0.");
+      test.ok(!barAfter.appDependencies, "Should have null appDependencies.");
       callback();
     },
     

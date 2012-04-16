@@ -23,7 +23,7 @@ script
 #footer
   p(style='float:left')
     - if(revision.dependencies && revision.dependencies.length != 0)
-      | depends on 
+      | Requires 
       - var n = revision.dependencies.length;
       - for(var i = 0; i < n; i++)
         - var d = revision.dependencies[i];
@@ -34,5 +34,5 @@ script
         , 
     - if(revision.template)
       | embedded in 
-      a(href='/scripts/'+revision.template+'/'+revision.template)
-        #{revision.template+' '+revision.template}
+      a(href='/scripts/'+revision.template)
+        #{revision.template}

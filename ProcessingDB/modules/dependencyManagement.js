@@ -18,8 +18,9 @@ var _ = require('underscore');
 /**
  * Expects revision.dependencies as an array of module name strings.
  * callback(err, revision)
- * In the revision object passed to the callback, revision.dependencies
- * is an array of revision reference strings of the form scriptId.revNum.
+ * In the revision object passed to the callback, revision.appDependencies
+ * is an array of revision reference strings of the form scriptId.revNum
+ * pointing to the latest versions of transitive dependencies.
  */
 module.exports.lookupDependencies = function(revision, callback){
   if(revision.dependencies && revision.dependencies.length > 0){
@@ -47,8 +48,7 @@ module.exports.lookupDependencies = function(revision, callback){
     }, concurrency); 
     
     q.drain = function() {
-      revision = _.clone(revision); //to avoid side effects
-      revision.dependencies = dependencies;
+      revision.appDependencies = dependencies;
       callback(null, revision);
     }
   

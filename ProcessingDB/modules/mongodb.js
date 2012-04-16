@@ -28,11 +28,15 @@ var Revisions = new Schema({
   // relevant when (type == 'module' || type == 'template')
   name: String,
   
+  // relevant when type == 'app' || type == 'module'.
+  // contains direct dependencies by module name
+  dependencies: [String],
+  
   // relevant when type == 'app'.
   // contains transitive dependencies by revision reference
   //   of the form "scriptIdA.revNumA,scriptIdB.revNumB"
   //   e.g. ['4.2','6.3','8.1']
-  dependencies: [String],
+  appDependencies: [String],
   
   // relevant when type == 'app'
   template: String // "scriptId.revNum" or ""
@@ -189,6 +193,7 @@ exports.createRevision = function(scriptId, revisionObject, callback){
         revision.type = revisionObject.type;
         revision.name = revisionObject.name;
         revision.dependencies = revisionObject.dependencies;
+        revision.appDependencies= revisionObject.appDependencies,
         revision.template = revisionObject.template;
         revision.save(function(err){
           if(err) callback(err);
@@ -220,6 +225,7 @@ exports.getRevision = function(scriptId, revNum, callback){
         type: revision.type,
         name: revision.name,
         dependencies: revision.dependencies,
+        appDependencies: revision.appDependencies,
         template: revision.template
       });
   });

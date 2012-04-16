@@ -38,7 +38,7 @@ exports.testAppCompilation = function(test) {
       //dependencyManagement.compileAppCode(revision, callback(code))
     },
     function(revision, callback){
-      assertSetsEqual(expectedDependencies,revision.dependencies);
+      assertSetsEqual(expectedDependencies,revision.appDependencies);
       test.equal(revision.template, expectedTemplate,"Template should match");
       callback();
       //TODO test errors

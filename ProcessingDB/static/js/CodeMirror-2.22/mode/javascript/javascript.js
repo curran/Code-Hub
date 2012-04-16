@@ -78,7 +78,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     }
     else if (ch == "@") {
       stream.skipToEnd();
-      return ret("comment", "meta");
+      return ret("comment", "comment");
     }
     else if (ch == "#") {
       stream.skipToEnd();
