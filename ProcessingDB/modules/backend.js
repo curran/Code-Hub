@@ -51,7 +51,10 @@ exports.createRevision = function(scriptId, content, callback){
     if(revision.type == 'app'){
       dependencyManagement.lookupDependencies(revision, function(err, revision){
         dependencyManagement.lookupTemplate(revision, function(err, revision){
-          model.createRevision(scriptId, revision, callback);
+          if(err)
+            callback(err);
+          else
+            model.createRevision(scriptId, revision, callback);
         });
       });
     }

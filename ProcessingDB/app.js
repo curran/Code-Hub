@@ -94,23 +94,11 @@ function createScriptIfNecessary(scriptId, callback){
 
 app.put('/:scriptId', function(req, res){
   createScriptIfNecessary(req.params.scriptId, function(err, scriptId){
-    
-    // TODO call to parser
-    var revision = {
-      commitMessage: "",//TODO add this
-      commitDate: new Date(),
-      parentRevision: "",//TODO add this
-      type: 'template',//TODO add this
-      name: 'TestTemplate',//TODO add this
-      content: req.body.revision.content,
-      dependencies: '',//TODO add this
-      template: ''//TODO add this
-    };
-    
-    backend.createRevision(scriptId, revision, function(err, revNum){
+    backend.createRevision(scriptId, req.body.revision.content, function(err, revNum){
       if(err)
-        throw err; //TODO handle errors properly
-      res.redirect('/edit/'+scriptId+'.'+revNum);
+        res.render('error',{locals:{error:err}});
+      else
+        res.redirect('/edit/'+scriptId+'.'+revNum);
     });
   });
 });
