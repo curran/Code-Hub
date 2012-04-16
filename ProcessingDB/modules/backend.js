@@ -26,12 +26,26 @@ var model = require('./model');
 var dependencyManagement = require('./dependencyManagement');
 var preprocessor = require('../modules/preprocessor');
 var compilation = require('./compilation');
+var validation = require('./validation');
+var async = require('async');
 
 exports.setModelName = model.setModelName;
 exports.clearModel = model.clear;
 exports.createScript = model.createScript;
 exports.disconnect = model.disconnect;
 
+function lookupDependenciesAndTemplateIfApp(revision, callback){
+  if(revision.type == 'app'){
+    dependencyManagement.lookupDependencies(revision, function(err, revision){
+      if(err)
+        callback(err);
+      else
+        dependencyManagement.lookupTemplate(revision, callback);
+    });
+  }
+  else
+    callback(null, revision);
+}
 
 /**
  * Creates a new revision in the on-disk model.
@@ -47,28 +61,44 @@ exports.disconnect = model.disconnect;
  * @param callback(err, revNum) Passes the new revision number.
  */
 exports.createRevision = function(scriptId, content, callback){
-  preprocessor.parseContent(content, function(err, revision){
+  async.waterfall([
+    function(callback){
+      preprocessor.parseContent(content, callback);
+    },
+    function(revision, callback){
+      lookupDependenciesAndTemplateIfApp(revision, callback);
+    },
+    function(revision, callback){
+      validation.validateRevision(revision, callback);
+    },
+    function(revision, cb){
+      model.createRevision(scriptId, revision, callback);
+    }
+  ],
+  function(err){
     if(err)
       callback(err);
-    else if(revision.type == 'app'){
-      dependencyManagement.lookupDependencies(revision, function(err, revision){
-        if(err)
-          callback(err);
-        else
-          dependencyManagement.lookupTemplate(revision, function(err, revision){
-            if(err)
-              callback(err);
-            else
-              model.createRevision(scriptId, revision, callback);
-          });
-      });
-    }
-    else
-      model.createRevision(scriptId, revision, callback);
   });
+   // preprocessor.parseContent(content, function(err, revision){
+    // if(err)
+      // callback(err);
+    // else
+      // lookupDependenciesAndTemplateIfApp(revision, function(err, revision){
+        // if(err)
+          // callback(err);
+        // else
+          // validation.validateRevision(revision, function(err, revision){
+            // if(err)
+              // callback(err);
+            // else
+              // model.createRevision(scriptId, revision, callback);
+          // });
+      // });
+  // });
 };
 
 exports.getRevision = model.getRevision;
 exports.getLatestRevisionByName = model.getLatestRevisionByName;
 
 exports.compileApp = compilation.compileApp;
+

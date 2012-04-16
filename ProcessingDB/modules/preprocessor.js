@@ -94,13 +94,5 @@ exports.parseContent = function(content, callback){
     return s.replace(/"/g,"'").replace(/require\('|'\)/g,'')
   });
   
-  // Validate the content of templates
-  var err;
-  if(revision.type == 'template'){
-    var split = content.split("${code}");
-    if(split.length != 2)
-      err = strings.wrongNumberOfCodeStringsInTemplate(split.length - 1);
-  }
-  
-  callback(err,revision);
+  callback(null,revision);
 };
