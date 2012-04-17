@@ -2,6 +2,8 @@ var express = require('express');
 var app = express.createServer();
 var backend = require('./modules/backend');
 
+var port;
+
 app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -22,11 +24,13 @@ app.configure('development',function(){
       process.exit();
     });
   });
+  port = 4000;
 });
 
 // NODE_ENV=production node app.js
 app.configure('production',function(){
   app.use(express.errorHandler());
+  port = 80;
 });
 
 app.set('views', __dirname + '/views');
@@ -103,4 +107,4 @@ app.put('/:scriptId', function(req, res){
   });
 });
 
-app.listen(4000);
+app.listen(port);
