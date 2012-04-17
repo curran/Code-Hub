@@ -66,12 +66,24 @@ function validateAppParameters(revision, callback){
           });
         }
         
-        //console.log("revision.templateParameters = "+revision.templateParameters);
-        
         callback(err);
       });
-      //callback(null);
     }
+  else
+    callback(null);
+}
+
+// Tests for unique name.
+// callback(err)
+function validateName(revision, callback){
+  if(revision.name){
+    model.getLatestRevisionByName(revision.name, function(err, rev){
+      if(err)
+        callback(null);
+      else
+        callback(strings.scriptAlreadyExistsWithName(revision.name));
+    });
+  }
   else
     callback(null);
 }
@@ -90,6 +102,9 @@ exports.validateRevision = function(revision, callback){
     },
     function(callback){
       validateAppParameters(revision, callback);
+    },
+    function(callback){
+      validateName(revision, callback);
     }
   ],function(err, result){
     callback(err, revision);

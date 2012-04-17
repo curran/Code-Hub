@@ -38,3 +38,7 @@ exports.appParameterNotInTemplate = function(templateName,appParameter){
 exports.templateParameterNotInApp = function(templateName,parameter){
   return "The template '"+templateName+"' requires the parameter '"+parameter+"'. You must add '@app "+parameter+" value' to your app where 'value' is the value given to the '"+parameter+"' parameter.";
 }
+
+exports.scriptAlreadyExistsWithName = function(name){
+  return "A script already exists with the name '"+name+"'.";
+};

@@ -9,6 +9,12 @@ var strings = require('../modules/strings');
 
 var prefix = 'validationUnitTest/';
 
+exports.clearModel = function(test) {
+  backend.clearModel(function(err){
+    test.done();
+  });
+};
+
 exports.testValidation = function(test){
   function testLoadError(scriptName, expectedErr){
     return function(callback){
@@ -29,6 +35,7 @@ exports.testValidation = function(test){
     function(callback){
       testData.load(prefix+'testTemplate',callback);
     },
+    testLoadError('testTemplate', strings.scriptAlreadyExistsWithName('testTemplate')),
     testLoadError('appDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('noCodeString',"Templates must have exactly one "+
