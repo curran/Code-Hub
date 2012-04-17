@@ -1,0 +1,4 @@
+@template templateWithParams
+${code}
+${foo}
+${bar}

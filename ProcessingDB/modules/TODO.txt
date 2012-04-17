@@ -1,6 +1,8 @@
 Clean up:
  - Move all strings into strings.js
  - introduce functions for going to and from revision reference strings and use them everywhere
+ - introduce functions for going to and from app property strings and use them everywhere
+ 
  
 TODO
  - When saving an app

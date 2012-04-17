@@ -1,2 +1,2 @@
-@app template testTemplate
+@app template templateWithParams
 @app thisArg isNotInTheTemplate

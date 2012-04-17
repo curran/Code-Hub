@@ -15,7 +15,8 @@ var Scripts = new Schema({
   _id: Number, //scriptId
   latestRevNum: Number,
   latestName: String,
-  latestDependencies: [String]
+  latestDependencies: [String],
+  latestTemplateParameters: [String]
 });
 
 var Revisions = new Schema({
@@ -191,7 +192,8 @@ exports.createRevision = function(scriptId, revisionObject, callback){
     else{
       var set = {
         latestName: revisionObject.name,
-        latestDependencies: revisionObject.dependencies
+        latestDependencies: revisionObject.dependencies,
+        latestTemplateParameters: revisionObject.templateParameters
       };
       incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
         var revision = new Revision();
@@ -251,17 +253,24 @@ exports.getRevision = function(scriptId, revNum, callback){
  * Gets the scriptId, revNum, and dependencies for the latest version of the 
  * script with the given name (which is of type 'module' or 'template').
  * callback(err, revision)
- * revision has 'scriptId', 'revNum' and 'dependencies' properties
+ * revision has the following properties:
+ *   scriptId
+ *   revNum
+ *   dependencies
+ *   templateParameters
  */
 exports.getLatestRevisionByName = function(name, callback){
   Script.findOne({ latestName: name }, function(err, script){
+    
     if(!script)
       callback("No script found with name '"+name+"'.");
-    else
+    else{
       callback(null,{
         scriptId:script._id,
         revNum:script.latestRevNum, 
-        dependencies: script.latestDependencies
+        dependencies: script.latestDependencies,
+        templateParameters: script.latestTemplateParameters
       });
+    }
   });
 }

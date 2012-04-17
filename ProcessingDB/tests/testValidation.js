@@ -41,9 +41,14 @@ exports.testValidation = function(test){
     testLoadError('tooManyModuleArgs', strings.wrongNumArgs('module')),
     testLoadError('tooFewTemplateArgs', strings.wrongNumArgs('template')),
     testLoadError('tooManyTemplateArgs', strings.wrongNumArgs('template')),
-    testLoadError('unknownTemplate',"No script found with name 'fdsafhdjs'.")
-    ,testLoadError('appWithNoTemplate', strings.appWithNoTemplate)
-    //,testLoadError('appParametersNotInTemplate')
+    testLoadError('unknownTemplate',"No script found with name 'fdsafhdjs'."),
+    testLoadError('appWithNoTemplate', strings.appWithNoTemplate),
+    function(callback){
+      testData.load(prefix+'templateWithParams',callback);
+    },
+    testLoadError('appParametersNotInTemplate',strings.appParameterNotInTemplate('templateWithParams', 'thisArg'))
+    //testLoadError('templateParametersNotInApp')
+    
   ],function(err, result){
     if(err) throw err;
     test.done();

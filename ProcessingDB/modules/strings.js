@@ -30,3 +30,7 @@ exports.wrongNumArgs = function(type){
 exports.appWithNoTemplate = "This app has no template. All apps must have the directive"+
   " '@app template templateName' where 'templateName' is the name of the template the app "+
   "(bundled with its dependencies) should be injected into when run.";
+
+exports.appParameterNotInTemplate = function(templateName,appParameter){
+  return "The template '"+templateName+"' does not accept the parameter '"+appParameter+"'";
+}

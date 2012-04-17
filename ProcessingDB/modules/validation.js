@@ -1,6 +1,8 @@
 var dependencyManagement = require('./dependencyManagement');
+var model = require('./model');
 var strings = require('./strings');
 var async = require('async');
+var _ = require('underscore');
 
 // callback(err)
 function validateTemplateContent(revision, callback){
@@ -24,14 +26,32 @@ function validateModuleDependencies(revision, callback){
 // Tests that all app parameters are accepted by the template.
 // callback(err)
 function validateAppParameters(revision, callback){
-  var err;
+  // console.log("revision.templateParameters = "+revision.templateParameters);
   if(revision.type == 'app')
     if(!revision.templateName)
-      err = strings.appWithNoTemplate;
-    else
-    {}//model.getLatestRevisionByName(revision.templateName, function(err, 
-  
-  callback(err);
+      callback(strings.appWithNoTemplate);
+    else{
+      var appProperties = revision.appProperties;
+      var templateName = revision.templateName;
+      model.getLatestRevisionByName(templateName, function(err, revision){
+        var templateParameters = revision.templateParameters;
+        var err;
+        
+        _(appProperties).each(function(appProperty){
+          var appParameter = appProperty.substring(0, appProperty.indexOf('='));
+          console.log("appParameter = "+appParameter);
+          if(!_(templateParameters).contains(appParameter))
+            err = strings.appParameterNotInTemplate(templateName,appParameter);
+        });
+        
+        //console.log("revision.templateParameters = "+revision.templateParameters);
+        
+        callback(err);
+      });
+      //callback(null);
+    }
+  else
+    callback(null);
 }
 
 /**
