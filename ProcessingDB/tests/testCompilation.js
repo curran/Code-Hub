@@ -3,10 +3,17 @@ var testData = require('./testData');
 var async = require('async');
 
 var prefix = 'compilationUnitTest/';
+
+exports.clearModel = function(test) {
+  backend.clearModel(function(err){
+    test.done();
+  });
+};
+
 /**
  * Tests app compilation.
  */
-exports.testLookup = function(test) {
+exports.testAppCompilation = function(test) {
   async.waterfall([
     function(callback){
       testData.load(prefix+'A',callback);
@@ -31,6 +38,31 @@ exports.testLookup = function(test) {
         eval(compiledApp);
         test.equal(C(), 12, "Compiled code should work");
         
+        callback();
+      });
+    }
+  ],
+  function (err, result) {
+    if(err) throw err;
+    test.done();
+  });
+};
+
+/**
+ * Tests injecting parameters into templates from apps.
+ */
+exports.testAppParameterInjection = function(test) {
+  async.waterfall([
+    function(callback){
+      testData.load(prefix+'E',callback);
+    },
+    function(scriptId, revNum, callback){
+      testData.load(prefix+'F',callback);
+    },
+    function(scriptId, revNum, callback){
+      backend.compileApp(scriptId, revNum, function(err, compiledApp){
+        eval(compiledApp);
+        test.equal(E(), 15, "Compiled code should work");
         callback();
       });
     }

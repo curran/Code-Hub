@@ -1,0 +1,4 @@
+@app template E
+@app foo 3
+var B = require('B');
+return B.getAPlusB() + foo;//should return 5+7+3=15

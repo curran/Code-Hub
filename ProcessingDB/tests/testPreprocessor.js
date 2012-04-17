@@ -37,9 +37,9 @@ exports.testTemplatePreprocessing = function(test) {
       test.equal(revision.type, 'app' , 'Type should be template.');
       test.equal(revision.templateName, 'canvas' , 'template should be canvas.');
       
-      test.equal(revision.properties.name, 'The  Chaos  Game' , 'Name should be "The  Chaos  Game".');
-      test.equal(revision.properties.width, 257 , 'width should be 257.');
-      test.equal(revision.properties.height, 257 , 'width should be 257.');
+      test.ok(_(revision.appProperties).contains('name=The  Chaos  Game'), 'Name should be "The  Chaos  Game".');
+      test.ok(_(revision.appProperties).contains('width=257'), 'width should be 257.');
+      test.ok(_(revision.appProperties).contains('height=257'), 'height should be 257.');
       
       test.done();
     });

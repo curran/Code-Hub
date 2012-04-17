@@ -38,6 +38,11 @@ var Revisions = new Schema({
   //   e.g. ['4.2','6.3','8.1']
   appDependencies: [String],
   
+  // relevant when type == 'app'.
+  // Contains app properties to be passed to the template.
+  // Entries are of the form "property=value".
+  appProperties: [String],
+  
   // relevant when type == 'app'
   template: String, // "scriptId.revNum" or ""
   
@@ -133,7 +138,7 @@ function revId(scriptId, revNum){
 }
 
 function validateRevisionObject(revisionObject,callback){
-  //TODO implement validation
+  //TODO remove this function
   if(!revisionObject)
     callback("Revision object is null.");
   else{
@@ -197,7 +202,8 @@ exports.createRevision = function(scriptId, revisionObject, callback){
         revision.type = revisionObject.type;
         revision.name = revisionObject.name;
         revision.dependencies = revisionObject.dependencies;
-        revision.appDependencies= revisionObject.appDependencies,
+        revision.appDependencies = revisionObject.appDependencies;
+        revision.appProperties = revisionObject.appProperties;
         revision.template = revisionObject.template;
         revision.templateName = revisionObject.templateName;
         revision.save(function(err){
@@ -232,6 +238,7 @@ exports.getRevision = function(scriptId, revNum, callback){
         dependencies: revision.dependencies,
         appDependencies: revision.appDependencies,
         template: revision.template,
+        appProperties: revision.appProperties,
         templateName: revision.templateName
       });
   });

@@ -48,6 +48,13 @@ function parse(line){
 
 /**
  * callback(err, revision)
+ * This function injects:
+ *   revision.type
+ *   revision.name
+ *   revision.dependencies
+ *   revision.templateName
+ *   revision.appProperties
+ *   revision.content
  */
 exports.parseContent = function(content, callback){
   //TODO test errors when content contains no directives
@@ -70,10 +77,13 @@ exports.parseContent = function(content, callback){
       revision.type = 'app';
       if(directive.property == 'template')
         revision.templateName = directive.value;
+      else if(directive.property.indexOf('=') != -1)
+        //TODO test this path
+        err = "Equal sign not allowed in app property names.";
       else{
-        if(!revision.properties)
-          revision.properties = {};
-        revision.properties[directive.property] = directive.value;
+        if(!revision.appProperties)
+          revision.appProperties = [];
+        revision.appProperties.push(directive.property+'='+directive.value);
       }
     }
   });

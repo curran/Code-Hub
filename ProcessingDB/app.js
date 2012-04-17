@@ -28,6 +28,7 @@ app.configure('development',function(){
 });
 
 // NODE_ENV=production node app.js
+// NODE_ENV=production forever app.js
 app.configure('production',function(){
   app.use(express.errorHandler());
   port = 80;

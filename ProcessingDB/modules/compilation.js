@@ -63,6 +63,13 @@ function splitTemplate(template, callback){
     callback(null, split[0], split[1]);
 }
 
+function splitPropertyValuePair(propertyValuePair, callback){
+  var i = propertyValuePair.indexOf('=');
+  var property = propertyValuePair.substr(0,i);
+  var value = propertyValuePair.substr(i+1);
+  callback(property,value);
+}
+
 /**
  * callback(err, compiledApp)
  * compiledApp is the string of the app and module code
@@ -80,10 +87,14 @@ exports.compileApp = function(scriptId, revNum, callback){
       // The content has the @ directives stripped out.
       var modules = [];
       
-      // this contains the code content of the app
+      // this contains the code content string of the app
       var app;
       
-      // this contains the code content of the template
+      // this contains the properties of the app as an array of
+      // strings of the form "property=value"
+      var appProperties;
+      
+      // this contains the code content string of the template
       var template;
       
       // populate 'modules', 'app', and 'template'
@@ -107,6 +118,7 @@ exports.compileApp = function(scriptId, revNum, callback){
         function(callback){
           backend.getRevision(scriptId, revNum, function(err, revision){
             app = stripDirectives(revision.content);
+            appProperties = revision.appProperties;
             callback();
           });
         },
@@ -124,6 +136,15 @@ exports.compileApp = function(scriptId, revNum, callback){
           callback(err);
         else{
           // at this point 'modules', 'app', and 'template' have been populated
+          
+          // inject the app properties into the template
+          if(appProperties)
+            _.forEach(appProperties, function(propertyValuePair){
+              splitPropertyValuePair(propertyValuePair, function(property,value){
+                template = template.replace('${'+property+'}', value);
+              });
+            });
+          
           splitTemplate(template, function(err, templateBegin, templateEnd){
             if(err)
               callback(err);
