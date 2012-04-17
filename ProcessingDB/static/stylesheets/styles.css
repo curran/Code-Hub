@@ -1,10 +1,15 @@
 body {
   font-size: 16px;
-  margin: 0px;
+  margin: 2px;
   padding: 0px;
 }
 
 #footer {
   margin-left: 5px;
   padding: 0px;
+}
+
+#error {
+  color:red;
+  margin-left: 5px;
 }

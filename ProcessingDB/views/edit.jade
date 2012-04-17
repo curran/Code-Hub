@@ -17,10 +17,10 @@ form(action='/'+revision.scriptId, method='POST')
   p(style='float:right')
     - if(revision.type == 'app')
       a(href='/run/#{revision.scriptId+'.'+revision.revNum}') run
-    input(type='text', id='revision_message', name='revision[message]')
+    //input(type='text', id='revision_message', name='revision[message]')
     input(type='submit', value='Save')
 script
-  var myCodeMirror = CodeMirror.fromTextArea(revision_content, {mode:  "#{mode}"});
+  var myCodeMirror = CodeMirror.fromTextArea(revision_content, {mode:"#{mode}"});
 #footer
   p(style='float:left')
     - if(revision.dependencies && revision.dependencies.length != 0)
