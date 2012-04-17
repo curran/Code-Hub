@@ -34,3 +34,7 @@ exports.appWithNoTemplate = "This app has no template. All apps must have the di
 exports.appParameterNotInTemplate = function(templateName,appParameter){
   return "The template '"+templateName+"' does not accept the parameter '"+appParameter+"'";
 }
+
+exports.templateParameterNotInApp = function(templateName,parameter){
+  return "The template '"+templateName+"' requires the parameter '"+parameter+"'. You must add '@app "+parameter+" value' to your app where 'value' is the value given to the '"+parameter+"' parameter.";
+}

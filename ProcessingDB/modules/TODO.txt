@@ -5,9 +5,6 @@ Clean up:
  
  
 TODO
- - When saving an app
-   - Error when any app args are not present in template
-   - Error when any template args are not present in app
  - When saving a module
    - Error if a module already exists with the same name
  - When saving a template
