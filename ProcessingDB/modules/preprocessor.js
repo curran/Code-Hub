@@ -21,7 +21,7 @@ var strings = require('./strings');
  * If (type=='module') or (type=='template'), the 'name' property is available.
  * If an error occurs, type=='error' and the 'message' property is available.
  */
-function parse(line){
+function parseDirective(line){
   // split on whitespace and trim tokens
   var tokens = _.filter(line.split(" "),_.identity);
   if(tokens.length > 0){
@@ -45,6 +45,20 @@ function parse(line){
   }
 }
 
+/**
+ * Trims the 'require(' and ')...' parts from a require string,
+ * returning only the name of the required module.
+ */
+function parseRequire(requireString){
+  return requireString.replace(/"/g,"'").replace(/require\('|'\)/g,'');
+}
+
+/**
+ * Trims the '${' and '}' parts from a template parameter string.
+ */
+function parseTemplateParameter(templateParameterString){
+  return templateParameterString.replace(/\${|}/g,'');
+}
 
 /**
  * callback(err, revision)
@@ -55,19 +69,33 @@ function parse(line){
  *   revision.templateName
  *   revision.appProperties
  *   revision.content
+ *   revision.templateParameters
  */
 exports.parseContent = function(content, callback){
+  // This is the object which will be populated and passed to the callback.
+  var revision = {};
+  
   //TODO test errors when content contains no directives
   
-  var matches = content.match(/(require\(['|"][^)]+['|"]\))|@.*/gm);
+  // Match all at once the following types of directives:
+  //  - require('moduleName')
+  //  - @directive args ...
+  //  - ${appParameter}
+  var matches = content.match(/(require\(['|"][^)]+['|"]\))|@.*|\${[^}]*}/gm);
   
-  var hasAtSymbol = function(s){ return s.indexOf("@") != -1 };
-  var directives = _.map(_.filter(matches, hasAtSymbol), parse);
-  var requires = _.reject(matches, hasAtSymbol);
+  var isDirective = function(s){ return s.indexOf("@") != -1; };
+  var directives = _.map(_.filter(matches, isDirective), parseDirective);
   
-  var revision = {};
-  var err;
+  var isRequire = function(s){ return s.indexOf("require(") != -1; };
+  revision.dependencies = _.map(_.filter(matches, isRequire), parseRequire);
+  
+  var isTemplateParameter = function(s){ 
+    return s.indexOf("${") != -1 && s != "${code}";
+  };
+  revision.templateParameters = _.map(_.filter(matches, isTemplateParameter), parseTemplateParameter);
+  
   //TODO report error when type is declared multiple times
+  var err;
   _.each(directives,function(directive){
     if(directive.type == 'error')
       err = directive.message;
@@ -90,11 +118,6 @@ exports.parseContent = function(content, callback){
   
   //TODO test errors when content contains no type declarations
   revision.content = content;
-
-  // Add instances of require() to the dependencies
-  revision.dependencies = _.map(requires, function(s){
-    return s.replace(/"/g,"'").replace(/require\('|'\)/g,'')
-  });
   
   callback(err,revision);
 };

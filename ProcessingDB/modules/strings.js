@@ -26,3 +26,7 @@ exports.wrongNumArgs = function(type){
       " wrong number of arguments. Expected form is '@"+type+" "+type+"Name' "+
       "where "+type+"Name is the name of the "+type+".";
 };
+
+exports.appWithNoTemplate = "This app has no template. All apps must have the directive"+
+  " '@app template templateName' where 'templateName' is the name of the template the app "+
+  "(bundled with its dependencies) should be injected into when run.";

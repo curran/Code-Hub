@@ -11,6 +11,7 @@
  *    inspired by http://wiki.commonjs.org/wiki/Modules/CompiledModules
  */
 var model = require('./model');
+var strings = require('./strings');
 var async = require('async');
 var _ = require('underscore');
 
@@ -78,12 +79,15 @@ module.exports.lookupDependencies = function(revision, callback){
  * callback(err,templateRevisionRefence)
  */
 exports.lookupTemplate = function(revision, callback){
-  model.getLatestRevisionByName(revision.templateName, function(err, template){
-    if(err)
-      callback(err); //TODO test this path
-    else{
-      revision.template = template.scriptId+'.'+template.revNum;
-      callback(null, revision);
-    }
-  });
+  if(revision.templateName)
+    model.getLatestRevisionByName(revision.templateName, function(err, template){
+      if(err)
+        callback(err); //TODO test this path
+      else{
+        revision.template = template.scriptId+'.'+template.revNum;
+        callback(null, revision);
+      }
+    });
+  else
+    callback(strings.appWithNoTemplate);
 }

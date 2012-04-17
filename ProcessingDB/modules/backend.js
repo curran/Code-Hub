@@ -19,7 +19,7 @@
  *     |/ / /
  *   backend
  * 
- * TODO make this into a graphviz figure, and correct it
+ * TODO make this into a graphviz figure, and update it
  */
 
 var model = require('./model');

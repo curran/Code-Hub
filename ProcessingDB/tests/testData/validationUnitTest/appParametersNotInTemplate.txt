@@ -1,0 +1,2 @@
+@app template testTemplate
+@app thisArg isNotInTheTemplate

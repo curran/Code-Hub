@@ -46,7 +46,9 @@ var Revisions = new Schema({
   // relevant when type == 'app'
   template: String, // "scriptId.revNum" or ""
   
-  templateName: String // the name of the template, for display
+  templateName: String, // the name of the template, for display
+  
+  templateParameters: [String] // the names of the template parameters. Necessary for validation.
 });
 
 
@@ -206,6 +208,7 @@ exports.createRevision = function(scriptId, revisionObject, callback){
         revision.appProperties = revisionObject.appProperties;
         revision.template = revisionObject.template;
         revision.templateName = revisionObject.templateName;
+        revision.templateParameters = revisionObject.templateParameters;
         revision.save(function(err){
           if(err) callback(err);
           else callback(null,revNum);
@@ -239,7 +242,8 @@ exports.getRevision = function(scriptId, revNum, callback){
         appDependencies: revision.appDependencies,
         template: revision.template,
         appProperties: revision.appProperties,
-        templateName: revision.templateName
+        templateName: revision.templateName,
+        templateParameters: revision.templateParameters,
       });
   });
 };

@@ -1,4 +1,5 @@
 var async = require('async');
+var _ = require('underscore');
 
 /**
  * This file is not a unit test, but is a set of test functions which 
@@ -14,9 +15,11 @@ var createTestRevision = function(){
     type: 'template',
     name: 'TestTemplate',
     content: 'Test Content',
-    dependencies: '',
+    dependencies: ['foo', 'bar'],
+    appDependencies: ['3.4','2.5'],
     template: '4.3',
-    templateName: 'TestTemplate'
+    templateName: 'TestTemplate',
+    templateParameters: ['templateParam1','templateParam2','templateParam3']
   };
 }
 
@@ -44,6 +47,13 @@ exports.testCreateScript = function(module,test){
 }
 
 exports.testRevisionWriteRead = function(module, test){
+  function assertSetsEqual(expected, actual){
+    test.equal(actual.length, expected.length, 'Number of elements should match.');
+    _(expected).each(function(d){
+      test.ok(_(actual).contains(d),'actual should contain '+d);
+    });
+  }
+  
   var revision = createTestRevision();
   var scriptId;
   async.waterfall([
@@ -68,7 +78,9 @@ exports.testRevisionWriteRead = function(module, test){
         test.equal(revision.parentRevision , revisionFromStore.parentRevision , "parentRevision  should match");
         test.equal(revision.type , revisionFromStore.type , "type  should match");
         test.equal(revision.name , revisionFromStore.name , "name  should match");
-        test.equal(revision.dependencies , revisionFromStore.dependencies , "dependencies  should match");
+        assertSetsEqual(revision.dependencies , revisionFromStore.dependencies);
+        assertSetsEqual(revision.appDependencies , revisionFromStore.appDependencies);
+        assertSetsEqual(revision.templateParameters , revisionFromStore.templateParameters);
         test.equal(revision.template , revisionFromStore.template , "template  should match");
         test.equal(revision.templateName , revisionFromStore.templateName , "template  should match");
         test.done();
