@@ -26,18 +26,11 @@ function parse(line){
   var tokens = _.filter(line.split(" "),_.identity);
   if(tokens.length > 0){
     var type = tokens[0].substr(1);
-    if(type == 'module' || type == 'template'){
-      if(tokens.length == 2){
+    if(type == 'module' || type == 'template')
+      if(tokens.length == 2)
         return { type:type, name:tokens[1] };
-      }
-      else{
-        //TODO write unit test for this error
-        return { type:'error', message:"'@module' directive found with"+
-          " wrong number of arguments. Expected form is '@module moduleName' "+
-          "where moduleName is the name of the module."
-        };
-      }
-    }
+      else
+        return { type:'error', message: strings.wrongNumArgs(type)};
     else if(type == 'app'){
       if(tokens.length > 2)
         return {
@@ -46,16 +39,12 @@ function parse(line){
           value:line.substr(line.indexOf(tokens[1])+tokens[1].length+1)
           //value:tokens.splice(2).join(' ')
         };
-      else{
-        //TODO write unit test for this error
-        return { type:'error', message:"'@app' directive found with"+
-          " wrong number of arguments. Expected form is '@app moduleName' "+
-          "where moduleName is the name of the module."
-        };
-      }
+      else
+        return { type:'error', message:strings.wrongNumArgs(type) };
     }
   }
 }
+
 
 /**
  * callback(err, revision)
@@ -70,9 +59,12 @@ exports.parseContent = function(content, callback){
   var requires = _.reject(matches, hasAtSymbol);
   
   var revision = {};
+  var err;
   //TODO report error when type is declared multiple times
   _.each(directives,function(directive){
-    if(directive.type == 'module' || directive.type == 'template')
+    if(directive.type == 'error')
+      err = directive.message;
+    else if(directive.type == 'module' || directive.type == 'template')
       revision = _.defaults(revision,directive); // 'type' and 'name' from directive
     else if(directive.type == 'app'){
       revision.type = 'app';
@@ -94,5 +86,5 @@ exports.parseContent = function(content, callback){
     return s.replace(/"/g,"'").replace(/require\('|'\)/g,'')
   });
   
-  callback(null,revision);
+  callback(err,revision);
 };

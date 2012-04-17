@@ -5,6 +5,7 @@
 var backend = require('../modules/backend');
 var testData = require('./testData');
 var async = require('async');
+var strings = require('../modules/strings');
 
 var prefix = 'validationUnitTest/';
 
@@ -25,25 +26,22 @@ exports.testValidation = function(test){
   }
   
   async.series([
+    function(callback){
+      testData.load(prefix+'testTemplate',callback);
+    },
     testLoadError('appDepsNotFound',"No script found with name 'fdshajfkds'."),
+    testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('noCodeString',"Templates must have exactly one "+
       "occurrence of ${code}. There are 0 occurences in this template."),
     testLoadError('manyCodeStrings',"Templates must have exactly one "+
       "occurrence of ${code}. There are 2 occurences in this template."),
-    testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'.")
-      
-      
-// moduleDepsNotFound.txt
-// .txt
-// testTemplate.txt
-// tooFewAppArgs.txt
-// tooFewModuleArgs.txt
-// tooFewTemplateArgs.txt
-// tooManyModuleArgs.txt
-// tooManyTemplateArgs.txt
-// unknownTemplate.txt
-
-      
+    testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
+    testLoadError('tooFewAppArgs', strings.wrongNumArgs('app')),
+    testLoadError('tooFewModuleArgs', strings.wrongNumArgs('module')),
+    testLoadError('tooManyModuleArgs', strings.wrongNumArgs('module')),
+    testLoadError('tooFewTemplateArgs', strings.wrongNumArgs('template')),
+    testLoadError('tooManyTemplateArgs', strings.wrongNumArgs('template')),
+    testLoadError('unknownTemplate',"No script found with name 'fdsafhdjs'.")
   ],function(err, result){
     if(err) throw err;
     test.done();

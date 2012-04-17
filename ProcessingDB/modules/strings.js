@@ -14,3 +14,15 @@ exports.wrongNumberOfCodeStringsInTemplate = function(nOccurences){
   return "Templates must have exactly one occurrence of ${code}. There are "+
     nOccurences+" occurences in this template.";
 }
+
+exports.wrongNumArgs = function(type){
+  if(type == 'app')
+    return "'@app' directive found with"+
+      " wrong number of arguments. Expected form is '@app template templateName' "+
+      "where templateName is the name of the module, or the form '@app property value'"+
+      "where 'property' is a property expected by the template, and 'value' is the value passed to the template.";
+  else if(type == 'module' || type == 'template')
+    return "'@"+type+"' directive found with"+
+      " wrong number of arguments. Expected form is '@"+type+" "+type+"Name' "+
+      "where "+type+"Name is the name of the "+type+".";
+};
