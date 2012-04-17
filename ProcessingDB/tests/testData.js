@@ -23,8 +23,6 @@ function load(scriptName,callback){
   read(scriptName,function(err,content){
     backend.createScript(function(err, scriptId){
       backend.createRevision(scriptId, content, function(err, revNum){
-        console.log('loaded '+scriptName+' at '+scriptId+'.'+revNum);
-        console.log('err = '+err);
         callback(err, scriptId, revNum);
       });
     });
