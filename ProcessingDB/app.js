@@ -8,6 +8,8 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(__dirname + '/static'));
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
 });
 
 // NODE_ENV=development node app.js
@@ -34,9 +36,6 @@ app.configure('production',function(){
   port = 80;
 });
 
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-
 var initialContent = "";/* "@app name Increment Test\n"+
             "@app template minimalHTML\n"+
             "var inc = require('increment');\n"+
@@ -48,31 +47,31 @@ app.get('/', function(req, res){
 });
 
 app.get('/edit/', function(req, res){
-  res.render('edit',{locals:{
+  res.render('edit',{
     revision: {
       content: initialContent,
       scriptId: -1
     },
     mode:'javascript'
-  }});
+  });
 });
 
 app.get('/edit/:scriptId.:revNum', function(req, res){
   backend.getRevision(req.params.scriptId, req.params.revNum, function(err, revision){
     if(err)
-      res.render('error',{locals:{ error:err }});
+      res.render('error',{ error:err });
     else
-      res.render('edit',{locals:{
+      res.render('edit',{
         revision: revision,
         mode:revision.type == 'template'? 'htmlmixed':'javascript'
-      }});
+      });
   });
 });
 
 app.get('/run/:scriptId.:revNum',function(req, res){
   backend.compileApp(req.params.scriptId, req.params.revNum, function(err, compiledApp){
     if(err)
-      res.render('error',{locals:{ error:err }});
+      res.render('error',{error:err });
     else{
       res.writeHead(200, {'Content-Type': 'text/html'});
       res.end(compiledApp);
@@ -83,7 +82,7 @@ app.get('/run/:scriptId.:revNum',function(req, res){
 app.get('/edit/:scriptName', function(req, res){
   backend.getLatestRevisionByName(req.params.scriptName, function(err, revision){
     if(err)
-      res.render('error',{locals:{error:err}});
+      res.render('error',{error:err});
     else
       res.redirect('/edit/'+revision.scriptId+'.'+revision.revNum);
   });
@@ -101,7 +100,7 @@ app.put('/:scriptId', function(req, res){
   createScriptIfNecessary(req.params.scriptId, function(err, scriptId){
     backend.createRevision(scriptId, req.body.revision.content, function(err, revNum){
       if(err)
-        res.render('error',{locals:{error:err}});
+        res.render('error',{error:err});
       else
         res.redirect('/edit/'+scriptId+'.'+revNum);
     });

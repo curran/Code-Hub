@@ -3,8 +3,10 @@ html
   head
     link(rel='stylesheet', href='/stylesheets/styles.css')
     title ProcessingDB
+    block head
   body
     #main
       a(href='/')
         img(src='/images/ProcessingDBLogo.png')
-      #container!= body
+      #container
+        block content
