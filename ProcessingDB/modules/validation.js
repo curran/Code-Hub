@@ -76,15 +76,20 @@ function validateAppParameters(revision, callback){
 // Tests for unique name.
 // callback(err)
 function validateName(revision, callback){
-  // if(revision.name){
-    // model.getLatestRevisionByName(revision.name, function(err, rev){
-      // if(err)
-        // callback(null);
-      // else
-        // callback(strings.scriptAlreadyExistsWithName(revision.name));
-    // });
-  // }
-  // else
+  if(revision.name){
+    model.getLatestRevisionByName(revision.name, function(err, latestRevision){
+      // If no revision has been found with this name, then no script
+      // exists with the name of the new one, so callback with no error.
+      // Also if a script with the given name does already exist, but it is
+      // the same as the script being saved, this is OK, so callback with no error.
+      if(err || latestRevision.scriptId == revision.scriptId)
+        callback(null);
+      else
+      // If the code gets here, it means there is a name conflict with another script.
+        callback(strings.scriptAlreadyExistsWithName(revision.name));
+    });
+  }
+  else
     callback(null);
 }
 

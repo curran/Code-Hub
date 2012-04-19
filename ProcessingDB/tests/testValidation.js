@@ -35,7 +35,7 @@ exports.testValidation = function(test){
     function(callback){
       testData.load(prefix+'testTemplate',callback);
     },
-    //testLoadError('testTemplate', strings.scriptAlreadyExistsWithName('testTemplate')),
+    testLoadError('testTemplate', strings.scriptAlreadyExistsWithName('testTemplate')),
     testLoadError('appDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('noCodeString',"Templates must have exactly one "+
