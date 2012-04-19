@@ -1,0 +1,48 @@
+extends layout
+block content
+  #content
+    :markdown
+      [New script](/edit) | [Script list](/scripts)
+      
+      ProcessingDB is a software development tool for JavaScript and HTML which provides:
+  
+      * a browser-based code editor which allows you to save and run your code
+      * the ability to save and publish of all versions of your code
+      * support for dependency management and deployment
+      
+      #Concepts
+      ##Scripts
+      * Every piece of code stored in ProcessingDB is referred to as a "script".
+      * Each script has an id number, and each script version has a revision number.
+      * When a script is saved, its revision number is incremented.
+      * All script versions are published at URLs of the form `processingdb.org/edit/scriptId.revisionNumber`.
+        * For example, [`http://processingdb.org/edit/4.2`](http://processingdb.org/edit/4.2) edits the script whose id is 4, revision number 2.
+      
+      ##Modules
+      * ProcessingDB supports `require` and `exports` from [CommonJS Modules](http://wiki.commonjs.org/wiki/Modules/1.1).
+        * Modules can be required using the syntax `var foo = require('foo')`.
+        * Modules define their exported API by adding properties to an `exports` object.
+      * Each module in ProcessingDB has a unique name, say `moduleName`.
+      * A script declares itself to be a module by using the directive `@module moduleName`.
+  
+      ##Templates
+      * Templates are HTML pages with placeholders of the form `${parameterName}`.
+        * Parameter values are passed in from applications which use the template.
+        * `${code}` is a special placeholder which gets replaced by application code bundled with its dependencies.
+      * Each template in ProcessingDB has a unique name, say `templateName`.
+      * A script declares itself to be a template by using the directive `@template templateName`.
+      
+      ##Applications
+      * Applications are scripts which can be run.
+      * Applications can depend on modules using `require`, just like modules can.
+      * When an application is run, it is bundled with its dependencies and embedded into a template.
+        * Module and app code is bundled together based on this [compilation strategy from the CommonJS Wiki](http://wiki.commonjs.org/wiki/Modules/CompiledModules)
+      * A script declares itself to be an application by using the directive `@app template templateName`.
+      * Applications can pass parameters to the template using directives of the form `@app parameterName value`.
+      
+      #Examples
+      * The [CommonJS math example](http://wiki.commonjs.org/wiki/Modules/1.1#Sample_Code) has been imported to ProcessingDB:
+        * [The `math` module](http://processingdb.org/edit/math)
+        * [The `increment` module](http://processingdb.org/edit/increment)
+        * [The `minimalHTML` template](http://processingdb.org/edit/minimalHTML)
+        * [The `incrementTest` application](http://processingdb.org/edit/4.4)
