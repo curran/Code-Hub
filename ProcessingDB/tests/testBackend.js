@@ -29,7 +29,7 @@ exports.testLookup = function(test) {
     },
     function(scriptId, revNum, callback){
       expectedTemplate = scriptId+'.'+revNum;
-      testData.load('incrementTest',callback);
+      testData.load('incrementTestApp',callback);
     },
     function(scriptId, revNum, callback){
       test.equal(scriptId, 4 , "Fourth Script id should be 4, it is "+scriptId);
