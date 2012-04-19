@@ -76,15 +76,15 @@ function validateAppParameters(revision, callback){
 // Tests for unique name.
 // callback(err)
 function validateName(revision, callback){
-  if(revision.name){
-    model.getLatestRevisionByName(revision.name, function(err, rev){
-      if(err)
-        callback(null);
-      else
-        callback(strings.scriptAlreadyExistsWithName(revision.name));
-    });
-  }
-  else
+  // if(revision.name){
+    // model.getLatestRevisionByName(revision.name, function(err, rev){
+      // if(err)
+        // callback(null);
+      // else
+        // callback(strings.scriptAlreadyExistsWithName(revision.name));
+    // });
+  // }
+  // else
     callback(null);
 }
 

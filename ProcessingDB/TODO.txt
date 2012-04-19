@@ -1,0 +1,51 @@
+Clean up:
+ - Move all strings into strings.js
+ - introduce functions for going to and from revision reference strings and use them everywhere
+ - introduce functions for going to and from app property strings and use them everywhere
+ - Move assertSetsEqual duplicates into one place
+   - Extend the nodeunit 'test' prototype/object? 
+ 
+TODO
+ - Write Readme / Documentation page
+   - at processingdb.org/documentation
+ - Unit test for when revisions have no type (no directives)
+ - Make page which lists scripts
+ - Make documentation page
+ - Package the ProcessingDB backend into a package managed by NPM
+ - Write update shell script on cloud server
+   - Use forever daemon mode
+   - Run unit tests previous to deploying
+ - Dogfood - actually start using it
+   - Create full screen canvas template
+   - Post course material
+   - Post ASH dummy impl
+   - Post slider examples
+   - Post RTree implementation and tests
+   - Post MultiTouch examples
+   
+Future Feature Ideas
+ - Make run link work with code currently in the editor, not the saved code
+ - add CTRL+R shortcut for running
+ - add CTRL+S shortcut for saving
+ - @inGallery descriptionString //Publishes this app to the ProcessingDB gallery
+ - Have a "ProcessingDB Gallery" with thumbnails of the running code
+ - @language coffeescript
+ - @language markdown
+   - @documents foo //declares that this script is documentation for module or template 'foo'
+     - Place 'documentation' link below 'foo' code in editor
+     - Place 'documents foo' link below documentation code in editor
+ - Autocomplete when typing require(... via AJAX request to list modules starting with ...
+ - Autocomplete when typing foo.X where previously 'foo = require('foo')' was found
+   - X is extracted from 'exports.X = ...' in 'foo' module
+ - Documentation extracted and placed as a tooltip next to autocomplete for foo.X
+ - Integrate ASH
+ - Feedback button
+   - Comments can be posted giving feedback on ProcessingDB itself
+   - Comments can be viewed in blog style at processingdb.org/feedback
+ - Add search (searching names and content)
+   - results in sections: 
+     - Modules
+     - Apps
+     - Templates
+     - Gallery Entries
+     
