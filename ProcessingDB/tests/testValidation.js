@@ -54,9 +54,10 @@ exports.testValidation = function(test){
       testData.load(prefix+'templateWithParams',callback);
     },
     testLoadError('appParametersNotInTemplate',strings.appParameterNotInTemplate('templateWithParams', 'thisArg')),
-    testLoadError('templateParametersNotInApp',strings.templateParameterNotInApp('templateWithParams', 'bar'))
-    
-  ],function(err, result){
+    testLoadError('templateParametersNotInApp',strings.templateParameterNotInApp('templateWithParams', 'bar')),
+    testLoadError('notype',strings.noType)
+  ],
+  function(err, result){
     if(err) throw err;
     test.done();
   });

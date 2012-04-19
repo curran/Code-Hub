@@ -42,3 +42,8 @@ exports.templateParameterNotInApp = function(templateName,parameter){
 exports.scriptAlreadyExistsWithName = function(name){
   return "A script already exists with the name '"+name+"'.";
 };
+
+exports.noType = "This script contains no directives which specify it's type. Every script in ProcessingDB must be an 'app', 'template', or 'module'. "+
+"To declare this script to be a module, use '@module moduleName' where moduleName is the name by which this module will be available when require('moduleName') is called by other modules or apps. "+
+"To declare this script to be a template, use '@template templateName' where templateName is the name of the template. "+
+"To declare this script to be an app which can be run (i.e. bundled together with its dependencies and embedded into a template), use '@app template templateName'.";

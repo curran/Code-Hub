@@ -72,52 +72,54 @@ function parseTemplateParameter(templateParameterString){
  *   revision.templateParameters
  */
 exports.parseContent = function(content, callback){
-  // This is the object which will be populated and passed to the callback.
-  var revision = {};
-  
-  //TODO test errors when content contains no directives
-  
-  // Match all at once the following types of directives:
-  //  - require('moduleName')
-  //  - @directive args ...
-  //  - ${appParameter}
-  var matches = content.match(/(require\(['|"][^)]+['|"]\))|@.*|\${[^}]*}/gm);
-  
-  var isDirective = function(s){ return s.indexOf("@") != -1; };
-  var directives = _.map(_.filter(matches, isDirective), parseDirective);
-  
-  var isRequire = function(s){ return s.indexOf("require(") != -1; };
-  revision.dependencies = _.map(_.filter(matches, isRequire), parseRequire);
-  
-  var isTemplateParameter = function(s){ 
-    return s.indexOf("${") != -1 && s != "${code}";
-  };
-  revision.templateParameters = _.map(_.filter(matches, isTemplateParameter), parseTemplateParameter);
-  
-  //TODO report error when type is declared multiple times
-  var err;
-  _.each(directives,function(directive){
-    if(directive.type == 'error')
-      err = directive.message;
-    else if(directive.type == 'module' || directive.type == 'template')
-      revision = _.defaults(revision,directive); // 'type' and 'name' from directive
-    else if(directive.type == 'app'){
-      revision.type = 'app';
-      if(directive.property == 'template')
-        revision.templateName = directive.value;
-      else if(directive.property.indexOf('=') != -1)
-        //TODO test this path
-        err = "Equal sign not allowed in app property names.";
-      else{
-        if(!revision.appProperties)
-          revision.appProperties = [];
-        revision.appProperties.push(directive.property+'='+directive.value);
+  if(content == null || content == undefined)
+    callback("Content given to preprocessor is null.");
+  else{
+    // This is the object which will be populated and passed to the callback.
+    var revision = {};
+    
+    // Match all at once the following types of directives:
+    //  - require('moduleName')
+    //  - @directive args ...
+    //  - ${appParameter}
+    var matches = content.match(/(require\(['|"][^)]+['|"]\))|@.*|\${[^}]*}/gm);
+    
+    var isDirective = function(s){ return s.indexOf("@") != -1; };
+    var directives = _.map(_.filter(matches, isDirective), parseDirective);
+    
+    var isRequire = function(s){ return s.indexOf("require(") != -1; };
+    revision.dependencies = _.map(_.filter(matches, isRequire), parseRequire);
+    
+    var isTemplateParameter = function(s){ 
+      return s.indexOf("${") != -1 && s != "${code}";
+    };
+    revision.templateParameters = _.map(_.filter(matches, isTemplateParameter), parseTemplateParameter);
+    
+    //TODO report error when type is declared multiple times
+    var err;
+    _.each(directives,function(directive){
+      if(directive.type == 'error')
+        err = directive.message;
+      else if(directive.type == 'module' || directive.type == 'template')
+        revision = _.defaults(revision,directive); // 'type' and 'name' from directive
+      else if(directive.type == 'app'){
+        revision.type = 'app';
+        if(directive.property == 'template')
+          revision.templateName = directive.value;
+        else if(directive.property.indexOf('=') != -1)
+          //TODO test this path
+          err = "Equal sign not allowed in app property names.";
+        else{
+          if(!revision.appProperties)
+            revision.appProperties = [];
+          revision.appProperties.push(directive.property+'='+directive.value);
+        }
       }
-    }
-  });
-  
-  //TODO test errors when content contains no type declarations
-  revision.content = content;
-  
-  callback(err,revision);
+    });
+    
+    //TODO test errors when content contains no type declarations
+    revision.content = content;
+    
+    callback(err,revision);
+  }
 };

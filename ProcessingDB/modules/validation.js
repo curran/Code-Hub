@@ -95,7 +95,10 @@ function validateName(revision, callback){
 exports.validateRevision = function(revision, callback){
   async.series([
     function(callback){
-      validateTemplateContent(revision, callback);
+      if(!revision.type)
+        callback(strings.noType);
+      else
+        validateTemplateContent(revision, callback);
     },
     function(callback){
       validateModuleDependencies(revision, callback);

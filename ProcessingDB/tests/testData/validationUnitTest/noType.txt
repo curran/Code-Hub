@@ -1,0 +1,3 @@
+justSomeStuff
+No directives at all
+Should error
