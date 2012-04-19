@@ -100,6 +100,5 @@ exports.createRevision = function(scriptId, content, callback){
 
 exports.getRevision = model.getRevision;
 exports.getLatestRevisionByName = model.getLatestRevisionByName;
-
 exports.compileApp = compilation.compileApp;
-
+exports.listScripts = model.listScripts;

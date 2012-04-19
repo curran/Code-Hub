@@ -1,0 +1,5 @@
+extends layout
+block content
+  each script in scripts
+    li
+      a(href='/edit/'+script) #{script}

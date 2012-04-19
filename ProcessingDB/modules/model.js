@@ -111,3 +111,4 @@ exports.getRevision = function(scriptId, revNum, callback){
 };
 
 exports.getLatestRevisionByName = db.getLatestRevisionByName;
+exports.listScripts = db.listScripts;

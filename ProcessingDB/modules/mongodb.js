@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 var strings = require('./strings');
+var _ = require('underscore');
 
 // The name of the MongoDB database
 // May be changed for unit testing.
@@ -261,7 +262,6 @@ exports.getRevision = function(scriptId, revNum, callback){
  */
 exports.getLatestRevisionByName = function(name, callback){
   Script.findOne({ latestName: name }, function(err, script){
-    
     if(!script)
       callback("No script found with name '"+name+"'.");
     else{
@@ -274,3 +274,21 @@ exports.getLatestRevisionByName = function(name, callback){
     }
   });
 }
+
+/**
+ * Lists all script names.
+ * callback(err, scripts:Array<String>)
+ */
+exports.listScripts = function(callback){
+  Script.find({}, function(err, scripts){
+    console.log("scripts = "+scripts);
+    callback(err, 
+        _.map(scripts, function(script){
+          if(script.latestName)
+            return script.latestName;
+          else
+            return script._id+'.'+script.latestRevNum
+        })
+    );
+  });
+};

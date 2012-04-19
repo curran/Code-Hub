@@ -107,4 +107,13 @@ app.put('/:scriptId', function(req, res){
   });
 });
 
+app.get('/scripts/', function(req, res){
+  backend.listScripts(function(err, scripts){
+    if(err)
+      res.render('error',{error:err});
+    else
+      res.render('scripts',{scripts:scripts});
+  });
+});
+
 app.listen(port);
