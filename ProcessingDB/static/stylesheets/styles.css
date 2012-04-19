@@ -5,11 +5,13 @@ body {
 }
 
 #footer {
-  margin-left: 5px;
   padding: 0px;
 }
 
 #error {
   color:red;
+}
+
+#content {
   margin-left: 5px;
 }

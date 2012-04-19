@@ -43,10 +43,10 @@ var initialContent = "";/* "@app name Increment Test\n"+
             "console.log(inc(a)); // will output 2";*/
 
 app.get('/', function(req, res){
-  res.redirect('/edit/');
+  res.redirect('/docs');
 });
 
-app.get('/edit/', function(req, res){
+app.get('/edit', function(req, res){
   res.render('edit',{
     revision: {
       content: initialContent,
@@ -107,13 +107,17 @@ app.put('/:scriptId', function(req, res){
   });
 });
 
-app.get('/scripts/', function(req, res){
+app.get('/scripts', function(req, res){
   backend.listScripts(function(err, scripts){
     if(err)
       res.render('error',{error:err});
     else
       res.render('scripts',{scripts:scripts});
   });
+});
+
+app.get('/docs', function(req, res){
+  res.render('docs');
 });
 
 app.listen(port);

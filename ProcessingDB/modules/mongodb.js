@@ -281,7 +281,6 @@ exports.getLatestRevisionByName = function(name, callback){
  */
 exports.listScripts = function(callback){
   Script.find({}, function(err, scripts){
-    console.log("scripts = "+scripts);
     callback(err, 
         _.map(scripts, function(script){
           if(script.latestName)
