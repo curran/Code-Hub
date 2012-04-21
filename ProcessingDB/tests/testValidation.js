@@ -55,7 +55,8 @@ exports.testValidation = function(test){
     },
     testLoadError('appParametersNotInTemplate',strings.appParameterNotInTemplate('templateWithParams', 'thisArg')),
     testLoadError('templateParametersNotInApp',strings.templateParameterNotInApp('templateWithParams', 'bar')),
-    testLoadError('noType',strings.noType)
+    testLoadError('noType',strings.noType),
+    testLoadError('unknownDirective', strings.invalidDirective('foo'))
   ],
   function(err, result){
     if(err) throw err;

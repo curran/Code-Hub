@@ -42,6 +42,8 @@ function parseDirective(line){
       else
         return { type:'error', message:strings.wrongNumArgs(type) };
     }
+    else
+      return { type:'error', message:strings.invalidDirective(type) };
   }
 }
 
