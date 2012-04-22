@@ -84,11 +84,15 @@ exports.parseContent = function(content, callback){
   if(content == null || content == undefined)
     callback("Content given to preprocessor is null.");
   else{
-    // Remove comments so nothing in a comment is parsed as a directuve
-    content = removeComments(content);
     
     // This is the object which will be populated and passed to the callback.
     var revision = {};
+    
+    revision.content = content;
+    
+    // Remove comments before parsing so nothing in a comment is parsed as a directuve
+    content = removeComments(content);
+    
     
     // Match all at once the following types of directives:
     //  - require('moduleName')
@@ -130,8 +134,6 @@ exports.parseContent = function(content, callback){
     });
     
     //TODO test errors when content contains no type declarations
-    revision.content = content;
-    
     callback(err,revision);
   }
 };
