@@ -78,5 +78,42 @@ exports.testModuleDependencyPreprocessing = function(test) {
   });
 };
 
+/**
+ * Tests ignoring directives within comments.
+ */
+exports.testIgnoreComments = function(test) {
+  var s = "outside//inside\noutside1\n//inside2\noutside2";
+  test.equal(preprocessor.removeComments(s), "outside\noutside1\n\noutside2",'regex should work');
+  s = "outside/*inside*/outside1";
+  test.equal(preprocessor.removeComments(s), "outsideoutside1",'regex should work');
+  
+  s = 'out/*in*/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/**in*/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/*****in*/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/*****in*****/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/*****in\n*****/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/*****in\n * test \n * hdasfdsaf\n*****/out';
+  test.equal(preprocessor.removeComments(s),'outout','regex should work');
+  s = 'out/*****in\n * test \n * hdasfdsaf\n*****/out1 /*in*/out3';
+  test.equal(preprocessor.removeComments(s),'outout1 out3','regex should work');
+  
+  testData.read('directiveInComments',function(err,content){
+    preprocessor.parseContent(content, function(err, revision){
+      if(err)
+        throw err;
+      test.ok(!err,'Should be no error');
+      test.equal(revision.type, 'module' , 'Type should be module.');
+      test.equal(revision.name, 'test' , 'Name should be test.');
+      test.equal(revision.dependencies.length, 0, 'should have no dependencies');
+      test.done();
+    });
+  });
+};
+
 //TODO test errors for multiple type declarations
 

@@ -62,6 +62,13 @@ function parseTemplateParameter(templateParameterString){
   return templateParameterString.replace(/\${|}/g,'');
 }
 
+function removeComments(content){
+  // remove // comments
+  content = content.replace(/\/\/[^\n]*/g, '');
+  // remove /* comments */
+  return content.replace(/\/\*([^\*]|(\*[^\/])|\n)*\*\//g,'');
+}
+
 /**
  * callback(err, revision)
  * This function injects:
@@ -77,6 +84,9 @@ exports.parseContent = function(content, callback){
   if(content == null || content == undefined)
     callback("Content given to preprocessor is null.");
   else{
+    // Remove comments so nothing in a comment is parsed as a directuve
+    content = removeComments(content);
+    
     // This is the object which will be populated and passed to the callback.
     var revision = {};
     
@@ -125,3 +135,5 @@ exports.parseContent = function(content, callback){
     callback(err,revision);
   }
 };
+
+exports.removeComments = removeComments;

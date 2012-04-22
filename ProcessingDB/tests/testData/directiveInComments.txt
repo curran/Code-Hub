@@ -1,0 +1,17 @@
+@module test
+//@foo should not be seen
+/**
+ * require('bar') should not be seen
+ */
+
+/****
+ * require('bar1') should not be seen
+ */
+
+
+
+/*
+ * require('bar2') @app should not be seen
+ */
+
+
