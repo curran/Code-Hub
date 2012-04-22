@@ -151,7 +151,7 @@ exports.compileApp = function(scriptId, revNum, callback){
             else{
               var compiledApp = [
                 templateBegin,
-                library,
+                modules.length != 0 ? library : "",
                 _.map(modules, moduleContent).join('\n'),
                 app,
                 templateEnd

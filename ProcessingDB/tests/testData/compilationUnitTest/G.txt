@@ -1,0 +1,4 @@
+@app template E
+@app foo foo
+//Test that the 'require' library is not included here
+return 5;

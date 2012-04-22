@@ -73,6 +73,29 @@ exports.testAppParameterInjection = function(test) {
   });
 };
 
+/**
+ * Tests that the require library is not included when there are no require() statements.
+ */
+exports.testOmitRequireLibrary = function(test) {
+  async.waterfall([
+    function(callback){
+      testData.load(prefix+'G',callback);
+    },
+    function(scriptId, revNum, callback){
+      backend.compileApp(scriptId, revNum, function(err, compiledApp){
+        test.equal(compiledApp.indexOf('var require = (function() {'), -1, "Compiled code should not contain the require library.");
+        eval(compiledApp);
+        test.equal(E(), 5, "Compiled code should work");
+        callback();
+      });
+    }
+  ],
+  function (err, result) {
+    if(err) throw err;
+    test.done();
+  });
+};
+
 exports.testDisconnect = function(test) {
   backend.clearModel(function(err){
     backend.disconnect();
