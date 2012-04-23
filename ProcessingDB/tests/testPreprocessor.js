@@ -129,5 +129,15 @@ exports.testMultipleTypesError = function(test) {
   });
 };
 
-//TODO test that each dependency is only included once even if there are multiplt require() statements
-
+/**
+ * Tests that multiple instances of require('X') get parsed
+ * to a single dependency.
+ */
+exports.testMultipleEquivalentRequires = function(test) {
+  testData.read('multipleEquivalentRequires',function(err,content){
+    preprocessor.parseContent(content, function(err, revision){
+      test.equal(revision.dependencies.length, 2, "Should be only 2 dependencies.");
+      test.done();
+    });
+  });
+};

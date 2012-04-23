@@ -104,14 +104,14 @@ exports.parseContent = function(content, callback){
     var directives = _.map(_.filter(matches, isDirective), parseDirective);
     
     var isRequire = function(s){ return s.indexOf("require(") != -1; };
-    revision.dependencies = _.map(_.filter(matches, isRequire), parseRequire);
+    revision.dependencies = _.uniq(_.map(_.filter(matches, isRequire), parseRequire));
     
     var isTemplateParameter = function(s){ 
       return s.indexOf("${") != -1 && s != "${code}";
     };
+    
     revision.templateParameters = _.map(_.filter(matches, isTemplateParameter), parseTemplateParameter);
     
-    //TODO report error when type is declared multiple times
     var err;
     _.each(directives,function(directive){
       if(directive.type == 'error')
@@ -135,7 +135,6 @@ exports.parseContent = function(content, callback){
       }
     });
     
-    //TODO test errors when content contains no type declarations
     callback(err,revision);
   }
 };

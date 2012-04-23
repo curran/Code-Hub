@@ -1,0 +1,7 @@
+@module foo
+var same = require('same');
+var thesame = require('same');
+var bar = require('bar');
+var b = require('bar');
+var bbbbar = require('bar');
+var thebar = require('bar');
