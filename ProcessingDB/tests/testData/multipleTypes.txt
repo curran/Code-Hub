@@ -1,0 +1,2 @@
+@app template test
+@module foo

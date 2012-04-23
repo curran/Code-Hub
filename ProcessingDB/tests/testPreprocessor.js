@@ -1,6 +1,7 @@
 var preprocessor = require('../modules/preprocessor');
 var testData = require('./testData');
 var _ = require('underscore');
+var strings = require('../modules/strings');
 
 /**
  * Tests extraction of the '@module moduleName' directive.
@@ -115,5 +116,18 @@ exports.testIgnoreComments = function(test) {
   });
 };
 
-//TODO test errors for multiple type declarations
+/**
+ * Tests errors for multiple type declarations.
+ */
+exports.testMultipleTypesError = function(test) {
+  testData.read('multipleTypes',function(err,content){
+    
+    preprocessor.parseContent(content, function(err, revision){
+      test.equal(err,strings.multipleTypes('app','module'));
+      test.done();
+    });
+  });
+};
+
+//TODO test that each dependency is only included once even if there are multiplt require() statements
 

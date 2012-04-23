@@ -116,6 +116,8 @@ exports.parseContent = function(content, callback){
     _.each(directives,function(directive){
       if(directive.type == 'error')
         err = directive.message;
+      else if(revision.type && (revision.type != directive.type))
+        err = strings.multipleTypes(revision.type, directive.type);
       else if(directive.type == 'module' || directive.type == 'template')
         revision = _.defaults(revision,directive); // 'type' and 'name' from directive
       else if(directive.type == 'app'){

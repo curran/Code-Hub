@@ -51,3 +51,7 @@ exports.noType = "This script contains no directives which specify it's type. Ev
 exports.invalidDirective = function(type){
   return "The directive '@"+type+"' is not recognized.";
 };
+
+exports.multipleTypes = function(type1, type2){
+  return "Revisions must have only one type. More than one type has been detected for this revision. First it was declared to be of type '"+type1+"', then of type '"+type2+"'. Please choose a single type.";
+}
