@@ -75,14 +75,14 @@ function validateAppParameters(revision, callback){
 
 // Tests for unique name.
 // callback(err)
-function validateName(revision, callback){
+function validateName(scriptId, revision, callback){
   if(revision.name){
     model.getLatestRevisionByName(revision.name, function(err, latestRevision){
       // If no revision has been found with this name, then no script
       // exists with the name of the new one, so callback with no error.
       // Also if a script with the given name does already exist, but it is
       // the same as the script being saved, this is OK, so callback with no error.
-      if(err || latestRevision.scriptId == revision.scriptId)
+      if(err || latestRevision.scriptId == scriptId)
         callback(null);
       else
       // If the code gets here, it means there is a name conflict with another script.
@@ -97,7 +97,7 @@ function validateName(revision, callback){
  * Checks for various errors in the given revision.
  * callback(err, revision)
  */
-exports.validateRevision = function(revision, callback){
+exports.validateRevision = function(scriptId, revision, callback){
   async.series([
     function(callback){
       if(!revision.type)
@@ -112,7 +112,7 @@ exports.validateRevision = function(revision, callback){
       validateAppParameters(revision, callback);
     },
     function(callback){
-      validateName(revision, callback);
+      validateName(scriptId, revision, callback);
     }
   ],function(err, result){
     callback(err, revision);

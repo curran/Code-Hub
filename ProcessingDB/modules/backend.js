@@ -69,8 +69,7 @@ exports.createRevision = function(scriptId, content, callback){
       lookupDependenciesAndTemplateIfApp(revision, callback);
     },
     function(revision, callback){
-      revision.scriptId = scriptId;
-      validation.validateRevision(revision, callback);
+      validation.validateRevision(scriptId, revision, callback);
     },
     function(revision, cb){
       model.createRevision(scriptId, revision, callback);
