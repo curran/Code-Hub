@@ -12,19 +12,11 @@ var Counters = new Schema({
   count: Number
 });
 
-var Scripts = new Schema({
-  _id: Number, //scriptId
-  latestRevNum: Number,
-  latestName: String,
-  latestDependencies: [String],
-  latestTemplateParameters: [String]
-});
-
-var Revisions = new Schema({
+var revisionSchemaDescriptor = {
   _id: String, // scriptId.revNum
-  commitMessage: String,
+  commitMessage: String,//TODO track this
   commitDate: Date,
-  parentRevision: String, // "scriptId.revNum" or ""
+  parentRevision: String, // "scriptId.revNum" or "" TODO track this
   type: String, // in ['module','app','template']
   
   // relevant when (type == 'module' || type == 'template')
@@ -51,8 +43,22 @@ var Revisions = new Schema({
   templateName: String, // the name of the template, for display
   
   templateParameters: [String] // the names of the template parameters. Necessary for validation.
+};
+
+var Scripts = new Schema({
+  _id: Number, //scriptId
+  latestRevNum: Number,
+  latestName: String,
+  latestDependencies: [String],
+  latestTemplateParameters: [String]
 });
 
+// var Scripts = new Schema({
+  // _id: Number, //scriptId
+  // latest: revisionSchemaDescriptor
+// });
+
+var Revisions = new Schema(revisionSchemaDescriptor);
 
 var findAndModify = function (query, sort, doc, options, callback) {
   return this.collection.findAndModify(query, sort, doc, options, callback);

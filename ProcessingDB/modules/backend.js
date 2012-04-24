@@ -72,6 +72,7 @@ exports.createRevision = function(scriptId, content, callback){
       validation.validateRevision(scriptId, revision, callback);
     },
     function(revision, cb){
+      revision.commitDate = new Date();
       model.createRevision(scriptId, revision, callback);
     }
   ],
