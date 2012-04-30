@@ -27,7 +27,11 @@ TODO
    - Post MultiTouch examples
    
 Future Feature Ideas
- - Make run link work with code currently in the editor, not the saved code
+ - Implement a cloud-scalable Git backend
+   - Which can be split between machines
+ - Cache rendered apps on disk
+   - Test performance difference
+ - Make run link work with code __currently in the editor__, not the saved code
  - add CTRL+R shortcut for running
  - add CTRL+S shortcut for saving
  - @inGallery descriptionString //Publishes this app to the ProcessingDB gallery
@@ -52,3 +56,103 @@ Future Feature Ideas
      - Templates
      - Gallery Entries
      
+ - Problem: How to depend upon JS libraries (e.g. jQuery)
+            while maintaining synchronous require('jQuery') style?
+   - Solution0: Add the script to the templates
+     - Issue: All apps will get the script, even if it is not used.
+              This is wasteful.
+   - Solution1: Make the scripts into modules
+     - Issue: requires modification of the library code
+     - Issue: the library, which is likely larger than typical modules,
+              will be delivered once per run of dependent apps
+     - Maybe this is OK?
+     - Question - is integration with npm possible?
+                  e.g. require('npm/jQuery');
+   - Solution2: Asynchronously request the library (via script tag append)
+     - Issue: introduces viral asynchronous require('jQuery',callback) style
+   - Solution3: Introduce a '@script [url]' directive which tells the template
+                renderer to include a script tag whose source is the given URL.
+     - Issue: requires a change to the template syntax, introducing a new
+              special placeholder, ${scripts}, which gets replaced with 
+              zero or more script tags.
+     - This ensures that the scripts are loaded fully before the modules
+       are evaluated
+     - This preserves the synchronous require() style
+     - Modules can transfer variables from global to module scope.
+       - e.g. :
+         @module jQuery
+         @script http://google.cdn/jQuery.js
+         exports.$ = $; // grab the global $ from jQuery and export it on the module
+         $ = null; // de-pollute the global namespace by clobbering the global $
+         
+         
+Use Case: A visualization platform with dynamically loaded visualization techniques.
+ - Necessitates asynchronous module loading
+ - AMD is a better fit.
+ 
+Use Case: Depend on jQuery
+ - Could AMD handle this?
+   - Can AMD wait for a remote script to load
+     before declaring a given module as being ready?
+
+Big question - use AMD or CommonJS or Both in ProcessingDB?
+ - CommonJS simpler, better for beginners
+ - AMD more powerful, better for advanced applications and modules
+ - AMD required for modules which depend on external resources
+ - AMD required for dynamic on-demand loading of code
+ 
+Possible anser - best of both worlds:
+ - use CommonJS authoring format by default
+   - Automatically wrap CommonJS code in AMD
+     when the application is rendered.
+ - include an additional @amd directive,
+   which enables authoring directly in AMD
+ - Need to use an AMD module loader in all ProcessingDB apps
+   - e.g. require.js
+   - A small price to pay for the ability to author ProcessingDB
+     modules in both CommonJS and AMD 
+   
+   Question to test - can require.config({paths:{..}} be called
+   multiple times and have each call append to the working paths?
+   
+   Question to test - can require.config({paths:{..}} be called
+   AFTER calls to define() which require a module declared in the path?
+   
+   If yes to both, the jQuery ProcessingDB module could look like this:
+   
+   @amd
+   require.config({
+     paths:{
+       'jquery': 'http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min'
+     }
+   });
+   
+   Underscore would look like this:
+   @amd
+   require.config({
+     paths:{
+       'underscore': 'https://raw.github.com/documentcloud/underscore/master/underscore'
+     }
+   });
+   
+   Based on
+   http://wilsonpage.tumblr.com/post/12842562690/requirejs-getting-amd-modules-from-a-cdn
+   
+   All other modules could remain in CommonJS syntax.
+   
+   This may be the ideal solution.
+   
+   TODO to implement this solution:
+    - Change the ProcessingDB template solution to assume that
+      ${code} will be replaced with script tags (should not already
+      be inside script tags)
+    - Integrate require.js into the ProcessingDB template
+      Possibly locally, possibly from a CDN..
+    - Change the compilation code to detect @amd directive
+      - When not detected (default), wrap the module code in CommonJS wrapper:
+        define(function(require, exports, module) {
+          ..module inserted here..
+        });
+        from http://requirejs.org/docs/commonjs.html
+      - When detected, insert the raw module code directly.
+      
