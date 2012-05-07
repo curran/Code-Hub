@@ -11,7 +11,7 @@ Prior art includes:
  - [The NPM Registry](http://search.npmjs.org/) - The registry of packages for [Node Package Manager](http://npmjs.org/). This is a global repository of public packages for [Node.js](http://nodejs.org/). Packages can be published here by anyone, and installed by anyone once published, using the `npm` command line tool. NPM has support for dependency management.
  - [CommonJS Modules](http://wiki.commonjs.org/wiki/Modules/1.1.1) and [Asynchronous Module Definition](https://github.com/amdjs/amdjs-api/wiki/AMD) - These are two API definitions for defining JavaScript modules. CommonJS uses a synchronous call to inject dependencies, whereas AMD uses an asynchronous call. CommonJS has a concise syntax, but AMD is more flexible for browser-side code, as resources can be required asynchronously.
 
-No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. ProcessingDB fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" and a "YouTube of interactive graphics applications").
+No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. ProcessingDB fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" topped with a "YouTube of interactive graphics applications").
 
 ## Using ProcessingDB
 ProcessingDB is live at [processingdb.org](http://www.processingdb.org/docs). On that page you will find documentation for the concepts in ProcessingDB.
@@ -62,5 +62,3 @@ To run the ProcessingDB server:
    - For production use, use of [Forever](https://github.com/nodejitsu/forever/), a command line tool which automatically restarts Node applications if they crash, is recommeded. After installing Forever, ProcessingDB can be run with the following command:
      - `NODE_ENV=production forever start -l forever.log -o out.log -e err.log app.js`
  4. ProcessingDB should now be running at `http://localhost:8000/`
-
-## Using ProcessingDB
