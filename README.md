@@ -56,7 +56,7 @@ To run the ProcessingDB server:
    - `cd ProcessingDB/ProcessingDB`
    - `node app.js`
      - This runs ProcessingDB in development mode, which sets up an example model on startup and tears it down on shutdown.
-     - The default post is 80, so if you run into permissions errors use `sudo node app.js`
+     - The default port is 80, so if you run into permissions errors use `sudo node app.js`
    - `NODE_ENV=production node app.js`
      - This runs ProcessingDB in production mode, which uses the existing database and Git repository contents or creates an empty model.
    - For production use, use of [Forever](https://github.com/nodejitsu/forever/), a command line tool which automatically restarts Node applications if they crash, is recommeded. After installing Forever, ProcessingDB can be run with the following command:
