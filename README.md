@@ -51,7 +51,7 @@ To run the ProcessingDB server:
  2. Start the MongoDB daemon (`mongod`)
  3. Optionally you can run the unit tests with the following commands:
    - `cd tests`
-   - `sh ./[testAll.sh](https://github.com/curran/ProcessingDB/blob/master/ProcessingDB/tests/testAll.sh)`
+   - [`sh ./testAll.sh`](https://github.com/curran/ProcessingDB/blob/master/ProcessingDB/tests/testAll.sh)
  4. Run the server with the following commands:
    - `cd ProcessingDB/ProcessingDB`
    - `node app.js`
