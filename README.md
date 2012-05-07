@@ -14,7 +14,7 @@ Prior art includes:
 No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. ProcessingDB fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" topped with a "YouTube of interactive graphics applications").
 
 ## Using ProcessingDB
-ProcessingDB is live at [processingdb.org](http://www.processingdb.org/docs). On that page you will find documentation for the concepts in ProcessingDB.
+ProcessingDB is live at [processingdb.org](http://www.processingdb.org/docs), running on a RackSpace cloud Ubuntu machine. On that page you will find documentation for the concepts in ProcessingDB.
 
 ProcessingDB has two views, the editor view and the script list:
  - [New Script](http://processingdb.org/edit) - This page is a blank slate for creating new scripts (this is the editor view for a new script). To create a new script, write code in this page for either a module, template or app using the appropriate ProcessingDB directives and hit "Save". This will save the script and redirect you to the editor page for the newly created script.
