@@ -31,5 +31,5 @@ digraph finite_state_machine {
         edit -> CodeMirror;
         error -> layout;
         scripts -> layout;
-        layout -> ProcessingDBLogo;
+        layout -> logo;
 }

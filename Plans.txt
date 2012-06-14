@@ -1,21 +1,21 @@
-Plans for next ProcessingDB iteration:
+Plans for next CodeHub iteration:
 Curran Kelleher
 2/4/2012
 
-processingdb.com/
+codehub.com/
  - Render a page with the following structure:
  ----------------------------------------------------------------------------
- | ProcessingDB Logo                   |Your comments here..| (Save Button) |
+ | CodeHub Logo                   |Your comments here..| (Save Button) |
  |--------------------------------------------------------------------------|
  |//syntax highlighted code area here                                       |
  |                                                                          |
  |--------------------------------------------------------------------------|
  
  
-Click on Save Button -> processingdb.com/#:ScriptNum.:RevNum
- - e.g. processingdb.com/#5.3
+Click on Save Button -> codehub.com/#:ScriptNum.:RevNum
+ - e.g. codehub.com/#5.3
  ----------------------------------------------------------------------------
- | ProcessingDB Logo  (Run Link)       |Your comments here..| (Save Button) |
+ | CodeHub Logo  (Run Link)       |Your comments here..| (Save Button) |
  |--------------------------------------------------------------------------|
  |//syntax highlighted code area here                                       |
  |@app template fullScreenCanvas                                            |
@@ -26,13 +26,13 @@ Click on Save Button -> processingdb.com/#:ScriptNum.:RevNum
  |--------------------------------------------------------------------------|
  
 
-Click on Run Link -> processingdb.com/5.3
+Click on Run Link -> codehub.com/5.3
  - Renders code with dependencies compiled, embedded into template
  - Renders based on http://wiki.commonjs.org/wiki/Modules/CompiledModules
 
-Click on ProcessingDB Logo -> processingdb.com/about
+Click on CodeHub Logo -> codehub.com/about
  ----------------------------------------------------------------------------
- | ProcessingDB Logo                                                        |
+ | CodeHub Logo                                                        |
  |--------------------------------------------------------------------------|
  | Documentation                                                            |
  |                                                                          |

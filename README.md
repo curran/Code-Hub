@@ -1,5 +1,5 @@
-# ProcessingDB
-ProcessingDB is a software development tool for JavaScript and HTML which provides:
+# CodeHub
+CodeHub is a software development tool for JavaScript and HTML which provides:
 
  - a browser-based code editor which allows you to save and run your code
  - the ability to save and publish of all versions of your code
@@ -15,13 +15,13 @@ Prior art includes:
  - [The NPM Registry](http://search.npmjs.org/) - The registry of packages for [Node Package Manager](http://npmjs.org/). This is a global repository of public packages for [Node.js](http://nodejs.org/). Packages can be published here by anyone, and installed by anyone once published, using the `npm` command line tool. NPM has support for dependency management.
  - [CommonJS Modules](http://wiki.commonjs.org/wiki/Modules/1.1.1) and [Asynchronous Module Definition](https://github.com/amdjs/amdjs-api/wiki/AMD) - These are two API definitions for defining JavaScript modules. CommonJS uses a synchronous call to inject dependencies, whereas AMD uses an asynchronous call. CommonJS has a concise syntax, but AMD is more flexible for browser-side code, as resources can be required asynchronously.
 
-No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. ProcessingDB fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" topped with a "YouTube of interactive graphics applications").
+No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. CodeHub fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" topped with a "YouTube of interactive graphics applications").
 
-## Using ProcessingDB
-ProcessingDB is live at [processingdb.org](http://www.processingdb.org/docs), running on a RackSpace cloud Ubuntu machine. On that page you will find documentation for the concepts in ProcessingDB.
+## Using CodeHub
+CodeHub is live at [processingdb.org](http://www.processingdb.org/docs), running on a RackSpace cloud Ubuntu machine. On that page you will find documentation for the concepts in CodeHub.
 
-ProcessingDB has two views, the editor view and the script list:
- - [New Script](http://processingdb.org/edit) - This page is a blank slate for creating new scripts (this is the editor view for a new script). To create a new script, write code in this page for either a module, template or app using the appropriate ProcessingDB directives and hit "Save". This will save the script and redirect you to the editor page for the newly created script.
+CodeHub has two views, the editor view and the script list:
+ - [New Script](http://processingdb.org/edit) - This page is a blank slate for creating new scripts (this is the editor view for a new script). To create a new script, write code in this page for either a module, template or app using the appropriate CodeHub directives and hit "Save". This will save the script and redirect you to the editor page for the newly created script.
  - In the Editor view for any saved script, when you click "Save", a new revision for that script will be created and you will be redirected to the edit page for that new revision (notice the last part of the URL change).
  - In the editor view for saved apps or modules, links are provided to dependencies in the lower left
    - For example, if the module `foo` contains the code `require('bar')`, then in the editor view for `foo`, there will be a link to the editor view of the latest version of the module `bar`.
@@ -33,9 +33,9 @@ The "run" link can be used to embed applications in iFrames. Here is an example:
 This code is running in [this page](http://curransoft.com/interactivegraphics/) to embed a wave simulation into a WordPress blog post.
  - [List Scripts](http://processingdb.org/scripts) - This page lists all scripts and links to the editor view for their latest revisions. For named scripts (modules and templates), the name is used for the link text, but for unnamed scripts (apps), the link text is formed by the script id and revision number in the form `scriptId`.`revNum`. In the future, we hope to be able to identify apps by name as well.
 
-## Running ProcessingDB
-ProcessingDB is designed to work in Unix environments and depends on having the following installed:
- - The [Git](http://git-scm.com/download) command line tool (the ProcessingDB server spawns Git child processes).
+## Running CodeHub
+CodeHub is designed to work in Unix environments and depends on having the following installed:
+ - The [Git](http://git-scm.com/download) command line tool (the CodeHub server spawns Git child processes).
  - [MongoDB](http://www.mongodb.org/display/DOCS/Quickstart)
  - [Node.js](https://github.com/joyent/node/wiki/Installation)
  - [NPM - Node Package Manager](http://npmjs.org/)
@@ -47,22 +47,22 @@ ProcessingDB is designed to work in Unix environments and depends on having the 
    - async
    - underscore
    - These are package names which can be installed with the command `npm install packageName` where `packageName` is the name in this list.
-   - Note: we'd like to make ProcessingDB into a Node package, which would enable NPM to automatically install dependencies. Unfortunately these currently need to be installed manually.
+   - Note: we'd like to make CodeHub into a Node package, which would enable NPM to automatically install dependencies. Unfortunately these currently need to be installed manually.
 
-To run the ProcessingDB server:
+To run the CodeHub server:
  1. Get the source code from GitHub using Git:
-   - `git clone git://github.com/curran/ProcessingDB.git`
+   - `git clone git://github.com/curran/CodeHub.git`
  2. Start the MongoDB daemon (`mongod`)
  3. Optionally you can run the unit tests with the following commands:
    - `cd tests`
-   - [`sh ./testAll.sh`](https://github.com/curran/ProcessingDB/blob/master/ProcessingDB/tests/testAll.sh)
+   - [`sh ./testAll.sh`](https://github.com/curran/CodeHub/blob/master/CodeHub/tests/testAll.sh)
  4. Run the server with the following commands:
-   - `cd ProcessingDB/ProcessingDB`
+   - `cd CodeHub/CodeHub`
    - `node app.js`
-     - This runs ProcessingDB in development mode, which sets up an example model on startup and tears it down on shutdown.
+     - This runs CodeHub in development mode, which sets up an example model on startup and tears it down on shutdown.
      - The default port is 80, so if you run into permissions errors use `sudo node app.js`
    - `NODE_ENV=production node app.js`
-     - This runs ProcessingDB in production mode, which uses the existing database and Git repository contents or creates an empty model.
-   - For production use, use of [Forever](https://github.com/nodejitsu/forever/), a command line tool which automatically restarts Node applications if they crash, is recommeded. After installing Forever, ProcessingDB can be run with the following command:
+     - This runs CodeHub in production mode, which uses the existing database and Git repository contents or creates an empty model.
+   - For production use, use of [Forever](https://github.com/nodejitsu/forever/), a command line tool which automatically restarts Node applications if they crash, is recommeded. After installing Forever, CodeHub can be run with the following command:
      - `NODE_ENV=production forever start -l forever.log -o out.log -e err.log app.js`
- 4. ProcessingDB should now be running at `http://localhost:8000/`
+ 4. CodeHub should now be running at `http://localhost:8000/`
