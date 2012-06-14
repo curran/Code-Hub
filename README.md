@@ -10,6 +10,7 @@ Prior art includes:
  - [Archon](http://enja.org/code/archon/), [Water](http://gabrielflor.it/water) - In-browser code editors for educational tutorials, no saving ability.
  - [RubyMonk](http://rubymonk.com/books/1/chapters/1-collections/lessons/2-arrays-introduction), [Eloquent JavaScript](http://eloquentjavascript.net/chapter2.html), [Codecademy](http://www.codecademy.com/tracks/javascript) - Educational material with code editing and running capability built into the pages.
  - [PlayMyCode](http://www.playmycode.com/) - A Web-based game development and deployment platform.
+ - [SketchPad](http://sketchpad.cc/) - A Web-based development and deployment platform for Processing.js programs.
  - [OpenProcessing](http://www.openprocessing.org/) - A showcase of [Processing](http://processing.org/) sketches featuring in-browser code development.
  - [Cloud9 IDE](cloud9ide.com), [Akshell](http://www.akshell.com/ide/) - These project emulate the behavior of desktop IDEs, giving users a view into a private directory tree in which server-side source files reside.
  - [The NPM Registry](http://search.npmjs.org/) - The registry of packages for [Node Package Manager](http://npmjs.org/). This is a global repository of public packages for [Node.js](http://nodejs.org/). Packages can be published here by anyone, and installed by anyone once published, using the `npm` command line tool. NPM has support for dependency management.
