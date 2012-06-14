@@ -10,11 +10,6 @@ exports.cantRunNonApp = function(scriptId, revNum, type){
   return "The revision with script id "+scriptId+" and revision number "+revNum+" is not an app, therefore it cannot be run. This revision is a "+type;
 };
 
-exports.wrongNumberOfCodeStringsInTemplate = function(nOccurences){
-  return "Templates must have exactly one occurrence of ${code}. There are "+
-    nOccurences+" occurences in this template.";
-}
-
 exports.wrongNumArgs = function(type){
   if(type == 'app')
     return "'@app' directive found with"+
@@ -54,4 +49,11 @@ exports.invalidDirective = function(type){
 
 exports.multipleTypes = function(type1, type2){
   return "Revisions must have only one type. More than one type has been detected for this revision. First it was declared to be of type '"+type1+"', then of type '"+type2+"'. Please choose a single type.";
+}
+
+exports.scriptsPlaceholder = '${scripts}';
+
+exports.wrongNumberOfCodeStringsInTemplate = function(nOccurences){
+  return "Templates must have exactly one occurrence of "+exports.scriptsPlaceholder+". There are "+
+    nOccurences+" occurences in this template.";
 }

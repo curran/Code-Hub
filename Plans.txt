@@ -31,26 +31,24 @@ Click on Run Link -> codehub.com/5.3
  - Renders based on http://wiki.commonjs.org/wiki/Modules/CompiledModules
 
 Click on CodeHub Logo -> codehub.com/about
- ----------------------------------------------------------------------------
- | CodeHub Logo                                                        |
- |--------------------------------------------------------------------------|
- | Documentation                                                            |
- |                                                                          |
- | @module <moduleName> defines a module                                    |
- |         available in apps using require('<moduleName>')                  |
- |                                                                          |
- | @app defines an app                                                      |
- | @template <templateName> defines an HTML template for use by apps.       |
- |         Within a template, ${code} is used as a placeholder for app code.|
- | @app <templateName> used in apps to specify the HTML template            |
- |         into which the code content (including all dependencies)         |
- |         will be injected.                                                |
- |                                                                          |
- | @language <languageName in ['js', 'coffeescript]> default is js          |
- |                                                                          |
- | See all scripts                                                          |
- | See all modules                                                          |
- | See all apps                                                             |
- |--------------------------------------------------------------------------|
- 
-
+ -------------------------------------------------------------------------------
+ | CodeHub Logo                                                                |
+ |-----------------------------------------------------------------------------|
+ | Documentation                                                               |
+ |                                                                             |
+ | @module <moduleName> defines a module                                       |
+ |         available in apps using require('<moduleName>')                     |
+ |                                                                             |
+ | @app defines an app                                                         |
+ | @template <templateName> defines an HTML template for use by apps.          |
+ |         Within a template, ${scripts} is used as a placeholder for app code.|
+ | @app <templateName> used in apps to specify the HTML template               |
+ |         into which the code content (including all dependencies)            |
+ |         will be injected.                                                   |
+ |                                                                             |
+ | @language <languageName in ['js', 'coffeescript]> default is js             |
+ |                                                                             |
+ | See all scripts                                                             |
+ | See all modules                                                             | 
+ | See all apps                                                                |
+ |-----------------------------------------------------------------------------|

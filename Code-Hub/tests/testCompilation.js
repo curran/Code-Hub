@@ -10,6 +10,10 @@ exports.clearModel = function(test) {
   });
 };
 
+function stripScriptTags(string){
+  return string.replace('<script>','').replace('</script>','');
+}
+
 /**
  * Tests app compilation.
  */
@@ -33,8 +37,8 @@ exports.testAppCompilation = function(test) {
           console.log("Error: "+err);
         test.ok(!err,"Should be no error");
         
+        compiledApp = stripScriptTags(compiledApp);
         //console.log("compiledApp = *"+compiledApp+"*");
-        
         eval(compiledApp);
         test.equal(C(), 12, "Compiled code should work");
         
@@ -61,6 +65,7 @@ exports.testAppParameterInjection = function(test) {
     },
     function(scriptId, revNum, callback){
       backend.compileApp(scriptId, revNum, function(err, compiledApp){
+        compiledApp = stripScriptTags(compiledApp);
         eval(compiledApp);
         test.equal(E(), 15, "Compiled code should work");
         callback();
@@ -84,6 +89,7 @@ exports.testOmitRequireLibrary = function(test) {
     function(scriptId, revNum, callback){
       backend.compileApp(scriptId, revNum, function(err, compiledApp){
         test.equal(compiledApp.indexOf('var require = (function() {'), -1, "Compiled code should not contain the require library.");
+        compiledApp = stripScriptTags(compiledApp);
         eval(compiledApp);
         test.equal(E(), 5, "Compiled code should work");
         callback();
@@ -98,6 +104,7 @@ exports.testOmitRequireLibrary = function(test) {
 
 exports.testDisconnect = function(test) {
   backend.clearModel(function(err){
+    if(err) throw err;
     backend.disconnect();
     test.done();
   });

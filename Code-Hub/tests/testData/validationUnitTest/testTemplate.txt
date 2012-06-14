@@ -1,2 +1,2 @@
 @template testTemplate
-${code}
+${scripts}

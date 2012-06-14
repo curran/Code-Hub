@@ -107,7 +107,7 @@ exports.parseContent = function(content, callback){
     revision.dependencies = _.uniq(_.map(_.filter(matches, isRequire), parseRequire));
     
     var isTemplateParameter = function(s){ 
-      return s.indexOf("${") != -1 && s != "${code}";
+      return s.indexOf("${") != -1 && s != strings.scriptsPlaceholder;
     };
     
     revision.templateParameters = _.map(_.filter(matches, isTemplateParameter), parseTemplateParameter);

@@ -1,4 +1,4 @@
 @template templateWithParams
-${code}
+${scripts}
 ${foo}
 ${bar}

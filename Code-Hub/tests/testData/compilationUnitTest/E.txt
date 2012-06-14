@@ -1,5 +1,5 @@
 @template E
 function E(){
   var foo = ${foo};
-  ${code}
+  ${scripts}
 }

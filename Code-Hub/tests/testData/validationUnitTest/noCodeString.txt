@@ -1,2 +1,2 @@
 @template foo
-//Should fail with error that there is no {code} string present
+//Should fail with error that there is no {scripts} string present

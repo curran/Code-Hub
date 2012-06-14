@@ -8,7 +8,7 @@ var _ = require('underscore');
 function validateTemplateContent(revision, callback){
   var err;
   if(revision.type == 'template'){
-    var split = revision.content.split("${code}");
+    var split = revision.content.split(strings.scriptsPlaceholder);
     if(split.length != 2)
       err = strings.wrongNumberOfCodeStringsInTemplate(split.length - 1);
   }

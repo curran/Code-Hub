@@ -5,8 +5,6 @@
   <title>${name}</title>
 </head>
 <body>
-<script>
-${code}
-</script>
+${scripts}
 </body>
 </html>

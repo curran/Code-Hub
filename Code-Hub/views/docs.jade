@@ -28,7 +28,7 @@ block content
       ##Templates
       * Templates are HTML pages with placeholders of the form `${parameterName}`.
         * Parameter values are passed in from applications which use the template.
-        * `${code}` is a special placeholder which gets replaced by application code bundled with its dependencies.
+        * `${scripts}` is a special placeholder which gets replaced by script tags including application source code (and dependencies).
       * Each template in CodeHub has a unique name, say `templateName`.
       * A script declares itself to be a template by using the directive `@template templateName`.
       

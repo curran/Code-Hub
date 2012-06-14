@@ -6,8 +6,6 @@
 </head>
 <body>
   <canvas id="canvas" width="${width}" height="${height}"/>
-<script>
-${code}
-</script>
+${scripts}
 </body>
 </html>

@@ -1,4 +1,4 @@
 @template foo
-${code}
-${code}
-//Should fail with error that there are too many {code} strings present
+${scripts}
+${scripts}
+//Should fail with error that there are too many {scripts} strings present

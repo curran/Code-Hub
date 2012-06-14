@@ -39,9 +39,9 @@ exports.testValidation = function(test){
     testLoadError('appDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('noCodeString',"Templates must have exactly one "+
-      "occurrence of ${code}. There are 0 occurences in this template."),
+      "occurrence of "+strings.scriptsPlaceholder+". There are 0 occurences in this template."),
     testLoadError('manyCodeStrings',"Templates must have exactly one "+
-      "occurrence of ${code}. There are 2 occurences in this template."),
+      "occurrence of "+strings.scriptsPlaceholder+". There are 2 occurences in this template."),
     testLoadError('moduleDepsNotFound',"No script found with name 'fdshajfkds'."),
     testLoadError('tooFewAppArgs', strings.wrongNumArgs('app')),
     testLoadError('tooFewModuleArgs', strings.wrongNumArgs('module')),

@@ -21,11 +21,20 @@ function load(scriptName,callback){
   if(!backend)
     backend = require('../modules/backend');
   read(scriptName,function(err,content){
-    backend.createScript(function(err, scriptId){
-      backend.createRevision(scriptId, content, function(err, revNum){
-        callback(err, scriptId, revNum);
+    if(err) 
+      callback(err);
+    else
+      backend.createScript(function(err, scriptId){
+        if(err) 
+          callback(err);
+        else
+          backend.createRevision(scriptId, content, function(err, revNum){
+            if(err) 
+              callback(err);
+            else
+              callback(err, scriptId, revNum);
+          });
       });
-    });
   });
 }
 exports.load = load;

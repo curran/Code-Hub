@@ -11,11 +11,16 @@ var _ = require('underscore');
 // method of compilation inspired by http://wiki.commonjs.org/wiki/Modules/CompiledModules
 var library = [
   "var require = (function() {",
-  "  var exports = {}",
+  //memoized exports objects
+  "  var exportsObjects = {}",
   "  var require = function(name) {",
-  "    if (exports.hasOwnProperty(name))",
-  "      return exports[name];",
-  "    return exports[name] = modules[name](require);",
+  "    if (exportsObjects.hasOwnProperty(name))",
+  "      return exportsObjects[name];",
+  "    var exports = {};",
+  // memoize before executing module for cyclic dependencies
+  "    exportsObjects[name] = exports;",
+  "    modules[name](require, exports);",
+  "    return exports;",
   "  };",
   "  return require;",
   "})();",
@@ -30,10 +35,8 @@ function indent(text){
 
 function moduleContent(module){
   return [
-    "modules['"+module.name+"'] = function(require) {",
-    "  var exports = {};",
+    "modules['"+module.name+"'] = function(require, exports) {",
     indent(module.content),
-    "  return exports;",
     "};"
   ].join('\n');
 }
@@ -56,11 +59,11 @@ function parseRevisionReference(revisionReference, callback){
 
 // callback(err, templateBegin, templateEnd)
 function splitTemplate(template, callback){
-  var split = template.split("${code}");
+  var split = template.split(strings.scriptsPlaceholder);
   if(split.length != 2)
     callback(strings.wrongNumberOfCodeStringsInTemplate(split.length - 1));
   else
-    callback(null, split[0], split[1]);
+    callback(null, split[0]+'<script>', '</script>'+split[1]);
 }
 
 function splitPropertyValuePair(propertyValuePair, callback){
