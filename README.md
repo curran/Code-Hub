@@ -19,20 +19,20 @@ Prior art includes:
 No project we found combines Web-based code editing with a repository of public modules and dependency management for browser-side applications. CodeHub fills this gap, allowing users to conduct the software development process entirely within a Web browser, and providing the basis for a generative technology in which an ecosystem of public modules can emerge (imagine a "Wikipedia of Algorithms" topped with a "YouTube of interactive graphics applications").
 
 ## Using CodeHub
-CodeHub is live at [processingdb.org](http://www.processingdb.org/docs), running on a RackSpace cloud Ubuntu machine. On that page you will find documentation for the concepts in CodeHub.
+CodeHub is live at [code-hub.org](http://www.code-hub.org/docs), running on a RackSpace cloud Ubuntu machine. On that page you will find documentation for the concepts in CodeHub.
 
 CodeHub has two views, the editor view and the script list:
- - [New Script](http://processingdb.org/edit) - This page is a blank slate for creating new scripts (this is the editor view for a new script). To create a new script, write code in this page for either a module, template or app using the appropriate CodeHub directives and hit "Save". This will save the script and redirect you to the editor page for the newly created script.
+ - [New Script](http://code-hub.org/edit) - This page is a blank slate for creating new scripts (this is the editor view for a new script). To create a new script, write code in this page for either a module, template or app using the appropriate CodeHub directives and hit "Save". This will save the script and redirect you to the editor page for the newly created script.
  - In the Editor view for any saved script, when you click "Save", a new revision for that script will be created and you will be redirected to the edit page for that new revision (notice the last part of the URL change).
  - In the editor view for saved apps or modules, links are provided to dependencies in the lower left
    - For example, if the module `foo` contains the code `require('bar')`, then in the editor view for `foo`, there will be a link to the editor view of the latest version of the module `bar`.
  - In the editor view for saved apps, a "run" link is provided in the lower right, and a link to the template is provided in the lower left (after links to module dependencies).
 
 The "run" link can be used to embed applications in iFrames. Here is an example:
-`<iframe src="http://processingdb.org/run/8.9" width="690" height="100" scrolling="no"></iframe>` 
+`<iframe src="http://code-hub.org/run/8.9" width="690" height="100" scrolling="no"></iframe>` 
 
 This code is running in [this page](http://curransoft.com/interactivegraphics/) to embed a wave simulation into a WordPress blog post.
- - [List Scripts](http://processingdb.org/scripts) - This page lists all scripts and links to the editor view for their latest revisions. For named scripts (modules and templates), the name is used for the link text, but for unnamed scripts (apps), the link text is formed by the script id and revision number in the form `scriptId`.`revNum`. In the future, we hope to be able to identify apps by name as well.
+ - [List Scripts](http://code-hub.org/scripts) - This page lists all scripts and links to the editor view for their latest revisions. For named scripts (modules and templates), the name is used for the link text, but for unnamed scripts (apps), the link text is formed by the script id and revision number in the form `scriptId`.`revNum`. In the future, we hope to be able to identify apps by name as well.
 
 ## Running CodeHub
 CodeHub is designed to work in Unix environments and depends on having the following installed:
