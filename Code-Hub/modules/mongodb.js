@@ -147,26 +147,6 @@ function revId(scriptId, revNum){
   return scriptId+'.'+revNum;
 }
 
-function validateRevisionObject(revisionObject,callback){
-  //TODO remove this function
-  if(!revisionObject)
-    callback("Revision object is null.");
-  else{
-    if(!revisionObject.commitMessage)
-      revisionObject.commitMessage = "";
-    // TODO validate all fields
-    // revision.commitMessage = revisionObject.commitMessage;
-        // revision.commitDate = revisionObject.commitDate;
-        // revision.parentRevision = revisionObject.parentRevision;
-        // revision.type = revisionObject.type;
-        // revision.name = revisionObject.name;
-        // revision.dependencies = revisionObject.dependencies;
-        // revision.template = revisionObject.template;
-  
-    callback(null);
-  }
-}
-
 /**
  * Creates a new revision.
  * @param {scriptId} The id of the script for which to 
@@ -194,38 +174,25 @@ function validateRevisionObject(revisionObject,callback){
  * @param callback(err, revNum) Passes the new revision number
  */
 exports.createRevision = function(scriptId, revisionObject, callback){
-  validateRevisionObject(revisionObject, function(err){
-    if(err) callback(err);
-    else{
-      var set = {
-        latestName: revisionObject.name,
-        latestDependencies: revisionObject.dependencies,
-        latestTemplateParameters: revisionObject.templateParameters
-      };
-      incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
-        var revision = new Revision();
-        //TODO make this code conditional - only include non-null fields
-        //TODO use _.extend here
-        revision._id = revId(scriptId,revNum);
-        revision.commitMessage = revisionObject.commitMessage;
-        revision.commitDate = revisionObject.commitDate;
-        revision.parentRevision = revisionObject.parentRevision;
-        revision.type = revisionObject.type;
-        revision.name = revisionObject.name;
-        revision.dependencies = revisionObject.dependencies;
-        revision.appDependencies = revisionObject.appDependencies;
-        revision.appProperties = revisionObject.appProperties;
-        revision.template = revisionObject.template;
-        revision.templateName = revisionObject.templateName;
-        revision.templateParameters = revisionObject.templateParameters;
-        revision.save(function(err){
-          if(err) callback(err);
-          else callback(null,revNum);
-        });
+  if(!revisionObject)
+    callback("Revision object is null.");
+  else{
+    var set = {
+      latestName: revisionObject.name,
+      latestDependencies: revisionObject.dependencies,
+      latestTemplateParameters: revisionObject.templateParameters
+    };
+    incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
+      var revisionDoc = new Revision();
+      revisionDoc._id = revId(scriptId,revNum);
+      _.extend(revisionDoc, revisionObject);
+      revisionDoc.save(function(err){
+        callback(err,revNum);
       });
-    }
-  });
+    });
+  }
 };
+
 /**
  * Gets a revision entry from the database.
  * The object passed to the callback is of the same
@@ -237,23 +204,9 @@ exports.getRevision = function(scriptId, revNum, callback){
     if(err)
       callback(err);
     else if(!revision)
-      //TODO write a unit test for this error
       callback(strings.revNotFound(scriptId, revNum));
     else
-      callback(null, {
-        //TODO use _.pick here
-        commitMessage: revision.commitMessage,
-        commitDate: revision.commitDate,
-        parentRevision: revision.parentRevision,
-        type: revision.type,
-        name: revision.name,
-        dependencies: revision.dependencies,
-        appDependencies: revision.appDependencies,
-        template: revision.template,
-        appProperties: revision.appProperties,
-        templateName: revision.templateName,
-        templateParameters: revision.templateParameters,
-      });
+      callback(null, revision);
   });
 };
 /**
@@ -288,12 +241,12 @@ exports.getLatestRevisionByName = function(name, callback){
 exports.listScripts = function(callback){
   Script.find({}, function(err, scripts){
     callback(err, 
-        _.map(scripts, function(script){
-          if(script.latestName)
-            return script.latestName;
-          else
-            return script._id+'.'+script.latestRevNum
-        })
+      _.map(scripts, function(script){
+        if(script.latestName)
+          return script.latestName;
+        else
+          return script._id+'.'+script.latestRevNum;
+      })
     );
   });
 };
