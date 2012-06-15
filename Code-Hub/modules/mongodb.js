@@ -37,6 +37,9 @@ var revisionSchemaDescriptor = {
   // Entries are of the form "property=value".
   appProperties: [String],
   
+  // URLs of external scripts to be included in script tags
+  scripts:[String],
+  
   // relevant when type == 'app'
   template: String, // "scriptId.revNum" or ""
   

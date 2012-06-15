@@ -121,7 +121,6 @@ exports.testIgnoreComments = function(test) {
  */
 exports.testMultipleTypesError = function(test) {
   testData.read('multipleTypes',function(err,content){
-    
     preprocessor.parseContent(content, function(err, revision){
       test.equal(err,strings.multipleTypes('app','module'));
       test.done();
@@ -141,3 +140,13 @@ exports.testMultipleEquivalentRequires = function(test) {
     });
   });
 };
+
+exports.testScriptDirective = function(test){
+  testData.read('scriptDirective/jQuery',function(err,content){
+    preprocessor.parseContent(content, function(err, revision){
+      test.equal(revision.scripts.length, 1, "Should be 1 script.");
+      test.equal(revision.scripts[0], 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', "URLs should match.");
+      test.done();
+    });
+  });
+}

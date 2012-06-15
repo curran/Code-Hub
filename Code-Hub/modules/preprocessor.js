@@ -14,11 +14,12 @@ var strings = require('./strings');
  * Returns null if no directive was found.
  * Returns an object if a directive was found
  * where the 'type' property is
- * 'app', 'module', 'template', or 'require'.
+ * 'app', 'module', 'template', 'require', or 'script'.
  * If (type=='app'), the properties 'property' and 'value'
  *   are available, where 'property' gets the first token after
  *   @app, and 'value' gets the rest of the line after 'property'.
  * If (type=='module') or (type=='template'), the 'name' property is available.
+ * If (type=='script'), the 'url' property is available.
  * If an error occurs, type=='error' and the 'message' property is available.
  */
 function parseDirective(line){
@@ -26,9 +27,12 @@ function parseDirective(line){
   var tokens = _.filter(line.split(" "),_.identity);
   if(tokens.length > 0){
     var type = tokens[0].substr(1);
-    if(type == 'module' || type == 'template')
+    if(type == 'module' || type == 'template' || type == 'script')
       if(tokens.length == 2)
-        return { type:type, name:tokens[1] };
+        if(type == 'script')
+          return { type:type, url:tokens[1] };
+        else
+          return { type:type, name:tokens[1] };
       else
         return { type:'error', message: strings.wrongNumArgs(type)};
     else if(type == 'app'){
@@ -37,7 +41,6 @@ function parseDirective(line){
           type:type,
           property:tokens[1],
           value:line.substr(line.indexOf(tokens[1])+tokens[1].length+1)
-          //value:tokens.splice(2).join(' ')
         };
       else
         return { type:'error', message:strings.wrongNumArgs(type) };
@@ -63,10 +66,16 @@ function parseTemplateParameter(templateParameterString){
 }
 
 function removeComments(content){
-  // remove // comments
-  content = content.replace(/\/\/[^\n]*/g, '');
-  // remove /* comments */
-  return content.replace(/\/\*([^\*]|(\*[^\/])|\n)*\*\//g,'');
+  // remove /* ... */ comments
+  content = content.replace(/\/\*([^\*]|(\*[^\/])|\n)*\*\//g,'');
+  // remove //... comments
+  // but not the part of @script urls after http://
+  content = _(content.split('\n')).map(function(line){
+    if(line.trim().substring(0,7) != '@script')
+      line = line.replace(/\/\/[^\n]*/, '');
+    return line;
+  }).join('\n');
+  return content;
 }
 
 /**
@@ -93,7 +102,6 @@ exports.parseContent = function(content, callback){
     // Remove comments before parsing so nothing in a comment is parsed as a directuve
     content = removeComments(content);
     
-    
     // Match all at once the following types of directives:
     //  - require('moduleName')
     //  - @directive args ...
@@ -116,6 +124,11 @@ exports.parseContent = function(content, callback){
     _.each(directives,function(directive){
       if(directive.type == 'error')
         err = directive.message;
+      else if(directive.type == 'script'){
+        if(!revision.scripts)
+          revision.scripts = [];
+        revision.scripts.push(directive.url);
+      }
       else if(revision.type && (revision.type != directive.type))
         err = strings.multipleTypes(revision.type, directive.type);
       else if(directive.type == 'module' || directive.type == 'template')
@@ -134,7 +147,6 @@ exports.parseContent = function(content, callback){
         }
       }
     });
-    
     callback(err,revision);
   }
 };

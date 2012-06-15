@@ -18,8 +18,10 @@ var library = [
   "      return exportsObjects[name];",
   "    var exports = {};",
   // memoize before executing module for cyclic dependencies
+  // (this only works when the 'exports=...' form is not used)
   "    exportsObjects[name] = exports;",
-  "    modules[name](require, exports);",
+  // save the returned value in case the 'exports=...' form was used
+  "    exportsObjects[name] = exports = modules[name](require, exports);",
   "    return exports;",
   "  };",
   "  return require;",
@@ -36,18 +38,19 @@ function indent(text){
 function moduleContent(module){
   return [
     "modules['"+module.name+"'] = function(require, exports) {",
-    indent(module.content),
+       indent(module.content),
+    "  return exports;",
     "};"
   ].join('\n');
 }
 
 function stripDirectives(content){
-  //removes ProcessingDB directives starting with @
-  return content.replace(/@[^\n]*\n|/g,'');
+  //removes directives starting with @
+  return content.replace(/^[\s]*@[^\n]*\n|/gm,'');
 }
 
-function stripEmptyLines(text){
-  return text.replace(/^\s*$[\n\r]{1,}/gm, '');
+function stripEmptyLines(content){
+  return content.replace(/^\s*$[\n\r]{1,}/gm, '');
 }
 
 function parseRevisionReference(revisionReference, callback){
@@ -63,7 +66,7 @@ function splitTemplate(template, callback){
   if(split.length != 2)
     callback(strings.wrongNumberOfCodeStringsInTemplate(split.length - 1));
   else
-    callback(null, split[0]+'<script>', '</script>'+split[1]);
+    callback(null, split[0], split[1]);
 }
 
 function splitPropertyValuePair(propertyValuePair, callback){
@@ -90,6 +93,10 @@ exports.compileApp = function(scriptId, revNum, callback){
       // The content has the @ directives stripped out.
       var modules = [];
       
+      // this contains the URLs of external scripts
+      // derived from @script directives in revision content.
+      var scripts = [];
+      
       // this contains the code content string of the app
       var app;
       
@@ -111,11 +118,11 @@ exports.compileApp = function(scriptId, revNum, callback){
                   name: revision.name,
                   content: stripDirectives(revision.content)
                 });
+                scripts = _(scripts).union(revision.scripts);
                 callback();
               });
             });
           },callback);
-          // callback();
         },
         // populate 'app'
         function(callback){
@@ -154,9 +161,14 @@ exports.compileApp = function(scriptId, revNum, callback){
             else{
               var compiledApp = [
                 templateBegin,
-                modules.length != 0 ? library : "",
+                _.map(scripts, function(url){
+                  return '<script src="'+url+'"></script>';
+                }).join('\n'),
+                '<script>',
+                modules.length != 0 ? library : '',
                 _.map(modules, moduleContent).join('\n'),
                 app,
+                '</script>',
                 templateEnd
               ].join('\n');
               callback(null, compiledApp);

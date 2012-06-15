@@ -102,6 +102,36 @@ exports.testOmitRequireLibrary = function(test) {
   });
 };
 
+/**
+ * Test the @script directive for including external scripts.
+ */
+exports.testScriptDirective = function(test){
+  prefix = 'scriptDirective/';
+  async.waterfall([
+    function(callback){
+      testData.load(prefix+'simpleTemplate',callback);
+    },
+    function(scriptId, revNum, callback){
+      testData.load(prefix+'jQuery',callback);
+    },
+    function(scriptId, revNum, callback){
+      testData.load(prefix+'simpleApp',callback);
+    },
+    function(scriptId, revNum, callback){
+      backend.compileApp(scriptId, revNum, function(err, compiledApp){
+        //console.log("compiledApp = *"+compiledApp+"*");
+        var scriptStr = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>';
+        test.ok(compiledApp.indexOf(scriptStr) != -1);
+        callback();
+      });
+    }
+  ],
+  function (err, result) {
+    if(err) throw err;
+    test.done();
+  });
+};
+
 exports.testDisconnect = function(test) {
   backend.clearModel(function(err){
     if(err) throw err;

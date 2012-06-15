@@ -41,6 +41,7 @@ exports.load = load;
 
 exports.loadExampleModel = function(){
   prefix = './tests/';
-  var scriptNames = ['math','increment','minimalHTML','incrementTestApp'];
+  var scriptNames = ['math','increment','minimalHTML','incrementTestApp',
+                     'jQuery','jQueryTestApp'];
   async.forEachSeries(scriptNames,load);
 }

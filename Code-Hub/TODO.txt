@@ -6,18 +6,8 @@ Clean up:
    - Extend the nodeunit 'test' prototype/object? 
  
 TODO
- - Only include the 'require' mini-library if modules are used (if 'require()' is called by the app)
-   - Write unit tests
  - Write unit tests for circular dependencies
- - Write Readme / Documentation page
-   - at processingdb.org/documentation
- - Unit test for when revisions have no type (no directives)
- - Make page which lists scripts
- - Make documentation page
  - Package the ProcessingDB backend into a package managed by NPM
- - Write update shell script on cloud server
-   - Use forever daemon mode
-   - Run unit tests previous to deploying
  - Dogfood - actually start using it
    - Create full screen canvas template
    - Post course material

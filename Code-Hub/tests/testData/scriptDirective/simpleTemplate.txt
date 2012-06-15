@@ -1,0 +1,6 @@
+@template simpleTemplate
+<html>
+<body>
+${scripts}
+</body>
+</html>

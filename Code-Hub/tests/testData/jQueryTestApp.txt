@@ -1,0 +1,21 @@
+@app template minimalHTML
+@app name JQuery Test App
+var $ = require('jQuery');
+var dbpedia = 'http://dbpedia.org/';
+
+var query = [
+  'PREFIX dbo: <'+dbpedia+'ontology/> ',
+  'SELECT ?name WHERE {               ',
+  '  ?country rdf:type dbo:Country.   ',
+  '  ?country foaf:name ?name         ',
+  '}                                  ',
+  'LIMIT 500'
+].join('');
+
+var url = dbpedia+'sparql?query='+query+'&format=json';
+
+$.get(url, function(result) {
+  var list = result.results.bindings;
+  for(var i in list)
+    document.write(list[i].name.value+"<br>");
+});
