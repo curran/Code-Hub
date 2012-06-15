@@ -1,9 +1,9 @@
 /**
- * This is the module providing the API to the ProcessingDB on-disk model.
- * All interactions between the ProcessingDB middleware and the model
+ * This is the module providing the API to the CodeHub on-disk model.
+ * All interactions between the CodeHub middleware and the model
  * should take place through this module, to ensure consistency between
  * the Git repositories the MongoDB database which together implement
- * the on-disk ProcessingDB model.
+ * the on-disk CodeHub model.
  */
 
 //TODO rename this module to 'model' or 'store' or 'onDiskModel'
@@ -13,13 +13,13 @@ var db = require('./mongodb');
 
 /**
  * Sets the name of the Git repositories directory to "./reposModelName"
- * and sets the MongoDB database name to "ProcessingDBModelName"
+ * and sets the MongoDB database name to "CodeHubModelName"
  * where "ModelName" is the argument passed to this function.
  * This is useful for unit testing.
  */
 exports.setModelName = function(modelName){
   git.setReposDir('./repos'+modelName);
-  db.setDbName('ProcessingDB'+modelName);
+  db.setDbName('CodeHub'+modelName);
 }
 
 exports.createScript = db.createScript;

@@ -1,6 +1,6 @@
 /**
  * This module deals with extracting metadata from revision
- * content text using the ProcessingDB directives:
+ * content text using the CodeHub directives:
  *  - @app propertyName propertyValue
  *  - @module moduleName
  *  - @template templateName
@@ -10,7 +10,7 @@ var _ = require('underscore');
 var strings = require('./strings');
 
 /**
- * Parses ProcessingDB directives starting with @ from a line.
+ * Parses CodeHub directives starting with @ from a line.
  * Returns null if no directive was found.
  * Returns an object if a directive was found
  * where the 'type' property is

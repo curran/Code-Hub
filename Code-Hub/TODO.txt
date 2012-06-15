@@ -7,7 +7,7 @@ Clean up:
  
 TODO
  - Write unit tests for circular dependencies
- - Package the ProcessingDB backend into a package managed by NPM
+ - Package the CodeHub backend into a package managed by NPM
  - Dogfood - actually start using it
    - Create full screen canvas template
    - Post course material
@@ -24,8 +24,8 @@ Future Feature Ideas
  - Make run link work with code __currently in the editor__, not the saved code
  - add CTRL+R shortcut for running
  - add CTRL+S shortcut for saving
- - @inGallery descriptionString //Publishes this app to the ProcessingDB gallery
- - Have a "ProcessingDB Gallery" with thumbnails of the running code
+ - @inGallery descriptionString //Publishes this app to the CodeHub gallery
+ - Have a "CodeHub Gallery" with thumbnails of the running code
  - @language coffeescript
  - @language markdown
    - @documents foo //declares that this script is documentation for module or template 'foo'
@@ -37,8 +37,8 @@ Future Feature Ideas
  - Documentation extracted and placed as a tooltip next to autocomplete for foo.X
  - Integrate ASH
  - Feedback button
-   - Comments can be posted giving feedback on ProcessingDB itself
-   - Comments can be viewed in blog style at processingdb.org/feedback
+   - Comments can be posted giving feedback on CodeHub itself
+   - Comments can be viewed in blog style at code-hub.org/feedback
  - Add search (searching names and content)
    - results in sections: 
      - Modules
@@ -85,7 +85,7 @@ Use Case: Depend on jQuery
    - Can AMD wait for a remote script to load
      before declaring a given module as being ready?
 
-Big question - use AMD or CommonJS or Both in ProcessingDB?
+Big question - use AMD or CommonJS or Both in CodeHub?
  - CommonJS simpler, better for beginners
  - AMD more powerful, better for advanced applications and modules
  - AMD required for modules which depend on external resources
@@ -97,9 +97,9 @@ Possible anser - best of both worlds:
      when the application is rendered.
  - include an additional @amd directive,
    which enables authoring directly in AMD
- - Need to use an AMD module loader in all ProcessingDB apps
+ - Need to use an AMD module loader in all CodeHub apps
    - e.g. require.js
-   - A small price to pay for the ability to author ProcessingDB
+   - A small price to pay for the ability to author CodeHub
      modules in both CommonJS and AMD 
    
    Question to test - can require.config({paths:{..}} be called
@@ -108,7 +108,7 @@ Possible anser - best of both worlds:
    Question to test - can require.config({paths:{..}} be called
    AFTER calls to define() which require a module declared in the path?
    
-   If yes to both, the jQuery ProcessingDB module could look like this:
+   If yes to both, the jQuery CodeHub module could look like this:
    
    @amd
    require.config({
@@ -133,10 +133,10 @@ Possible anser - best of both worlds:
    This may be the ideal solution.
    
    TODO to implement this solution:
-    - Change the ProcessingDB template solution to assume that
+    - Change the CodeHub template solution to assume that
       ${code} will be replaced with script tags (should not already
       be inside script tags)
-    - Integrate require.js into the ProcessingDB template
+    - Integrate require.js into the CodeHub template
       Possibly locally, possibly from a CDN..
     - Change the compilation code to detect @amd directive
       - When not detected (default), wrap the module code in CommonJS wrapper:

@@ -1,5 +1,5 @@
 /**
- * This module exposes an API to the ProcessingDB on-disk model
+ * This module exposes an API to the CodeHub on-disk model
  * which also performs dependency management tasks.
  * 
  * This is the only module that the route middleware (app.js) should use.
@@ -34,7 +34,7 @@ function lookupDependenciesAndTemplateIfApp(revision, callback){
  * @param {scriptId} The id of the script for which to 
  *   create the new revision.
  * @param {content} The content of the revision to be persisted.
- *   ProcessingDB directives are parsed from the content.
+ *   CodeHub directives are parsed from the content.
  *   If type == 'app', 
  *   Transitive dependencies will be evaluated and stored 
  *     in the on-disk model as revision references

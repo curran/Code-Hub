@@ -5,7 +5,7 @@ var _ = require('underscore');
 
 // The name of the MongoDB database
 // May be changed for unit testing.
-var dbName = 'processingDB';
+var dbName = 'codehub';
 
 var Counters = new Schema({
   _id:String, // the schema name

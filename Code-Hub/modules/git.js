@@ -4,7 +4,7 @@ var path = require('path');
 var async = require('async');
 
 /**
- * The Git Module of ProcessingDB.
+ * The Git Module of CodeHub.
  *
  * The purpose of this module is to provide an API to the following on-disk model:
  *  - A set of "Scripts"

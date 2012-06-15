@@ -3,7 +3,7 @@ var modelFunctions = require('./modelFunctions');
 var async = require('async');
 
 // Use a test DB so as not to interfere with a production DB 
-db.setDbName('ProcessingDBTest');
+db.setDbName('CodeHubTest');
 
 /**
  * Tests incrementing script ids.
