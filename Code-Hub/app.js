@@ -97,7 +97,6 @@ function createScriptIfNecessary(scriptId, callback){
 }
 
 app.put('/:scriptId', function(req, res){
-  //console.log('parentRevision  = '+req.body.revision.parentRevision);
   var content = req.body.revision.content;
   var parentRevision = req.body.revision.parentRevision;
   
@@ -117,6 +116,11 @@ app.get('/scripts', function(req, res){
       res.render('error',{error:err});
     else
       res.render('scripts',{scripts:scripts});
+      // res.render('scripts',{
+        // modules:modules,
+        // templates:templates,
+        // apps:apps
+      // });
   });
 });
 

@@ -253,3 +253,17 @@ exports.listScripts = function(callback){
     );
   });
 };
+
+// exports.listScripts = function(callback){
+  // Script.find({}, function(err, scripts){
+    // var arrays = { module:[], template:[], app:[] };
+    // _(scripts).each(function(script){
+      // arrays[script.latestType].push(
+        // script.latestName ? 
+          // script.latestName : 
+          // script._id+'.'+script.latestRevNum
+      // );
+    // })
+    // callback(err, arrays.module, arrays.template, arrays.app);
+  // });
+// };

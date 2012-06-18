@@ -58,10 +58,8 @@ exports.createRevision = function(scriptId, content, parentRevision, callback){
     },
     function(revision, cb){
       revision.commitDate = new Date();
-      if(parentRevision){
-        console.log('parentRevision = '+parentRevision);        
+      if(parentRevision)
         revision.parentRevision = parentRevision;
-      }
       model.createRevision(scriptId, revision, callback);
     }
   ],
@@ -69,22 +67,6 @@ exports.createRevision = function(scriptId, content, parentRevision, callback){
     if(err)
       callback(err);
   });
-   // preprocessor.parseContent(content, function(err, revision){
-    // if(err)
-      // callback(err);
-    // else
-      // lookupDependenciesAndTemplateIfApp(revision, function(err, revision){
-        // if(err)
-          // callback(err);
-        // else
-          // validation.validateRevision(revision, function(err, revision){
-            // if(err)
-              // callback(err);
-            // else
-              // model.createRevision(scriptId, revision, callback);
-          // });
-      // });
-  // });
 };
 
 exports.getRevision = model.getRevision;
