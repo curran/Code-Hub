@@ -13,6 +13,8 @@ block head
 block content
   form(action='/'+revision.scriptId, method='POST')
     input(type='hidden', name='_method', value='PUT')
+    input(type='hidden', name='revision[parentRevision]', value='#{revision.scriptId+'.'+revision.revNum}')
+    
     textArea(type='text', id='revision_content', 
              style='float:center',
              name='revision[content]', 

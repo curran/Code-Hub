@@ -97,8 +97,12 @@ function createScriptIfNecessary(scriptId, callback){
 }
 
 app.put('/:scriptId', function(req, res){
+  //console.log('parentRevision  = '+req.body.revision.parentRevision);
+  var content = req.body.revision.content;
+  var parentRevision = req.body.revision.parentRevision;
+  
   createScriptIfNecessary(req.params.scriptId, function(err, scriptId){
-    backend.createRevision(scriptId, req.body.revision.content, function(err, revNum){
+    backend.createRevision(scriptId, content, parentRevision, function(err, revNum){
       if(err)
         res.render('error',{error:err});
       else

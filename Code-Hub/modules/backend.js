@@ -40,9 +40,12 @@ function lookupDependenciesAndTemplateIfApp(revision, callback){
  *     in the on-disk model as revision references
  *     at the time this function is called.
  *   revision.template will be looked up and stored as a revision reference.
+ * @param {parentRevision} The parent revision of the revision to be
+ *   persisted, of the form 'scriptId.revNum'.
+ *   
  * @param callback(err, revNum) Passes the new revision number.
  */
-exports.createRevision = function(scriptId, content, callback){
+exports.createRevision = function(scriptId, content, parentRevision, callback){
   async.waterfall([
     function(callback){
       preprocessor.parseContent(content, callback);
@@ -55,6 +58,10 @@ exports.createRevision = function(scriptId, content, callback){
     },
     function(revision, cb){
       revision.commitDate = new Date();
+      if(parentRevision){
+        console.log('parentRevision = '+parentRevision);        
+        revision.parentRevision = parentRevision;
+      }
       model.createRevision(scriptId, revision, callback);
     }
   ],

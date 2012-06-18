@@ -16,7 +16,7 @@ var revisionSchemaDescriptor = {
   _id: String, // scriptId.revNum
   commitMessage: String,//TODO track this
   commitDate: Date,
-  parentRevision: String, // "scriptId.revNum" or "" TODO track this
+  parentRevision: String, // "scriptId.revNum"
   type: String, // in ['module','app','template']
   
   // relevant when (type == 'module' || type == 'template')
@@ -176,19 +176,19 @@ function revId(scriptId, revNum){
  *    relevant when type == 'app'
  * @param callback(err, revNum) Passes the new revision number
  */
-exports.createRevision = function(scriptId, revisionObject, callback){
-  if(!revisionObject)
+exports.createRevision = function(scriptId, revision, callback){
+  if(!revision)
     callback("Revision object is null.");
   else{
     var set = {
-      latestName: revisionObject.name,
-      latestDependencies: revisionObject.dependencies,
-      latestTemplateParameters: revisionObject.templateParameters
+      latestName: revision.name,
+      latestDependencies: revision.dependencies,
+      latestTemplateParameters: revision.templateParameters
     };
     incrementAndSet(Script,"latestRevNum", scriptId, set, function(err, revNum){
       var revisionDoc = new Revision();
       revisionDoc._id = revId(scriptId,revNum);
-      _.extend(revisionDoc, revisionObject);
+      _.extend(revisionDoc, revision);
       revisionDoc.save(function(err){
         callback(err,revNum);
       });

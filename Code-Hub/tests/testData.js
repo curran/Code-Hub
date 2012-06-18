@@ -28,7 +28,7 @@ function load(scriptName,callback){
         if(err) 
           callback(err);
         else
-          backend.createRevision(scriptId, content, function(err, revNum){
+          backend.createRevision(scriptId, content, null, function(err, revNum){
             if(err) 
               callback(err);
             else
