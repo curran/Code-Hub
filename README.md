@@ -71,6 +71,7 @@ To run the CodeHub server:
 ## Content
 Here are some apps in CodeHub right now:
 
- * [Bouncing Ball](http://code-hub.org/edit/24.37) ([run](http://code-hub.org/edit/24.37))
+ * [Bouncing Ball](http://code-hub.org/edit/24.37) ([run](http://code-hub.org/run/24.37))
  * [Heat Equation Simulation](http://code-hub.org/edit/7.7) ([run](http://code-hub.org/run/7.7))
  * [Wave Equation Simulation](http://code-hub.org/edit/7.5) ([run](http://code-hub.org/run/7.5))
+ * [Bouncing balls with attractive force](http://code-hub.org/edit/25.1) ([run](http://code-hub.org/run/25.1))
