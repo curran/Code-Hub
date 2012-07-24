@@ -1,4 +1,6 @@
 # CodeHub
+Hello!
+
 CodeHub is a software development tool for JavaScript and HTML which provides:
 
  - a browser-based code editor which allows you to save and run your code
