@@ -75,3 +75,4 @@ Here are some apps in CodeHub right now:
  * [Heat Equation Simulation](http://code-hub.org/edit/7.7) ([run](http://code-hub.org/run/7.7))
  * [Wave Equation Simulation](http://code-hub.org/edit/7.5) ([run](http://code-hub.org/run/7.5))
  * [Bouncing balls with attractive force](http://code-hub.org/edit/25.1) ([run](http://code-hub.org/run/25.1))
+ * [Balls bouncing off each other](http://code-hub.org/edit/25.12) ([run](http://code-hub.org/run/25.12))
