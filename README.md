@@ -67,3 +67,10 @@ To run the CodeHub server:
    - For production use, use of [Forever](https://github.com/nodejitsu/forever/), a command line tool which automatically restarts Node applications if they crash, is recommeded. After installing Forever, CodeHub can be run with the following command:
      - `NODE_ENV=production forever start -l forever.log -o out.log -e err.log app.js`
  4. CodeHub should now be running at `http://localhost:8000/`
+
+## Content
+Here are some apps in CodeHub right now:
+
+ * [Bouncing Ball](http://code-hub.org/edit/24.37) ([run](http://code-hub.org/edit/24.37))
+ * [Heat Equation Simulation](http://code-hub.org/edit/7.7) ([run](http://code-hub.org/run/7.7))
+ * [Wave Equation Simulation](http://code-hub.org/edit/7.5) ([run](http://code-hub.org/run/7.5))
